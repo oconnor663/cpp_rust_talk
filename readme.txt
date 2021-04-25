@@ -1,3 +1,15 @@
+A Firehose of Rust for C++ Programmers
+
+Rust and modern C++ have very similar memory models, and both make heavy use of
+references, destructors, RAII, smart pointers, and move semantics. This talk
+will be a fast-paced, challenging, and hopefully exciting introduction to how
+these concepts work differently in Rust. We'll use side-by-side code samples to
+skip over syntactic differences and focus on behavior, particularly on cases
+where the Rust version refuses to compile. We'll see that memory safety lets
+Rust embrace "dangerous" features like destructive moves and borrowing views.
+We'll also see how types like File and MutexGuard use ownership and borrowing
+to enforce higher-level invariants at compile time.
+
 - references and lifetimes
     - C++ vs Rust table
         - two giant differences: 1) lifetimes always valid, 2) &mut T is never aliased
@@ -72,7 +84,10 @@
     - BIG IDEA: THE TYPE SYSTEM TRACKS THREAD SAFETY
     - C++ std::for_each(std::execution::par, ...) vs Rust Rayon into_par_iter()
         - trying to increment an int in the loop fails in Rust
-    - implicit captures are DANGEROUS in C++
+        - implicit captures are DANGEROUS in C++.
+    - Arc vs Rc
+        - non-atomic reference counting is DANGEROUS in C++
+        - Tokio multithreading and how non-Send types "infect" a future
 
 - enums
     - Option
