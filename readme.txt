@@ -17,6 +17,7 @@ to enforce higher-level invariants at compile time.
     - error handling with ? and panics
     - traits, polymorphism, static and dynamic dispatch
     - managing dependencies with Cargo
+    - unsafe code
 
 - references and lifetimes
     - C++ vs Rust table
