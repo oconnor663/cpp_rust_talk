@@ -10,6 +10,14 @@ Rust embrace "dangerous" features like destructive moves and borrowing views.
 We'll also see how types like File and MutexGuard use ownership and borrowing
 to enforce higher-level invariants at compile time.
 
+- things we won't have time to cover
+    - syntax
+    - iterators
+    - enums: Option and Result
+    - error handling with ? and panics
+    - traits, polymorphism, static and dynamic dispatch
+    - managing dependencies with Cargo
+
 - references and lifetimes
     - C++ vs Rust table
         - two giant differences: 1) lifetimes always valid, 2) &mut T is never aliased
@@ -88,9 +96,3 @@ to enforce higher-level invariants at compile time.
     - Arc vs Rc
         - non-atomic reference counting is DANGEROUS in C++
         - Tokio multithreading and how non-Send types "infect" a future
-
-- enums
-    - Option
-    - Result and ?
-
-- Cargo
