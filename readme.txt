@@ -3,12 +3,13 @@ A Firehose of Rust for C++ Programmers
 Rust and modern C++ have very similar memory models, and both make heavy use of
 references, destructors, RAII, smart pointers, and move semantics. This talk
 will be a fast-paced, challenging, and hopefully exciting introduction to how
-these concepts work differently in Rust. We'll use side-by-side code samples to
-skip over syntactic differences and focus on behavior, particularly on cases
-where the Rust version refuses to compile. We'll see that memory safety lets
-Rust embrace "dangerous" features like destructive moves and borrowing views.
-We'll also see how types like File and MutexGuard use ownership and borrowing
-to enforce higher-level invariants at compile time.
+these familiar C++ concepts work differently in Rust. Side-by-side code samples
+will help us gloss over syntax and focus on what's happening in memory,
+particularly in cases where the Rust version refuses to compile. We'll see that
+memory safety lets Rust embrace "dangerous" features like destructive moves and
+borrowing views. We'll also see how types like File and MutexGuard use
+ownership and borrowing to express higher-level invariants and enforce them at
+compile time.
 
 - things we won't have time to cover
     - syntax
