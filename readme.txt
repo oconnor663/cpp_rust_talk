@@ -30,6 +30,8 @@ compile time.
             - DANGEROUS in C++
         - pushing a string into a Vec example
             - try to return the Vec
+            - note that Vec::push() has no lifetime annotations. the lifetime
+              is an implicit property of the element type.
     - mutability
         - simple example with a couple of aliasing variables
         - getting two &T's out of a Vec is fine, but two &mut T's are annoying
@@ -43,6 +45,9 @@ compile time.
             - before Rust didn't like our function without annotations. But
               here, Rust is fine with the function, and it doesn't like the
               caller.
+            - note that Rust doesn't care at all about the *body* of the
+              function. we can make the whole thing a no-op, and it doesn't
+              change the compiler error.
         - Herb Sutter shared_ptr bug
     - remember that there are basically just big ideas, and the rest follows
 
