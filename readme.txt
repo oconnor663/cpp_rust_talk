@@ -20,11 +20,11 @@ compile time.
     - managing dependencies with Cargo
     - unsafe code
 
-- references and lifetimes
+1. references and lifetimes
     - C++ vs Rust table
         - two giant differences: 1) lifetimes always valid, 2) &mut T is never aliased
         - BIG IDEAS SLIDE ^
-    - lifetimes
+    a. lifetimes
         - simple scopes example
         - string_view example
             - DANGEROUS in C++
@@ -32,7 +32,7 @@ compile time.
             - try to return the Vec
             - note that Vec::push() has no lifetime annotations. the lifetime
               is an implicit property of the element type.
-    - mutability
+    b. mutability
         - simple example with a couple of aliasing variables
         - getting two &T's out of a Vec is fine, but two &mut T's are annoying
             - many possible workarounds to explore in a longer talk:
@@ -51,7 +51,7 @@ compile time.
         - Herb Sutter shared_ptr bug
     - remember that there are basically just big ideas, and the rest follows
 
-- move semantics
+2. move semantics
     - syntactically an assignment. semantically a memcpy. destructive.
         - simple Vec examples, counting constructions and destructions
         - push a String into a Vec. no new allocation.
@@ -81,7 +81,7 @@ compile time.
               into *this"
     - Copy and Clone
 
-- case study: File
+3. case study: File
     - no such thing as a closed file
         - note that there is some debate over whether this was a good idea
     - the drop() function
@@ -90,12 +90,12 @@ compile time.
     - in general, to close Files in-place, use Option<File>. like in a struct
       field.
 
-- case study: Mutex
+4. case study: Mutex
     - a container
     - borrowing rules enforce locking
     - Arc<Mutex<T>> is surprisingly convenient
 
-- multithreading and closures
+5. multithreading and closures
     - BIG IDEA: THE TYPE SYSTEM TRACKS THREAD SAFETY
     - C++ std::for_each(std::execution::par, ...) vs Rust Rayon into_par_iter()
         - trying to increment an int in the loop fails in Rust
