@@ -85,7 +85,10 @@ compile time.
 
 3. case study: File
     - no such thing as a closed file
-        - note that there is some debate over whether this was a good idea
+        - no need to allocate a close flag, and no API questions about what
+          operations on a closed file should do
+        - on the other hand it suppresses close errors, some debate over
+          whether this was a good idea
     - the drop() function
         - surprise it's empty!
         - but drop() doesn't work on Vec elements or struct fields
