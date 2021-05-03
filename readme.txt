@@ -11,14 +11,16 @@ borrowing views. We'll also see how types like File and MutexGuard use
 ownership and borrowing to express higher-level invariants and enforce them at
 compile time.
 
-- things we won't have time to cover
+- things we'll either gloss over or not get to at all
     - syntax
+    - slices (i.e. borrowing views)
     - iterators
-    - enums: Option and Result
+    - enums (i.e. tagged unions)
     - error handling with ? and panics
     - traits, polymorphism, static and dynamic dispatch
     - managing dependencies with Cargo
     - unsafe code
+    - futures (i.e. coroutines) and async IO
 
 1. references and lifetimes
     - C++ vs Rust table
