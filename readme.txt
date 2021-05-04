@@ -31,7 +31,7 @@ compile time.
         - string_view example
             - DANGEROUS in C++
         - pushing a string into a Vec example
-            - try to return the Vec
+            - try to do it inside a separate function
             - note that Vec::push() has no lifetime annotations. the lifetime
               is an implicit property of the element type.
     b. mutability

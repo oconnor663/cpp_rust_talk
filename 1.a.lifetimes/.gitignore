@@ -1,3 +1,4 @@
 simple_scope
 string_view
 vector_push
+vector_push_fn
