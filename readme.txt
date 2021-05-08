@@ -94,6 +94,8 @@ compile time.
         - but drop() doesn't work on Vec elements or struct fields
     - in general, to close Files in-place, use Option<File>. like in a struct
       field.
+    - https://isocpp.org/wiki/faq/dtors
+    - https://stackoverflow.com/questions/28136080/stdvectorerase-exception-safety
 
 4. case study: Mutex
     - a container
