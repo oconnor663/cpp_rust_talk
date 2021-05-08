@@ -1,15 +1,15 @@
 #![allow(unused_variables)]
+#![allow(dead_code)]
 
 use std::error::Error;
 use std::fs::File;
+use std::mem;
 
-fn file_close_at_end_of_scope() -> Result<(), Box<dyn Error>> {
+fn file_close() -> Result<(), Box<dyn Error>> {
     let my_file = File::open("/dev/null")?;
+    dbg!(mem::size_of::<File>()); // prints 4
+    // drop closes my_file
     Ok(())
-}
-
-fn file_close_method() {
-    // no such thing
 }
 
 fn file_close_scope() -> Result<(), Box<dyn Error>> {
@@ -17,6 +17,10 @@ fn file_close_scope() -> Result<(), Box<dyn Error>> {
         let my_file = File::open("/dev/null")?;
     }
     Ok(())
+}
+
+fn file_close_method() {
+    // no such thing
 }
 
 fn file_close_drop() -> Result<(), Box<dyn Error>> {
@@ -88,4 +92,6 @@ fn file_close_field_option() -> Result<(), Box<dyn Error>> {
     Ok(())
 }
 
-fn main() {}
+fn main() {
+    dbg!(mem::size_of::<File>());
+}
