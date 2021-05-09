@@ -101,6 +101,8 @@ compile time.
     - a container
     - borrowing rules enforce locking
     - Arc<Mutex<T>> is surprisingly convenient
+    - RwLock and taking the wrong kind
+    - Curiously Recurring C++ Bugs at Facebook https://youtu.be/lkgszkPnV8g
 
 5. multithreading and closures
     - BIG IDEA: THE TYPE SYSTEM TRACKS THREAD SAFETY
