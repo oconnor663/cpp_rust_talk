@@ -39,7 +39,7 @@ void with_shared_ptr() {
   }
 }
 
-void oops() {
+void forgot_mutex() {
   shared_ptr<pair<mutex, string>> my_pair = make_shared<pair<mutex, string>>();
   vector<thread> thread_handles;
   for (int i = 0; i < 10; i++) {
@@ -62,6 +62,25 @@ void with_shared_mutex() {
     thread thread_handle([=] {
       shared_lock<shared_mutex> guard(my_pair->first);
       my_pair->second += "some characters";
+    });
+    thread_handles.push_back(std::move(thread_handle));
+  }
+  for (auto &thread_handle : thread_handles) {
+    thread_handle.join();
+  }
+}
+
+void smuggle() {
+  shared_ptr<pair<mutex, string>> my_pair = make_shared<pair<mutex, string>>();
+  vector<thread> thread_handles;
+  for (int i = 0; i < 10; i++) {
+    thread thread_handle([=] {
+      string *smuggled_ptr;
+      {
+        lock_guard<mutex> guard(my_pair->first);
+        smuggled_ptr = &my_pair->second;
+      }
+      *smuggled_ptr += "some characters";
     });
     thread_handles.push_back(std::move(thread_handle));
   }
@@ -105,8 +124,9 @@ void vexing_fix() {
 int main() {
   stack_local();
   with_shared_ptr();
-  oops();
+  forgot_mutex();
   with_shared_mutex();
+  smuggle();
   vexing_parse();
   vexing_fix();
 }
