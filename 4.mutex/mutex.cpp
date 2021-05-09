@@ -25,7 +25,7 @@ void stack_local() {
 }
 
 void with_shared_ptr() {
-  auto my_pair = make_shared<pair<mutex, string>>();
+  shared_ptr<pair<mutex, string>> my_pair = make_shared<pair<mutex, string>>();
   vector<thread> thread_handles;
   for (int i = 0; i < 10; i++) {
     thread thread_handle([=] {
@@ -40,7 +40,7 @@ void with_shared_ptr() {
 }
 
 void oops() {
-  auto my_pair = make_shared<pair<mutex, string>>();
+  shared_ptr<pair<mutex, string>> my_pair = make_shared<pair<mutex, string>>();
   vector<thread> thread_handles;
   for (int i = 0; i < 10; i++) {
     thread thread_handle([=] {
@@ -55,7 +55,8 @@ void oops() {
 }
 
 void with_shared_mutex() {
-  auto my_pair = make_shared<pair<shared_mutex, string>>();
+  shared_ptr<pair<shared_mutex, string>> my_pair =
+      make_shared<pair<shared_mutex, string>>();
   vector<thread> thread_handles;
   for (int i = 0; i < 10; i++) {
     thread thread_handle([=] {

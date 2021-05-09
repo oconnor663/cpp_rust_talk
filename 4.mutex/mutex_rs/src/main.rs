@@ -2,7 +2,7 @@ use std::sync::{Arc, Mutex, MutexGuard, RwLock};
 use std::thread;
 
 fn stack_local() {
-    let my_string = Mutex::new(String::new());
+    let my_string: Mutex<String> = Mutex::new(String::new());
     let mut thread_handles = Vec::new();
     for _ in 0..10 {
         let thread_handle = thread::spawn(|| {
@@ -18,7 +18,7 @@ fn stack_local() {
 }
 
 fn with_shared_ptr() {
-    let my_string = Arc::new(Mutex::new(String::new()));
+    let my_string: Arc<Mutex<String>> = Arc::new(Mutex::new(String::new()));
     let mut thread_handles = Vec::new();
     for _ in 0..10 {
         let arc_clone = my_string.clone();
@@ -35,7 +35,7 @@ fn with_shared_ptr() {
 }
 
 fn oops() {
-    let my_string = Arc::new(Mutex::new(String::new()));
+    let my_string: Arc<Mutex<String>> = Arc::new(Mutex::new(String::new()));
     let mut thread_handles = Vec::new();
     for _ in 0..10 {
         let arc_clone = my_string.clone();
@@ -54,7 +54,7 @@ fn oops() {
 }
 
 fn with_shared_mutex() {
-    let my_string = Arc::new(RwLock::new(String::new()));
+    let my_string: Arc<RwLock<String>> = Arc::new(RwLock::new(String::new()));
     let mut thread_handles = Vec::new();
     for _ in 0..10 {
         let arc_clone = my_string.clone();
