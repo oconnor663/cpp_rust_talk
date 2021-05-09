@@ -5,8 +5,8 @@
 
 int main() {
   int x = 0;
-  std::vector<char> v(1'000'000, 1);
+  std::vector<int> v{0, 1, 2, 3, 4, 5};
   std::for_each(std::execution::par, v.begin(), v.end(),
-                [&x](auto &i) { x += i; });
+                [&x](int i) { x += i; });
   std::cout << x << std::endl;
 }
