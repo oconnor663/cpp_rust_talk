@@ -8,80 +8,75 @@
 
 using namespace std;
 
-void good() {
-  auto my_string = make_shared<pair<mutex, string>>();
-  vector<thread> thread_handles;
-  for (int i = 0; i < 10; i++) {
-    thread thread_handle([=] {
-      lock_guard<mutex> guard(my_string->first);
-      string &my_string_reference = my_string->second;
-      my_string_reference += "some characters";
-    });
-    thread_handles.push_back(std::move(thread_handle));
-  }
-  for (auto &thread_handle : thread_handles) {
-    thread_handle.join();
-  }
-}
-
-void bad1() {
-  auto my_string = make_shared<pair<mutex, string>>();
-  vector<thread> thread_handles;
-  for (int i = 0; i < 10; i++) {
-    thread thread_handle([=] {
-      // lock_guard<mutex> guard(my_string->first);
-      string &my_string_reference = my_string->second;
-      my_string_reference += "some characters";
-    });
-    thread_handles.push_back(std::move(thread_handle));
-  }
-  for (auto &thread_handle : thread_handles) {
-    thread_handle.join();
-  }
-}
-
-void bad2() {
-  auto my_string = make_shared<pair<shared_mutex, string>>();
-  vector<thread> thread_handles;
-  for (int i = 0; i < 10; i++) {
-    thread thread_handle([=] {
-      shared_lock<shared_mutex> guard;
-      string &my_string_reference = my_string->second;
-      my_string_reference += "some characters";
-    });
-    thread_handles.push_back(std::move(thread_handle));
-  }
-  for (auto &thread_handle : thread_handles) {
-    thread_handle.join();
-  }
-}
-
-void bad3() {
-  string my_string;
-  mutex my_mutex;
-  vector<thread> thread_handles;
-  for (int i = 0; i < 10; i++) {
-    thread thread_handle([&] {
-      unique_lock<mutex>(my_mutex);
-      string &my_string_reference = my_string;
-      my_string_reference += "some characters";
-    });
-    thread_handles.push_back(std::move(thread_handle));
-  }
-  for (auto &thread_handle : thread_handles) {
-    thread_handle.join();
-  }
-}
-
-void good3() {
+void stack_local() {
   string my_string;
   mutex my_mutex;
   vector<thread> thread_handles;
   for (int i = 0; i < 10; i++) {
     thread thread_handle([&] {
       unique_lock<mutex> guard(my_mutex);
-      string &my_string_reference = my_string;
-      my_string_reference += "some characters";
+      my_string += "some characters";
+    });
+    thread_handles.push_back(std::move(thread_handle));
+  }
+  for (auto &thread_handle : thread_handles) {
+    thread_handle.join();
+  }
+}
+
+void with_shared_ptr() {
+  auto my_pair = make_shared<pair<mutex, string>>();
+  vector<thread> thread_handles;
+  for (int i = 0; i < 10; i++) {
+    thread thread_handle([=] {
+      lock_guard<mutex> guard(my_pair->first);
+      my_pair->second += "some characters";
+    });
+    thread_handles.push_back(std::move(thread_handle));
+  }
+  for (auto &thread_handle : thread_handles) {
+    thread_handle.join();
+  }
+}
+
+void oops() {
+  auto my_pair = make_shared<pair<mutex, string>>();
+  vector<thread> thread_handles;
+  for (int i = 0; i < 10; i++) {
+    thread thread_handle([=] {
+      // lock_guard<mutex> guard(my_pair->first);
+      my_pair->second += "some characters";
+    });
+    thread_handles.push_back(std::move(thread_handle));
+  }
+  for (auto &thread_handle : thread_handles) {
+    thread_handle.join();
+  }
+}
+
+void with_shared_mutex() {
+  auto my_pair = make_shared<pair<shared_mutex, string>>();
+  vector<thread> thread_handles;
+  for (int i = 0; i < 10; i++) {
+    thread thread_handle([=] {
+      shared_lock<shared_mutex> guard(my_pair->first);
+      my_pair->second += "some characters";
+    });
+    thread_handles.push_back(std::move(thread_handle));
+  }
+  for (auto &thread_handle : thread_handles) {
+    thread_handle.join();
+  }
+}
+
+void vexing_parse() {
+  string my_string;
+  mutex my_mutex;
+  vector<thread> thread_handles;
+  for (int i = 0; i < 10; i++) {
+    thread thread_handle([&] {
+      unique_lock<mutex>(my_mutex);
+      my_string += "some characters";
     });
     thread_handles.push_back(std::move(thread_handle));
   }
@@ -91,9 +86,9 @@ void good3() {
 }
 
 int main() {
-  // good();
-  // bad1();
-  // bad2();
-  // bad3();
-  // good3();
+  stack_local();
+  with_shared_ptr();
+  oops();
+  with_shared_mutex();
+  vexing_parse();
 }
