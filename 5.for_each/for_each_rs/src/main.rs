@@ -38,7 +38,7 @@ fn with_counter() {
 
 fn with_mutex() {
     let mut v: Vec<i32> = vector_of_random_numbers();
-    let sum = Mutex::new(0);
+    let sum: Mutex<i32> = Mutex::new(0);
     v.par_iter_mut().for_each(|x| {
         *x += 1;
         *sum.lock().unwrap() += *x;
@@ -47,7 +47,7 @@ fn with_mutex() {
 
 fn with_atomic() {
     let mut v: Vec<i32> = vector_of_random_numbers();
-    let sum = AtomicI32::new(0);
+    let sum: AtomicI32 = AtomicI32::new(0);
     v.par_iter_mut().for_each(|x| {
         *x += 1;
         sum.fetch_add(*x, Ordering::Relaxed);
