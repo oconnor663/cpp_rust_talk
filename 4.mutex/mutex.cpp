@@ -86,10 +86,27 @@ void vexing_parse() {
   }
 }
 
+void vexing_fix() {
+  string my_string;
+  mutex my_mutex;
+  vector<thread> thread_handles;
+  for (int i = 0; i < 10; i++) {
+    thread thread_handle([&] {
+      unique_lock<mutex> guard(my_mutex);
+      my_string += "some characters";
+    });
+    thread_handles.push_back(std::move(thread_handle));
+  }
+  for (auto &thread_handle : thread_handles) {
+    thread_handle.join();
+  }
+}
+
 int main() {
   stack_local();
   with_shared_ptr();
   oops();
   with_shared_mutex();
   vexing_parse();
+  vexing_fix();
 }
