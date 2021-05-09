@@ -14,7 +14,7 @@ void stack_local() {
   vector<thread> thread_handles;
   for (int i = 0; i < 10; i++) {
     thread thread_handle([&] {
-      unique_lock<mutex> guard(my_mutex);
+      lock_guard<mutex> guard(my_mutex);
       my_string += "some characters";
     });
     thread_handles.push_back(std::move(thread_handle));
