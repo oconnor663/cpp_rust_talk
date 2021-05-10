@@ -11,5 +11,5 @@ int main() {
     std::string my_string = "hello world";
     my_push_back(my_vector, my_string);
   }
-  std::cout << my_vector[0] << std::endl;
+  std::cout << my_vector[0];
 }

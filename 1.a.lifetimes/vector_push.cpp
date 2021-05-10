@@ -7,5 +7,5 @@ int main() {
     std::string my_string = "hello world";
     my_vector.push_back(my_string);
   }
-  std::cout << my_vector[0] << std::endl;
+  std::cout << my_vector[0];
 }

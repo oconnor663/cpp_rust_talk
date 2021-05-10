@@ -139,7 +139,7 @@ error[E0597]: `my_int` does not live long enough
                             <pre class="cpp"><code data-trim><script type="text/template">
   std::string my_string = "abcdefghijklmnopqrstuvwxy";
   std::string_view my_string_view = my_string + "z";
-  std::cout << my_string_view << std::endl;
+  std::cout << my_string_view;
                             </script></code></pre>
                         </div>
                         <div class="col">
@@ -157,7 +157,7 @@ error[E0597]: `my_int` does not live long enough
                             <pre class="cpp"><code data-trim><script type="text/template">
   std::string my_string = "abcdefghijklmnopqrstuvwxy";
   std::string_view my_string_view = my_string + "z";
-  std::cout << my_string_view << std::endl;
+  std::cout << my_string_view;
                             </script></code></pre>
                             <pre><code data-trim><script type="text/template">
 ==24774==ERROR: AddressSanitizer: heap-use-after-free on address 0x6060000000e0 at pc 0x7f63fa6020b6 bp 0x7fff1828aa30 sp 0x7fff1828a1d8
@@ -211,7 +211,7 @@ error[E0716]: temporary value dropped while borrowed
     std::string my_string = "hello world";
     my_vector.push_back(my_string);
   }
-  std::cout << my_vector[0] << std::endl;
+  std::cout << my_vector[0];
                             </script></code></pre>
                         </div>
                         <div class="col">
@@ -235,7 +235,7 @@ error[E0716]: temporary value dropped while borrowed
     std::string my_string = "hello world";
     my_vector.push_back(my_string);
   }
-  std::cout << my_vector[0] << std::endl;
+  std::cout << my_vector[0];
                             </script></code></pre>
                             <pre><code data-trim><script type="text/template">
 ==27916==ERROR: AddressSanitizer: stack-use-after-scope on address 0x7ffeabade130 at pc 0x7f260741b0b6 bp 0x7ffeabaddf30 sp 0x7ffeabadd6d8
@@ -296,7 +296,7 @@ int main() {
     std::string my_string = "hello world";
     my_push_back(my_vector, my_string);
   }
-  std::cout << my_vector[0] << std::endl;
+  std::cout << my_vector[0];
 }
                             </script></code></pre>
                         </div>
@@ -333,7 +333,7 @@ int main() {
     std::string my_string = "hello world";
     my_push_back(my_vector, my_string);
   }
-  std::cout << my_vector[0] << std::endl;
+  std::cout << my_vector[0];
 }
                             </script></code></pre>
                             <pre><code data-trim><script type="text/template">

@@ -10,7 +10,7 @@ public:
 };
 
 void use(const widget &w) {
-  std::cout << w.x << std::endl;
+  std::cout << w.x;
 }
 
 void g();
