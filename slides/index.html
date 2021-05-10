@@ -1291,6 +1291,82 @@ error[E0596]: cannot borrow data in an `Arc` as mutable
 
 
 
+                <section>
+                    Writing under a read lock
+                    <div class="container">
+                        <div class="col">
+                            C++
+                            <pre class="cpp"><code data-trim data-line-numbers="|1-2,6"><script type="text/template">
+  shared_ptr<pair<shared_mutex, string>> my_pair =
+      make_shared<pair<shared_mutex, string>>();
+  vector<thread> thread_handles;
+  for (int i = 0; i < 10; i++) {
+    thread thread_handle([=] {
+      shared_lock<shared_mutex> guard(my_pair->first);
+      my_pair->second += "some characters";
+    });
+    thread_handles.push_back(std::move(thread_handle));
+  }
+  for (auto &thread_handle : thread_handles) {
+    thread_handle.join();
+  }
+                            </script></code></pre>
+                        </div>
+                        <div class="col">
+                            Rust
+                            <pre class="rust"><code data-trim data-line-numbers="|1-2,7-8"><script type="text/template">
+    let my_string: Arc<RwLock<String>> =
+        Arc::new(RwLock::new(String::new()));
+    let mut thread_handles = Vec::new();
+    for _ in 0..10 {
+        let arc_clone = my_string.clone();
+        let thread_handle = thread::spawn(move || {
+            let mut guard: RwLockReadGuard<String> =
+                arc_clone.read().unwrap();
+            guard.push_str("some characters");
+        });
+        thread_handles.push(thread_handle);
+    }
+    for thread_handle in thread_handles {
+        thread_handle.join().unwrap();
+    }
+                            </script></code></pre>
+                        </div>
+                    </div>
+                </section>
+                <section>
+                            Rust
+                            <pre class="rust"><code data-trim data-line-numbers="1-2,7-8"><script type="text/template">
+    let my_string: Arc<RwLock<String>> =
+        Arc::new(RwLock::new(String::new()));
+    let mut thread_handles = Vec::new();
+    for _ in 0..10 {
+        let arc_clone = my_string.clone();
+        let thread_handle = thread::spawn(move || {
+            let mut guard: RwLockReadGuard<String> =
+                arc_clone.read().unwrap();
+            guard.push_str("some characters");
+        });
+        thread_handles.push(thread_handle);
+    }
+    for thread_handle in thread_handles {
+        thread_handle.join().unwrap();
+    }
+                            </script></code></pre>
+                            <pre><code data-trim><script type="text/template">
+error[E0596]: cannot borrow data in a dereference of `RwLockReadGuard<'_, String>` as mutable
+  --> src/main.rs:65:13
+   |
+65 |             guard.push_str("some characters");
+   |             ^^^^^ cannot borrow as mutable
+   |
+   = help: trait `DerefMut` is required to modify through a dereference, but it is not implemented for `RwLockReadGuard<'_, String>`
+                            </script></code></pre>
+                </section>
+
+
+
+
 
 
                 <section>--------------- IN PROGRESS -----------------</section>

@@ -52,13 +52,16 @@ fn forgot_mutex() {
     }
 }
 
+#[cfg_attr(rustfmt, rustfmt_skip)]
 fn with_shared_mutex() {
-    let my_string: Arc<RwLock<String>> = Arc::new(RwLock::new(String::new()));
+    let my_string: Arc<RwLock<String>> =
+        Arc::new(RwLock::new(String::new()));
     let mut thread_handles = Vec::new();
     for _ in 0..10 {
         let arc_clone = my_string.clone();
         let thread_handle = thread::spawn(move || {
-            let mut guard: RwLockReadGuard<String> = arc_clone.read().unwrap();
+            let mut guard: RwLockReadGuard<String> =
+                arc_clone.read().unwrap();
             guard.push_str("some characters");
         });
         thread_handles.push(thread_handle);
