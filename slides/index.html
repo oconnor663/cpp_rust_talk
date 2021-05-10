@@ -1189,6 +1189,108 @@ error[E0373]: closure may outlive the current function, but it borrows `my_strin
 
 
 
+                <section>
+                    Forgetting the Mutex
+                    <div class="container">
+                        <div class="col">
+                            C++
+                            <pre class="cpp"><code data-trim data-line-numbers="|6"><script type="text/template">
+  shared_ptr<pair<mutex, string>> my_pair =
+      make_shared<pair<mutex, string>>();
+  vector<thread> thread_handles;
+  for (int i = 0; i < 10; i++) {
+    thread thread_handle([=] {
+      my_pair->second += "some characters";
+    });
+    thread_handles.push_back(std::move(thread_handle));
+  }
+  for (auto &thread_handle : thread_handles) {
+    thread_handle.join();
+  }
+                            </script></code></pre>
+                        </div>
+                        <div class="col">
+                            Rust
+                            <pre class="rust"><code data-trim data-line-numbers="|6"><script type="text/template">
+    let my_string: Arc<String> = Arc::new(String::new());
+    let mut thread_handles = Vec::new();
+    for _ in 0..10 {
+        let mut arc_clone = my_string.clone();
+        let thread_handle = thread::spawn(move || {
+            arc_clone.push_str("some characters");
+        });
+        thread_handles.push(thread_handle);
+    }
+    for thread_handle in thread_handles {
+        thread_handle.join().unwrap();
+    }
+                            </script></code></pre>
+                        </div>
+                    </div>
+                </section>
+                <section>
+                            C++
+                            <pre class="cpp"><code data-trim data-line-numbers="6"><script type="text/template">
+  shared_ptr<pair<mutex, string>> my_pair =
+      make_shared<pair<mutex, string>>();
+  vector<thread> thread_handles;
+  for (int i = 0; i < 10; i++) {
+    thread thread_handle([=] {
+      my_pair->second += "some characters";
+    });
+    thread_handles.push_back(std::move(thread_handle));
+  }
+  for (auto &thread_handle : thread_handles) {
+    thread_handle.join();
+  }
+                            </script></code></pre>
+                            <pre><code data-trim><script type="text/template">
+WARNING: ThreadSanitizer: data race (pid=64280)
+  Read of size 8 at 0x7b0800001020 by thread T3:
+    #0 memcpy /build/gcc/src/gcc/libsanitizer/sanitizer_common/sanitizer_common_interceptors.inc:806 (libtsan.so.0+0x41fdd)
+    #1 memcpy /build/gcc/src/gcc/libsanitizer/sanitizer_common/sanitizer_common_interceptors.inc:798 (libtsan.so.0+0x41fdd)
+    #2 std::char_traits<char>::copy(char*, char const*, unsigned long) /build/gcc/src/gcc-build/x86_64-pc-linux-gnu/libstdc++-v3/include/bits/char_traits.h:395 (libstdc++.so.6+0x13e11f)
+    #3 std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::_S_copy(char*, char const*, unsigned long) /build/gcc/src/gcc-build/x86_64-pc-linux-gnu/libstdc++-v3/include/bits/basic_string.h:351 (libstdc++.so.6+0x13e11f)
+    #4 std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::_S_copy(char*, char const*, unsigned long) /build/gcc/src/gcc-build/x86_64-pc-linux-gnu/libstdc++-v3/include/bits/basic_string.h:346 (libstdc++.so.6+0x13e11f)
+    #5 std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::_M_mutate(unsigned long, unsigned long, char const*, unsigned long) /build/gcc/src/gcc-build/x86_64-pc-linux-gnu/libstdc++-v3/include/bits/basic_string.tcc:320 (libstdc++.so.6+0x13e11f)
+    #6 void std::__invoke_impl<void, forgot_mutex()::{lambda()#1}>(std::__invoke_other, forgot_mutex()::{lambda()#1}&&) <null> (mutex+0x5d42)
+    #7 std::__invoke_result<forgot_mutex()::{lambda()#1}>::type std::__invoke<forgot_mutex()::{lambda()#1}>(std::__invoke_result&&, (forgot_mutex()::{lambda()#1}&&)...) <null> (mutex+0x592d)
+    #8 void std::thread::_Invoker<std::tuple<forgot_mutex()::{lambda()#1}> >::_M_invoke<0ul>(std::_Index_tuple<0ul>) <null> (mutex+0x557a)
+    #9 std::thread::_Invoker<std::tuple<forgot_mutex()::{lambda()#1}> >::operator()() <null> (mutex+0x5340)
+    #10 std::thread::_State_impl<std::thread::_Invoker<std::tuple<forgot_mutex()::{lambda()#1}> > >::_M_run() <null> (mutex+0x514e)
+    #11 execute_native_thread_routine /build/gcc/src/gcc/libstdc++-v3/src/c++11/thread.cc:80 (libstdc++.so.6+0xcfbc3)
+                            </script></code></pre>
+                </section>
+                <section>
+                            Rust
+                            <pre class="rust"><code data-trim data-line-numbers="6"><script type="text/template">
+    let my_string: Arc<String> = Arc::new(String::new());
+    let mut thread_handles = Vec::new();
+    for _ in 0..10 {
+        let mut arc_clone = my_string.clone();
+        let thread_handle = thread::spawn(move || {
+            arc_clone.push_str("some characters");
+        });
+        thread_handles.push(thread_handle);
+    }
+    for thread_handle in thread_handles {
+        thread_handle.join().unwrap();
+    }
+                            </script></code></pre>
+                            <pre><code data-trim><script type="text/template">
+error[E0596]: cannot borrow data in an `Arc` as mutable     
+  --> src/main.rs:46:13
+   |
+46 |             arc_clone.push_str("some characters");
+   |             ^^^^^^^^^ cannot borrow as mutable 
+   |
+   = help: trait `DerefMut` is required to modify through a dereference, but it is not implemented for `Arc<String>`
+                            </script></code></pre>
+                </section>
+
+
+
+
 
 
                 <section>--------------- IN PROGRESS -----------------</section>
