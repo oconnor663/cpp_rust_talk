@@ -25,13 +25,96 @@
         <div class="reveal">
             <div class="slides">
                 <section>Slide 1</section>
-                <section>Slide 2</section>
+
+                <section>
+                    Top-bottom example slide
+                    <div>
+                    C++
+                    <pre class="cpp"><code data-trim><script type="text/template">
+                        C++ top-bottom example
+                    </script></code></pre>
+                    </div>
+                    Rust
+                    <pre class="rust"><code data-trim><script type="text/template">
+                        Rust top-bottom example
+                    </script></code></pre>
+                </section>
+
+                <section>
+                    Side-by-side example slide
+                    <div class="container">
+                        <div class="col">
+                            C++
+                            <pre class="cpp"><code data-trim><script type="text/template">
+                                C++ side-by-side example
+                            </script></code></pre>
+                        </div>
+                        <div class="col">
+                            Rust
+                            <pre class="rust"><code data-trim><script type="text/template">
+                                Rust side-by-side example
+                            </script></code></pre>
+                        </div>
+                    </div>
+                </section>
+
+                <section>
+                    A dangling pointer
+                    <div class="container">
+                        <div class="col">
+                            C++
+                            <pre class="cpp"><code data-trim><script type="text/template">
+  int *my_int_ptr;
+  {
+    int my_int = 5;
+    my_int_ptr = &my_int;
+  }
+  std::cout << *my_int_ptr;
+                            </script></code></pre>
+                        </div>
+                        <div class="col">
+                            Rust
+                            <pre class="rust"><code data-trim><script type="text/template">
+    let my_int_reference: &i32;
+    {
+        let my_int: i32 = 5;
+        my_int_reference = &my_int;
+    }
+    dbg!(my_int_reference);
+                            </script></code></pre>
+                        </div>
+                    </div>
+                </section>
+                <section>
+                            <pre><code data-trim><script type="text/template">
+==22092==ERROR: AddressSanitizer: stack-use-after-scope on address 0x7fff2648dfe0 at pc 0x557a54f3a306 bp 0x7fff2648dfa0 sp 0x7fff2648df90
+READ of size 4 at 0x7fff2648dfe0 thread T0
+    #0 0x557a54f3a305 in main (/home/jacko/cpp_rust_talk/1.a.lifetimes/simple_scope+0x1305)
+    #1 0x7f76b8ba6b24 in __libc_start_main (/usr/lib/libc.so.6+0x27b24)
+    #2 0x557a54f3a12d in _start (/home/jacko/cpp_rust_talk/1.a.lifetimes/simple_scope+0x112d)
+                            </script></code></pre>
+                </section>
+
+                <section>
+                            <pre style="width: 60%"><code data-trim><script type="text/template">
+error[E0597]: `my_int` does not live long enough
+ --> src/main.rs:5:28
+  |
+5 |         my_int_reference = &my_int;
+  |                            ^^^^^^^ borrowed value does not live long enough
+6 |     }
+  |     - `my_int` dropped here while still borrowed
+7 |     dbg!(my_int_reference);
+  |          ---------------- borrow later used here
+                            </script></code></pre>
+                </section>
+
                 <section>
                     Mutex with local variables
                     <div class="container">
                         <div class="col">
                             C++
-                            <pre class="cpp"><code data-trim data-line-numbers="|"><script type="text/template">
+                            <pre class="cpp"><code data-trim><script type="text/template">
   std::string my_string;
   std::mutex my_mutex;
   std::vector<thread> thread_handles;
@@ -49,7 +132,7 @@
                         </div>
                         <div class="col">
                             Rust
-                            <pre class="rust"><code data-trim data-line-numbers="|"><script type="text/template">
+                            <pre class="rust"><code data-trim><script type="text/template">
   let my_string: Mutex<String> = Mutex::new(String::new());
   let mut thread_handles = Vec::new();
   for _ in 0..10 {
