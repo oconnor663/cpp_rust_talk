@@ -979,6 +979,16 @@ error[E0502]: cannot borrow `g_p` as mutable because it is also borrowed as immu
     ];
     drop(my_files[1]);
                             </script></code></pre>
+                            </script></code></pre>
+                            <pre><code data-trim><script type="text/template">
+error[E0507]: cannot move out of index of `Vec<File>`
+  --> src/main.rs:38:10
+   |
+38 |     drop(my_files[1]);
+   |          ^^^^^^^^^^^ move occurs because value has type
+                          `File`, which does not implement
+                          the `Copy` trait
+                            </script></code></pre>
                         </div>
                         <div class="col">
                             works
@@ -1033,6 +1043,20 @@ error[E0502]: cannot borrow `g_p` as mutable because it is also borrowed as immu
         file: File::open("/dev/null")?,
     };
     drop(my_foo.file);
+                            </script></code></pre>
+                            </script></code></pre>
+                            <pre><code data-trim><script type="text/template">
+error[E0509]: cannot move out of type which
+              implements the `Drop` trait
+  --> src/main.rs:75:10
+   |
+75 |     drop(my_foo.file);
+   |          ^^^^^^^^^^^
+   |          |
+   |          cannot move out of here
+   |          move occurs because `my_foo.file`
+              has type `File`, which does not
+              implement the `Copy` trait
                             </script></code></pre>
                         </div>
                         <div class="col">
