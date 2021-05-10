@@ -1451,6 +1451,51 @@ error[E0505]: cannot move out of `guard` because it is borrowed
 
 
 
+                <section>
+                    Bonus: A vexing parse
+                    <div class="container">
+                        <div class="col">
+                            C++ (broken)
+                            <pre class="cpp"><code data-trim data-line-numbers="|6"><script type="text/template">
+  string my_string;
+  mutex my_mutex;
+  vector<thread> thread_handles;
+  for (int i = 0; i < 10; i++) {
+    thread thread_handle([&] {
+      unique_lock<mutex>(my_mutex);
+      my_string += "some characters";
+    });
+    thread_handles.push_back(std::move(thread_handle));
+  }
+  for (auto &thread_handle : thread_handles) {
+    thread_handle.join();
+  }
+                            </script></code></pre>
+                        </div>
+                        <div class="col">
+                            C++ (fixed)
+                            <pre class="cpp"><code data-trim data-line-numbers="|6"><script type="text/template">
+  string my_string;
+  mutex my_mutex;
+  vector<thread> thread_handles;
+  for (int i = 0; i < 10; i++) {
+    thread thread_handle([&] {
+      unique_lock<mutex> guard(my_mutex);
+      my_string += "some characters";
+    });
+    thread_handles.push_back(std::move(thread_handle));
+  }
+  for (auto &thread_handle : thread_handles) {
+    thread_handle.join();
+  }
+                            </script></code></pre>
+                        </div>
+                    </div>
+                </section>
+
+
+
+
 
 
                 <section>--------------- IN PROGRESS -----------------</section>
