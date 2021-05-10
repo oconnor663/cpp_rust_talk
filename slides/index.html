@@ -600,6 +600,96 @@ error[E0502]: cannot borrow `char_array[_]` as immutable because it is also borr
 
 
 
+                <section>
+                    Invalidating a reference by reallocating
+                    <div class="container">
+                        <div class="col">
+                            C++
+                            <pre class="cpp"><code data-trim><script type="text/template">
+void push_int_twice(std::vector<int> &v, const int &n) {
+  v.push_back(n);
+  v.push_back(n);
+}
+
+int main() {
+  std::vector<int> my_vector = {0};
+  const int &my_int_reference = my_vector[0];
+  push_int_twice(my_vector, my_int_reference);
+}
+                            </script></code></pre>
+                        </div>
+                        <div class="col">
+                            Rust
+                            <pre class="rust"><code data-trim><script type="text/template">
+fn push_int_twice(v: &mut Vec<i32>, n: &i32) {
+    v.push(*n);
+    v.push(*n);
+}
+
+fn main() {
+    let mut my_vector = vec![0];
+    let my_int_reference = &my_vector[0];
+    push_int_twice(&mut my_vector, my_int_reference);
+}
+                            </script></code></pre>
+                        </div>
+                    </div>
+                </section>
+                <section>
+                            C++
+                            <pre class="cpp"><code data-trim><script type="text/template">
+void push_int_twice(std::vector<int> &v, const int &n) {
+  v.push_back(n);
+  v.push_back(n);
+}
+
+int main() {
+  std::vector<int> my_vector = {0};
+  const int &my_int_reference = my_vector[0];
+  push_int_twice(my_vector, my_int_reference);
+}
+                            </script></code></pre>
+                            <pre><code data-trim><script type="text/template">
+==42920==ERROR: AddressSanitizer: heap-use-after-free on address 0x602000000010 at pc 0x5629133874f3 bp 0x7ffe3befabe0 sp 0x7ffe3befabd0                                                       READ of size 4 at 0x602000000010 thread T0
+    #0 0x5629133874f2 in void __gnu_cxx::new_allocator<int>::construct<int, int const&>(int*, int const&) (/home/jacko/cpp_rust_talk/1.b.mutability/vector_invalidate+0x24f2)                      #1 0x56291338697c in void std::allocator_traits<std::allocator<int> >::construct<int, int const&>(std::allocator<int>&, int*, int const&) (/home/jacko/cpp_rust_talk/1.b.mutability/vector_
+invalidate+0x197c)                                                                                                                                                                                 #2 0x562913386d9b in void std::vector<int, std::allocator<int> >::_M_realloc_insert<int const&>(__gnu_cxx::__normal_iterator<int*, std::vector<int, std::allocator<int> > >, int const&) (/
+home/jacko/cpp_rust_talk/1.b.mutability/vector_invalidate+0x1d9b)                                                                                                                                  #3 0x562913386672 in std::vector<int, std::allocator<int> >::push_back(int const&) (/home/jacko/cpp_rust_talk/1.b.mutability/vector_invalidate+0x1672)
+    #4 0x5629133862be in push_int_twice(std::vector<int, std::allocator<int> >&, int const&) (/home/jacko/cpp_rust_talk/1.b.mutability/vector_invalidate+0x12be)                                   #5 0x562913386452 in main (/home/jacko/cpp_rust_talk/1.b.mutability/vector_invalidate+0x1452)
+    #6 0x7f1db0fa8b24 in __libc_start_main (/usr/lib/libc.so.6+0x27b24)                                                                                                                            #7 0x5629133861bd in _start (/home/jacko/cpp_rust_talk/1.b.mutability/vector_invalidate+0x11bd)
+                            </script></code></pre>
+                </section>
+
+                <section>
+                            Rust
+                            <pre class="rust"><code data-trim><script type="text/template">
+fn push_int_twice(v: &mut Vec<i32>, n: &i32) {
+    v.push(*n);
+    v.push(*n);
+}
+
+fn main() {
+    let mut my_vector = vec![0];
+    let my_int_reference = &my_vector[0];
+    push_int_twice(&mut my_vector, my_int_reference);
+}
+                            </script></code></pre>
+                            <pre style="width: 90%"><code data-trim><script type="text/template">
+error[E0502]: cannot borrow `my_vector` as mutable because it is also borrowed as immutable
+  --> src/main.rs:12:20
+   |
+11 |     let my_int_reference = &my_vector[0];
+   |                             --------- immutable borrow occurs here
+12 |     push_int_twice(&mut my_vector, my_int_reference);
+   |                    ^^^^^^^^^^^^^^  ---------------- immutable borrow later used here
+   |                    |
+   |                    mutable borrow occurs here
+                            </script></code></pre>
+                </section>
+
+
+
+
+
                 <section>--------------- IN PROGRESS -----------------</section>
 
                 <section>
