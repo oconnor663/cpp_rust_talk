@@ -58,6 +58,8 @@
                     </div>
                 </section>
 
+
+
                 <section>
                     A dangling pointer
                     <div class="container">
@@ -86,6 +88,15 @@
                     </div>
                 </section>
                 <section>
+                    C++
+                            <pre class="cpp"><code data-trim><script type="text/template">
+  int *my_int_ptr;
+  {
+    int my_int = 5;
+    my_int_ptr = &my_int;
+  }
+  std::cout << *my_int_ptr;
+                            </script></code></pre>
                             <pre><code data-trim><script type="text/template">
 ==22092==ERROR: AddressSanitizer: stack-use-after-scope on address 0x7fff2648dfe0 at pc 0x557a54f3a306 bp 0x7fff2648dfa0 sp 0x7fff2648df90
 READ of size 4 at 0x7fff2648dfe0 thread T0
@@ -96,7 +107,16 @@ READ of size 4 at 0x7fff2648dfe0 thread T0
                 </section>
 
                 <section>
-                            <pre style="width: 60%"><code data-trim><script type="text/template">
+                    Rust
+                            <pre class="rust"><code data-trim><script type="text/template">
+    let my_int_reference: &i32;
+    {
+        let my_int: i32 = 5;
+        my_int_reference = &my_int;
+    }
+    dbg!(my_int_reference);
+                            </script></code></pre>
+                            <pre><code data-trim><script type="text/template">
 error[E0597]: `my_int` does not live long enough
  --> src/main.rs:5:28
   |
@@ -108,6 +128,78 @@ error[E0597]: `my_int` does not live long enough
   |          ---------------- borrow later used here
                             </script></code></pre>
                 </section>
+
+
+
+                <section>
+                    A borrowing view
+                    <div class="container">
+                        <div class="col">
+                            C++
+                            <pre class="cpp"><code data-trim><script type="text/template">
+  std::string my_string = "abcdefghijklmnopqrstuvwxy";
+  std::string_view my_string_view = my_string + "z";
+  std::cout << my_string_view << std::endl;
+                            </script></code></pre>
+                        </div>
+                        <div class="col">
+                            Rust
+                            <pre class="rust"><code data-trim><script type="text/template">
+    let my_string: String = "hello".to_string();
+    let my_string_view: &str = (my_string + " world").as_str();
+    dbg!(my_string_view);
+                            </script></code></pre>
+                        </div>
+                    </div>
+                </section>
+                <section>
+                            C++
+                            <pre class="cpp"><code data-trim><script type="text/template">
+  std::string my_string = "abcdefghijklmnopqrstuvwxy";
+  std::string_view my_string_view = my_string + "z";
+  std::cout << my_string_view << std::endl;
+                            </script></code></pre>
+                            <pre><code data-trim><script type="text/template">
+==24774==ERROR: AddressSanitizer: heap-use-after-free on address 0x6060000000e0 at pc 0x7f63fa6020b6 bp 0x7fff1828aa30 sp 0x7fff1828a1d8
+READ of size 26 at 0x6060000000e0 thread T0
+    #0 0x7f63fa6020b5 in __interceptor_fwrite /build/gcc/src/gcc/libsanitizer/sanitizer_common/sanitizer_common_interceptors.inc:1139
+    #1 0x7f63fa512d13 in std::basic_streambuf<char, std::char_traits<char> >::sputn(char const*, long) /build/gcc/src/gcc-build/x86_64-pc-linux-gnu/libstdc++-v3/include/streambuf:458
+    #2 0x7f63fa512d13 in void std::__ostream_write<char, std::char_traits<char> >(std::basic_ostream<char, std::char_traits<char> >&, char const*, long) /build/gcc/src/gcc-build/x86_64-pc-lin
+ux-gnu/libstdc++-v3/include/bits/ostream_insert.h:50
+    #3 0x7f63fa512d13 in std::basic_ostream<char, std::char_traits<char> >& std::__ostream_insert<char, std::char_traits<char> >(std::basic_ostream<char, std::char_traits<char> >&, char const
+*, long) /build/gcc/src/gcc-build/x86_64-pc-linux-gnu/libstdc++-v3/include/bits/ostream_insert.h:101
+    #4 0x55a0098b0cba in std::basic_ostream<char, std::char_traits<char> >& std::operator<< <char, std::char_traits<char> >(std::basic_ostream<char, std::char_traits<char> >&, std::basic_stri
+ng_view<char, std::char_traits<char> >) (/home/jacko/cpp_rust_talk/1.a.lifetimes/string_view+0x2cba)
+    #5 0x55a0098b0627 in main (/home/jacko/cpp_rust_talk/1.a.lifetimes/string_view+0x2627)
+    #6 0x7f63fa0e0b24 in __libc_start_main (/usr/lib/libc.so.6+0x27b24)
+    #7 0x55a0098b030d in _start (/home/jacko/cpp_rust_talk/1.a.lifetimes/string_view+0x230d)
+                            </script></code></pre>
+                </section>
+
+                <section>
+                            Rust
+                            <pre class="rust"><code data-trim><script type="text/template">
+    let my_string: String = "hello".to_string();
+    let my_string_view: &str = (my_string + " world").as_str();
+    dbg!(my_string_view);
+                            </script></code></pre>
+                            <pre style="width: 90%"><code data-trim><script type="text/template">
+ --> src/main.rs:3:32
+  |
+3 |     let my_string_view: &str = (my_string + " world").as_str();
+  |                                ^^^^^^^^^^^^^^^^^^^^^^         - temporary value is freed at the end of this statement
+  |                                |
+  |                                creates a temporary which is freed while still in use
+4 |     dbg!(my_string_view);
+  |          -------------- borrow later used here
+  |
+  = note: consider using a `let` binding to create a longer lived value
+                            </script></code></pre>
+                </section>
+
+
+
+
 
                 <section>
                     Mutex with local variables
