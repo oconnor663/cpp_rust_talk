@@ -1,0 +1,93 @@
+<!doctype html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+        <title>reveal.js</title>
+
+        <link rel="stylesheet" href="dist/reset.css">
+        <link rel="stylesheet" href="dist/reveal.css">
+        <link rel="stylesheet" href="dist/theme/solarized.css" id="theme">
+
+        <!-- Theme used for syntax highlighted code -->
+        <link rel="stylesheet" href="plugin/highlight/solarized-dark.css" id="highlight-theme">
+<style>
+.container{
+    display: flex;
+}
+.col{
+    flex: 1;
+}
+</style>
+    </head>
+    <body>
+        <div class="reveal">
+            <div class="slides">
+                <section>Slide 1</section>
+                <section>Slide 2</section>
+                <section>
+                    Mutex with local variables
+                    <div class="container">
+                        <div class="col">
+                            C++
+                            <pre class="cpp"><code data-trim data-line-numbers="|"><script type="text/template">
+  std::string my_string;
+  std::mutex my_mutex;
+  std::vector<thread> thread_handles;
+  for (int i = 0; i < 10; i++) {
+    thread thread_handle([&] {
+      lock_guard<mutex> guard(my_mutex);
+      my_string += "some characters";
+    });
+    thread_handles.push_back(std::move(thread_handle));
+  }
+  for (auto &thread_handle : thread_handles) {
+    thread_handle.join();
+  }
+                            </script></code></pre>
+                        </div>
+                        <div class="col">
+                            Rust
+                            <pre class="rust"><code data-trim data-line-numbers="|"><script type="text/template">
+  let my_string: Mutex<String> = Mutex::new(String::new());
+  let mut thread_handles = Vec::new();
+  for _ in 0..10 {
+    let thread_handle = thread::spawn(|| {
+      let mut guard: MutexGuard<String> =
+        my_string.lock().unwrap();
+      guard.push_str("some characters");
+    });
+    thread_handles.push(thread_handle);
+  }
+  for thread_handle in thread_handles {
+    thread_handle.join().unwrap();
+  }
+                            </script></code></pre>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </div>
+
+        <script src="dist/reveal.js"></script>
+        <script src="plugin/notes/notes.js"></script>
+        <script src="plugin/markdown/markdown.js"></script>
+        <script src="plugin/highlight/highlight.js"></script>
+        <script>
+            // More info about initialization & config:
+            // - https://revealjs.com/initialization/
+            // - https://revealjs.com/config/
+            Reveal.initialize({
+                hash: true,
+
+                width: "100%",
+                height: "100%",
+                margin: 0,
+
+                // Learn about plugins: https://revealjs.com/plugins/
+                plugins: [ RevealMarkdown, RevealHighlight, RevealNotes ]
+            });
+        </script>
+    </body>
+</html>
