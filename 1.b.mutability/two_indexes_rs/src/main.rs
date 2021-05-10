@@ -37,8 +37,10 @@ fn f_iterator() {
 
 fn f_refcell() {
     let char_array: [RefCell<char>; 2] = [RefCell::new('a'), RefCell::new('b')];
-    let mut first_element: RefMut<char> = char_array[0].borrow_mut();
-    let mut second_element: RefMut<char> = char_array[1].borrow_mut();
+    let mut first_guard: RefMut<char> = char_array[0].borrow_mut();
+    let mut second_guard: RefMut<char> = char_array[1].borrow_mut();
+    let first_element: &mut char = &mut *first_guard;
+    let second_element: &mut char = &mut *second_guard;
     *first_element = 'c';
     *second_element = 'd';
     drop(first_element);
