@@ -22,6 +22,13 @@ fn f_split() {
     assert_eq!(char_array, ['b', 'b']);
 }
 
+fn f_pattern() {
+    let mut char_array: [char; 2] = ['a', 'b'];
+    let [first_element, second_element] = &mut char_array;
+    *first_element = *second_element;
+    assert_eq!(char_array, ['b', 'b']);
+}
+
 fn f_iterator() {
     let mut char_array: [char; 2] = ['a', 'b'];
     let mut array_iterator = char_array.iter_mut();
@@ -61,6 +68,7 @@ fn main() {
     f_fail();
     f_indexes();
     f_split();
+    f_pattern();
     f_iterator();
     f_refcell();
     f_unsafe();

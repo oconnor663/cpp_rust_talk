@@ -553,26 +553,20 @@ error[E0502]: cannot borrow `char_array[_]` as immutable because it is also borr
     let second_element = &rest_slice[0];
     *first_element = *second_element;
                             </script></code></pre>
+                            pattern matching
+                            <pre class="rust"><code data-trim><script type="text/template">
+    let mut char_array: [char; 2] = ['a', 'b'];
+    let [first_element, second_element] = &mut char_array;
+    *first_element = *second_element;
+                            </script></code></pre>
+                        </div>
+                        <div class="col">
                             .iter_mut()
                             <pre class="rust"><code data-trim><script type="text/template">
     let mut char_array: [char; 2] = ['a', 'b'];
     let mut array_iterator = char_array.iter_mut();
     let first_element = array_iterator.next().unwrap();
     let second_element = array_iterator.next().unwrap();
-    *first_element = *second_element;
-                            </script></code></pre>
-                        </div>
-                        <div class="col">
-                            RefCell
-                            <pre class="rust"><code data-trim><script type="text/template">
-    let char_array: [RefCell<char>; 2] =
-        [RefCell::new('a'), RefCell::new('b')];
-    let mut first_guard: RefMut<char> =
-        char_array[0].borrow_mut();
-    let second_guard: Ref<char> =
-        char_array[1].borrow();
-    let first_element: &mut char = &mut *first_guard;
-    let second_element: &char = &*second_guard;
     *first_element = *second_element;
                             </script></code></pre>
                             ☠ unsafe code ☠
