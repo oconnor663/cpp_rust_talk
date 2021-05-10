@@ -1578,6 +1578,88 @@ error[E0505]: cannot move out of `guard` because it is borrowed
                         </div>
                     </div>
                 </section>
+                <section>
+                            Rust
+                            <pre class="rust"><code data-trim><script type="text/template">
+    let mut v: Vec<i32> = vector_of_random_numbers();
+    let mut sum = 0;
+    v.par_iter_mut().for_each(|x| {
+        *x += 1;
+        sum += *x;
+    });
+                            </script></code></pre>
+                            <pre><code data-trim><script type="text/template">
+error[E0594]: cannot assign to `sum`, as it is a captured variable in a `Fn` closure
+  --> src/main.rs:35:9
+   |
+35 |         sum += *x;
+   |         ^^^^^^^^^ cannot assign
+                            </script></code></pre>
+                </section>
+
+
+
+
+                <section>
+                    Mutex redux
+                    <div class="container">
+                        <div class="col">
+                            C++
+                            <pre class="cpp"><code data-trim><script type="text/template">
+  vector<int> v = vector_of_random_numbers();
+  int sum = 0;
+  mutex sum_lock;
+  for_each(execution::par, v.begin(), v.end(), [&](int &x) {
+    lock_guard<mutex> guard(sum_lock);
+    x += 1;
+    sum += x;
+  });
+                            </script></code></pre>
+                        </div>
+                        <div class="col">
+                            Rust
+                            <pre class="rust"><code data-trim><script type="text/template">
+    let mut v: Vec<i32> = vector_of_random_numbers();
+    let sum: Mutex<i32> = Mutex::new(0);
+    v.par_iter_mut().for_each(|x| {
+        *x += 1;
+        *sum.lock().unwrap() += *x;
+    });
+                            </script></code></pre>
+                        </div>
+                    </div>
+                </section>
+
+
+
+
+                <section>
+                    Atomics
+                    <div class="container">
+                        <div class="col">
+                            C++
+                            <pre class="cpp"><code data-trim><script type="text/template">
+  vector<int> v = vector_of_random_numbers();
+  atomic<int> sum = 0;
+  for_each(execution::par, v.begin(), v.end(), [&](int &x) {
+    x += 1;
+    sum.fetch_add(x, std::memory_order_relaxed);
+  });
+                            </script></code></pre>
+                        </div>
+                        <div class="col">
+                            Rust
+                            <pre class="rust"><code data-trim><script type="text/template">
+    let mut v: Vec<i32> = vector_of_random_numbers();
+    let sum: AtomicI32 = AtomicI32::new(0);
+    v.par_iter_mut().for_each(|x| {
+        *x += 1;
+        sum.fetch_add(*x, Ordering::Relaxed);
+    });
+                            </script></code></pre>
+                        </div>
+                    </div>
+                </section>
 
 
 
