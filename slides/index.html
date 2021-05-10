@@ -933,6 +933,136 @@ error[E0502]: cannot borrow `g_p` as mutable because it is also borrowed as immu
 
 
 
+                <section> File: A case study in move semantics </section>
+
+
+
+
+                <section>
+                    fstream vs File
+                    <div class="container">
+                        <div class="col">
+                            C++
+                            <pre class="cpp"><code data-trim><script type="text/template">
+  fstream my_file("/dev/null");
+                            </script></code></pre>
+                            size 528
+                            <pre class="cpp"><code data-trim><script type="text/template">
+  my_file.close();
+                            </script></code></pre>
+                        </div>
+                        <div class="col">
+                            Rust
+                            <pre class="rust"><code data-trim><script type="text/template">
+    let my_file = File::open("/dev/null")?;
+                            </script></code></pre>
+                            size 4
+                            <pre class="rust"><code data-trim><script type="text/template">
+    drop(my_file);
+                            </script></code></pre>
+                        </div>
+                    </div>
+                </section>
+
+
+
+
+                <section>
+                    closing a File in a Vec
+                    <div class="container">
+                        <div class="col">
+                            doesn't work
+                            <pre class="rust"><code data-trim><script type="text/template">
+    let my_files = vec![
+        File::open("/dev/null")?,
+        File::open("/dev/null")?,
+        File::open("/dev/null")?,
+    ];
+    drop(my_files[1]);
+                            </script></code></pre>
+                        </div>
+                        <div class="col">
+                            works
+                            <pre class="rust"><code data-trim><script type="text/template">
+    let mut my_files = vec![
+        File::open("/dev/null")?,
+        File::open("/dev/null")?,
+        File::open("/dev/null")?,
+    ];
+    my_files.remove(1);
+                            </script></code></pre>
+                        </div>
+                    </div>
+                </section>
+
+
+
+
+                <section>
+                    closing a File in a struct field
+                    <p>&nbsp</p>
+                    <div class="container">
+                        <div class="col">
+                            works (surprise!)
+                            <pre class="rust"><code data-trim><script type="text/template">
+    struct Foo {
+        file: File,
+    }
+                            </script></code></pre>
+                            <pre class="rust"><code data-trim><script type="text/template">
+    let my_foo = Foo {
+        file: File::open("/dev/null")?,
+    };
+    drop(my_foo.file);
+                            </script></code></pre>
+                        </div>
+                        <div class="col">
+                            but doesn't work because of Drop
+                            <pre class="rust"><code data-trim><script type="text/template">
+    struct Foo {
+        file: File,
+    }
+                            </script></code></pre>
+                            <pre class="rust"><code data-trim><script type="text/template">
+    impl Drop for Foo {
+        fn drop(&mut self) {
+            println!("dropping!");
+        }
+    }
+
+    let my_foo = Foo {
+        file: File::open("/dev/null")?,
+    };
+    drop(my_foo.file);
+                            </script></code></pre>
+                        </div>
+                        <div class="col">
+                            Option&lt;File&gt; works
+                            <pre class="rust"><code data-trim><script type="text/template">
+    struct Foo {
+        file: Option<File>,
+    }
+
+    impl Drop for Foo {
+        fn drop(&mut self) {
+            println!("dropping!");
+        }
+    }
+                            </script></code></pre>
+                            <pre class="rust"><code data-trim><script type="text/template">
+    let mut my_foo = Foo {
+        file: Some(File::open("/dev/null")?),
+    };
+    my_foo.file = None;
+                            </script></code></pre>
+                        </div>
+                    </div>
+                </section>
+
+
+
+
+
 
                 <section>--------------- IN PROGRESS -----------------</section>
 

@@ -7,7 +7,7 @@ use std::mem;
 
 fn file_close() -> Result<(), Box<dyn Error>> {
     let my_file = File::open("/dev/null")?;
-    dbg!(mem::size_of::<File>()); // prints 4
+    // mem::size_of::<File>() == 4
     // drop closes my_file
     Ok(())
 }

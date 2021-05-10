@@ -7,7 +7,7 @@ using namespace std;
 
 void file_close() {
   fstream my_file("/dev/null");
-  cout << sizeof(fstream); // prints: 528
+  // sizeof(fstream) == 528
   // dtor closes my_file
 }
 
