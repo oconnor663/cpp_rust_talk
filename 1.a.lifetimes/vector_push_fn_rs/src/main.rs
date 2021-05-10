@@ -1,7 +1,3 @@
-fn my_push_back_bad(v: &mut Vec<&str>, s: &str) {
-    v.push(s);
-}
-
 fn my_push_back<'a>(v: &mut Vec<&'a str>, s: &'a str) {
     v.push(s);
 }
