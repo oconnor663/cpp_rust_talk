@@ -793,6 +793,41 @@ error[E0502]: cannot borrow `g_p` as mutable because it is also borrowed as immu
 
 
 
+                <section>  MOVE SEMANTICS DESCRIPTION </section>
+
+
+
+
+
+
+                <section>
+                    Moving a vector
+                    <div class="container">
+                        <div class="col">
+                            C++
+                            <pre class="cpp"><code data-trim><script type="text/template">
+  std::vector<int> a = {1, 2, 3, 4, 5, 6};
+  std::vector<int> b = a;
+  std::vector<int> c = std::move(a);
+                            </script></code></pre>
+                            three destructors
+                        </div>
+                        <div class="col">
+                            Rust
+                            <pre class="rust"><code data-trim><script type="text/template">
+    let a = vec![1, 2, 3, 4, 5, 6];
+    let b = a.clone();
+    let c = a;
+                            </script></code></pre>
+                            two destructors
+                        </div>
+                    </div>
+                </section>
+
+
+
+
+
 
                 <section>--------------- IN PROGRESS -----------------</section>
 
