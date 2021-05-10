@@ -7,9 +7,8 @@ these familiar C++ concepts work differently in Rust. Side-by-side code samples
 will help us gloss over syntax and focus on what's happening in memory,
 particularly in cases where the Rust version refuses to compile. We'll see that
 memory safety lets Rust embrace "dangerous" features like destructive moves and
-borrowing views. We'll also see how types like File and MutexGuard use
-ownership and borrowing to express higher-level invariants and enforce them at
-compile time.
+borrowing views. We'll also see how types like File and Mutex use ownership and
+borrowing to express higher-level invariants and enforce them at compile time.
 
 - things we'll either gloss over or not get to at all
     - syntax
