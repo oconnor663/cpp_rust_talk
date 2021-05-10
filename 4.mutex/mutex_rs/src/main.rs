@@ -1,12 +1,14 @@
 use std::sync::{Arc, Mutex, MutexGuard, RwLock, RwLockReadGuard};
 use std::thread;
 
+#[cfg_attr(rustfmt, rustfmt_skip)]
 fn stack_local() {
     let my_string: Mutex<String> = Mutex::new(String::new());
     let mut thread_handles = Vec::new();
     for _ in 0..10 {
         let thread_handle = thread::spawn(|| {
-            let mut guard: MutexGuard<String> = my_string.lock().unwrap();
+            let mut guard: MutexGuard<String> =
+                my_string.lock().unwrap();
             guard.push_str("some characters");
         });
         thread_handles.push(thread_handle);
@@ -16,13 +18,16 @@ fn stack_local() {
     }
 }
 
+#[cfg_attr(rustfmt, rustfmt_skip)]
 fn with_shared_ptr() {
-    let my_string: Arc<Mutex<String>> = Arc::new(Mutex::new(String::new()));
+    let my_string: Arc<Mutex<String>> =
+        Arc::new(Mutex::new(String::new()));
     let mut thread_handles = Vec::new();
     for _ in 0..10 {
         let arc_clone = my_string.clone();
         let thread_handle = thread::spawn(move || {
-            let mut guard: MutexGuard<String> = arc_clone.lock().unwrap();
+            let mut guard: MutexGuard<String> =
+                arc_clone.lock().unwrap();
             guard.push_str("some characters");
         });
         thread_handles.push(thread_handle);

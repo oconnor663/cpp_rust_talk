@@ -1063,18 +1063,20 @@ error[E0502]: cannot borrow `g_p` as mutable because it is also borrowed as immu
 
 
 
+                <section> Mutex: Making the borrow checker work for us </section>
 
-                <section>--------------- IN PROGRESS -----------------</section>
+
+
 
                 <section>
-                    Mutex with local variables
+                    A Mutex on the stack
                     <div class="container">
                         <div class="col">
                             C++
                             <pre class="cpp"><code data-trim><script type="text/template">
-  std::string my_string;
-  std::mutex my_mutex;
-  std::vector<thread> thread_handles;
+  string my_string;
+  mutex my_mutex;
+  vector<thread> thread_handles;
   for (int i = 0; i < 10; i++) {
     thread thread_handle([&] {
       lock_guard<mutex> guard(my_mutex);
@@ -1090,23 +1092,107 @@ error[E0502]: cannot borrow `g_p` as mutable because it is also borrowed as immu
                         <div class="col">
                             Rust
                             <pre class="rust"><code data-trim><script type="text/template">
-  let my_string: Mutex<String> = Mutex::new(String::new());
-  let mut thread_handles = Vec::new();
-  for _ in 0..10 {
-    let thread_handle = thread::spawn(|| {
-      let mut guard: MutexGuard<String> =
-        my_string.lock().unwrap();
-      guard.push_str("some characters");
-    });
-    thread_handles.push(thread_handle);
-  }
-  for thread_handle in thread_handles {
-    thread_handle.join().unwrap();
-  }
+    let my_string: Mutex<String> = Mutex::new(String::new());
+    let mut thread_handles = Vec::new();
+    for _ in 0..10 {
+        let thread_handle = thread::spawn(|| {
+            let mut guard: MutexGuard<String> =
+                my_string.lock().unwrap();
+            guard.push_str("some characters");
+        });
+        thread_handles.push(thread_handle);
+    }
+    for thread_handle in thread_handles {
+        thread_handle.join().unwrap();
+    }
                             </script></code></pre>
                         </div>
                     </div>
                 </section>
+                <section>
+                    Rust
+                            <pre class="rust"><code data-trim><script type="text/template">
+    let my_string: Mutex<String> = Mutex::new(String::new());
+    let mut thread_handles = Vec::new();
+    for _ in 0..10 {
+        let thread_handle = thread::spawn(|| {
+            let mut guard: MutexGuard<String> =
+                my_string.lock().unwrap();
+            guard.push_str("some characters");
+        });
+        thread_handles.push(thread_handle);
+    }
+    for thread_handle in thread_handles {
+        thread_handle.join().unwrap();
+    }
+                            </script></code></pre>
+                            <pre><code data-trim><script type="text/template">
+error[E0373]: closure may outlive the current function, but it borrows `my_string`, which is owned by the current function
+  --> src/main.rs:9:43
+   |
+9  |         let thread_handle = thread::spawn(|| {
+   |                                           ^^ may outlive borrowed value `my_string`
+10 |             let mut guard: MutexGuard<String> =
+11 |                 my_string.lock().unwrap();
+   |                 --------- `my_string` is borrowed here
+   |
+                            </script></code></pre>
+                </section>
+
+
+
+
+                <section>
+                    A Mutex on the heap
+                    <div class="container">
+                        <div class="col">
+                            C++
+                            <pre class="cpp"><code data-trim><script type="text/template">
+  shared_ptr<pair<mutex, string>> my_pair =
+      make_shared<pair<mutex, string>>();
+  vector<thread> thread_handles;
+  for (int i = 0; i < 10; i++) {
+    thread thread_handle([=] {
+      lock_guard<mutex> guard(my_pair->first);
+      my_pair->second += "some characters";
+    });
+    thread_handles.push_back(std::move(thread_handle));
+  }
+  for (auto &thread_handle : thread_handles) {
+    thread_handle.join();
+  }
+                            </script></code></pre>
+                        </div>
+                        <div class="col">
+                            Rust
+                            <pre class="rust"><code data-trim><script type="text/template">
+    let my_string: Arc<Mutex<String>> =
+        Arc::new(Mutex::new(String::new()));
+    let mut thread_handles = Vec::new();
+    for _ in 0..10 {
+        let arc_clone = my_string.clone();
+        let thread_handle = thread::spawn(move || {
+            let mut guard: MutexGuard<String> =
+                arc_clone.lock().unwrap();
+            guard.push_str("some characters");
+        });
+        thread_handles.push(thread_handle);
+    }
+    for thread_handle in thread_handles {
+        thread_handle.join().unwrap();
+    }
+                            </script></code></pre>
+                        </div>
+                    </div>
+                </section>
+
+
+
+
+
+
+                <section>--------------- IN PROGRESS -----------------</section>
+
             </div>
         </div>
 
