@@ -452,6 +452,106 @@ error[E0597]: `my_string` does not live long enough
 
 
 
+                <section>
+                    Mutable aliasing
+                    <div class="container">
+                        <div class="col">
+                            C++
+                            <pre class="cpp"><code data-trim><script type="text/template">
+  int my_int = 5;
+  int &reference1 = my_int;
+  int &reference2 = my_int;
+  reference1++;
+  reference2++;
+                            </script></code></pre>
+                        </div>
+                        <div class="col">
+                            Rust
+                            <pre class="rust"><code data-trim><script type="text/template">
+    let mut my_int = 5;
+    let reference1 = &mut my_int;
+    let reference2 = &mut my_int;
+    *reference1 += 1;
+    *reference2 += 1;
+                            </script></code></pre>
+                        </div>
+                    </div>
+                </section>
+                <section>
+                    Rust
+                            <pre class="rust"><code data-trim><script type="text/template">
+    let mut my_int = 5;
+    let reference1 = &mut my_int;
+    let reference2 = &mut my_int;
+    *reference1 += 1;
+    *reference2 += 1;
+                            </script></code></pre>
+                            <pre><code data-trim><script type="text/template">
+error[E0499]: cannot borrow `my_int` as mutable more than once at a time
+ --> src/main.rs:4:22
+  |
+3 |     let reference1 = &mut my_int;
+  |                      ----------- first mutable borrow occurs here
+4 |     let reference2 = &mut my_int;
+  |                      ^^^^^^^^^^^ second mutable borrow occurs here
+5 |     *reference1 += 1;
+  |     ---------------- first borrow later used here
+                            </script></code></pre>
+                </section>
+
+
+
+                <section>
+                    Mutable aliasing in an array
+                    <div class="container">
+                        <div class="col">
+                            C++
+                            <pre class="cpp"><code data-trim><script type="text/template">
+  std::array<char, 2> char_array = {'a', 'b'};
+  char &first_element = char_array[0];
+  char &second_element = char_array[1];
+  first_element = 'c';
+  second_element = 'd';
+                            </script></code></pre>
+                        </div>
+                        <div class="col">
+                            Rust
+                            <pre class="rust"><code data-trim><script type="text/template">
+    let mut char_array: [char; 2] = ['a', 'b'];
+    let first_element = &mut char_array[0];
+    let second_element = &mut char_array[1];
+    *first_element = 'c';
+    *second_element = 'd';
+                            </script></code></pre>
+                        </div>
+                    </div>
+                </section>
+                <section>
+                    Rust
+                            <pre class="rust"><code data-trim><script type="text/template">
+    let mut char_array: [char; 2] = ['a', 'b'];
+    let first_element = &mut char_array[0];
+    let second_element = &mut char_array[1];
+    *first_element = 'c';
+    *second_element = 'd';
+                            </script></code></pre>
+                            <pre><code data-trim><script type="text/template">
+error[E0499]: cannot borrow `char_array[_]` as mutable more than once at a time
+ --> src/main.rs:6:26
+  |
+5 |     let first_element = &mut char_array[0];
+  |                         ------------------ first mutable borrow occurs here
+6 |     let second_element = &mut char_array[1];
+  |                          ^^^^^^^^^^^^^^^^^^ second mutable borrow occurs here
+7 |     *first_element = 'c';
+  |     -------------------- first borrow later used here
+  |
+  = help: consider using `.split_at_mut(position)` or similar method to obtain two mutable non-overlapping sub-slices
+                            </script></code></pre>
+                </section>
+
+
+
 
 
                 <section>--------------- IN PROGRESS -----------------</section>
