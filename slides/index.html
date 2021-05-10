@@ -1031,14 +1031,14 @@ error[E0507]: cannot move out of index of `Vec<File>`
     struct Foo {
         file: File,
     }
-                            </script></code></pre>
-                            <pre class="rust"><code data-trim><script type="text/template">
+
     impl Drop for Foo {
         fn drop(&mut self) {
             println!("dropping!");
         }
     }
-
+                            </script></code></pre>
+                            <pre class="rust"><code data-trim><script type="text/template">
     let my_foo = Foo {
         file: File::open("/dev/null")?,
     };
