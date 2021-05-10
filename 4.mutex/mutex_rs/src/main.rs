@@ -71,16 +71,18 @@ fn with_shared_mutex() {
     }
 }
 
+#[cfg_attr(rustfmt, rustfmt_skip)]
 fn smuggle() {
-    let my_string: Arc<Mutex<String>> = Arc::new(Mutex::new(String::new()));
+    let my_string: Arc<Mutex<String>> =
+        Arc::new(Mutex::new(String::new()));
     let mut thread_handles = Vec::new();
     for _ in 0..10 {
         let arc_clone = my_string.clone();
         let thread_handle = thread::spawn(move || {
             let mut guard = arc_clone.lock().unwrap();
-            let my_string_reference: &mut String = &mut *guard;
+            let smuggled_ptr: &mut String = &mut *guard;
             drop(guard);
-            my_string_reference.push_str("some characters");
+            smuggled_ptr.push_str("some characters");
         });
         thread_handles.push(thread_handle);
     }
