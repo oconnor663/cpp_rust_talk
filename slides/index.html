@@ -199,6 +199,85 @@ ng_view<char, std::char_traits<char> >) (/home/jacko/cpp_rust_talk/1.a.lifetimes
 
 
 
+                <section>
+                    A vector of views
+                    <div class="container">
+                        <div class="col">
+                            C++
+                            <pre class="cpp"><code data-trim><script type="text/template">
+  std::vector<std::string_view> my_vector;
+  {
+    std::string my_string = "hello world";
+    my_vector.push_back(my_string);
+  }
+  std::cout << my_vector[0] << std::endl;
+                            </script></code></pre>
+                        </div>
+                        <div class="col">
+                            Rust
+                            <pre class="rust"><code data-trim><script type="text/template">
+    let mut my_vector: Vec<&str> = Vec::new();
+    {
+        let my_string = "hello world".to_string();
+        my_vector.push(&my_string);
+    }
+    dbg!(my_vector);
+                            </script></code></pre>
+                        </div>
+                    </div>
+                </section>
+                <section>
+                            C++
+                            <pre class="cpp"><code data-trim><script type="text/template">
+  std::vector<std::string_view> my_vector;
+  {
+    std::string my_string = "hello world";
+    my_vector.push_back(my_string);
+  }
+  std::cout << my_vector[0] << std::endl;
+                            </script></code></pre>
+                            <pre><code data-trim><script type="text/template">
+==27916==ERROR: AddressSanitizer: stack-use-after-scope on address 0x7ffeabade130 at pc 0x7f260741b0b6 bp 0x7ffeabaddf30 sp 0x7ffeabadd6d8
+READ of size 11 at 0x7ffeabade130 thread T0
+    #0 0x7f260741b0b5 in __interceptor_fwrite /build/gcc/src/gcc/libsanitizer/sanitizer_common/sanitizer_common_interceptors.inc:1139
+    #1 0x7f260732bd13 in std::basic_streambuf<char, std::char_traits<char> >::sputn(char const*, long) /build/gcc/src/gcc-build/x86_64-pc-linux-gnu/libstdc++-v3/include/streambuf:458
+    #2 0x7f260732bd13 in void std::__ostream_write<char, std::char_traits<char> >(std::basic_ostream<char, std::char_traits<char> >&, char const*, long) /build/gcc/src/gcc-build/x86_64-pc-lin
+ux-gnu/libstdc++-v3/include/bits/ostream_insert.h:50
+    #3 0x7f260732bd13 in std::basic_ostream<char, std::char_traits<char> >& std::__ostream_insert<char, std::char_traits<char> >(std::basic_ostream<char, std::char_traits<char> >&, char const
+*, long) /build/gcc/src/gcc-build/x86_64-pc-linux-gnu/libstdc++-v3/include/bits/ostream_insert.h:101
+    #4 0x55b1c18ddec4 in std::basic_ostream<char, std::char_traits<char> >& std::operator<< <char, std::char_traits<char> >(std::basic_ostream<char, std::char_traits<char> >&, std::basic_stri
+ng_view<char, std::char_traits<char> >) (/home/jacko/cpp_rust_talk/1.a.lifetimes/vector_push+0x2ec4)
+    #5 0x55b1c18dd602 in main (/home/jacko/cpp_rust_talk/1.a.lifetimes/vector_push+0x2602)
+    #6 0x7f2606ef9b24 in __libc_start_main (/usr/lib/libc.so.6+0x27b24)
+    #7 0x55b1c18dd32d in _start (/home/jacko/cpp_rust_talk/1.a.lifetimes/vector_push+0x232d)
+                            </script></code></pre>
+                </section>
+
+                <section>
+                            Rust
+                            <pre class="rust"><code data-trim><script type="text/template">
+    let mut my_vector: Vec<&str> = Vec::new();
+    {
+        let my_string = "hello world".to_string();
+        my_vector.push(&my_string);
+    }
+    dbg!(my_vector);
+                            </script></code></pre>
+                            <pre style="width: 90%"><code data-trim><script type="text/template">
+error[E0597]: `my_string` does not live long enough
+ --> src/main.rs:5:24
+  |
+5 |         my_vector.push(&my_string);
+  |                        ^^^^^^^^^^ borrowed value does not live long enough
+6 |     }
+  |     - `my_string` dropped here while still borrowed
+7 |     dbg!(my_vector);
+  |          --------- borrow later used here
+                            </script></code></pre>
+                </section>
+
+
+
 
 
                 <section>
