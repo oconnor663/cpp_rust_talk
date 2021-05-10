@@ -77,12 +77,12 @@
                         <div class="col">
                             Rust
                             <pre class="rust"><code data-trim><script type="text/template">
-    let my_int_reference: &i32;
+    let my_int_ptr: &i32;
     {
         let my_int: i32 = 5;
-        my_int_reference = &my_int;
+        my_int_ptr = &my_int;
     }
-    dbg!(*my_int_reference);
+    dbg!(*my_int_ptr);
                             </script></code></pre>
                         </div>
                     </div>
@@ -109,23 +109,23 @@ READ of size 4 at 0x7fff2648dfe0 thread T0
                 <section>
                     Rust
                             <pre class="rust"><code data-trim><script type="text/template">
-    let my_int_reference: &i32;
+    let my_int_ptr: &i32;
     {
         let my_int: i32 = 5;
-        my_int_reference = &my_int;
+        my_int_ptr = &my_int;
     }
-    dbg!(*my_int_reference);
+    dbg!(*my_int_ptr);
                             </script></code></pre>
                             <pre><code data-trim><script type="text/template">
 error[E0597]: `my_int` does not live long enough
- --> src/main.rs:5:28
+ --> src/main.rs:5:22
   |
-5 |         my_int_reference = &my_int;
-  |                            ^^^^^^^ borrowed value does not live long enough
+5 |         my_int_ptr = &my_int;
+  |                      ^^^^^^^ borrowed value does not live long enough
 6 |     }
   |     - `my_int` dropped here while still borrowed
-7 |     dbg!(*my_int_reference);
-  |          ---------------- borrow later used here
+7 |     dbg!(*my_int_ptr);
+  |          ----------- borrow later used here
                             </script></code></pre>
                 </section>
 
