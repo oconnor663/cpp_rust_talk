@@ -1666,7 +1666,7 @@ error[E0594]: cannot assign to `sum`, as it is a captured variable in a `Fn` clo
   atomic<int> sum = 0;
   for_each(execution::par, v.begin(), v.end(), [&](int &x) {
     x += 1;
-    sum.fetch_add(x, std::memory_order_relaxed);
+    sum.fetch_add(x, memory_order_relaxed);
   });
                             </script></code></pre>
                         </div>

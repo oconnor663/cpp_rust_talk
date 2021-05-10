@@ -65,7 +65,7 @@ void with_atomic() {
   atomic<int> sum = 0;
   for_each(execution::par, v.begin(), v.end(), [&](int &x) {
     x += 1;
-    sum.fetch_add(x, std::memory_order_relaxed);
+    sum.fetch_add(x, memory_order_relaxed);
   });
   assert_sum("atomic", v, sum);
 }
