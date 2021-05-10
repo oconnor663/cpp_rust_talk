@@ -509,9 +509,8 @@ error[E0499]: cannot borrow `my_int` as mutable more than once at a time
                             <pre class="cpp"><code data-trim><script type="text/template">
   std::array<char, 2> char_array = {'a', 'b'};
   char &first_element = char_array[0];
-  char &second_element = char_array[1];
-  first_element = 'c';
-  second_element = 'd';
+  const char &second_element = char_array[1];
+  first_element = second_element;
                             </script></code></pre>
                         </div>
                         <div class="col">
@@ -519,9 +518,8 @@ error[E0499]: cannot borrow `my_int` as mutable more than once at a time
                             <pre class="rust"><code data-trim><script type="text/template">
     let mut char_array: [char; 2] = ['a', 'b'];
     let first_element = &mut char_array[0];
-    let second_element = &mut char_array[1];
-    *first_element = 'c';
-    *second_element = 'd';
+    let second_element = &char_array[1];
+    *first_element = *second_element;
                             </script></code></pre>
                         </div>
                     </div>
@@ -531,42 +529,37 @@ error[E0499]: cannot borrow `my_int` as mutable more than once at a time
                             <pre class="rust"><code data-trim><script type="text/template">
     let mut char_array: [char; 2] = ['a', 'b'];
     let first_element = &mut char_array[0];
-    let second_element = &mut char_array[1];
-    *first_element = 'c';
-    *second_element = 'd';
+    let second_element = &char_array[1];
+    *first_element = *second_element;
                             </script></code></pre>
                             <pre><code data-trim><script type="text/template">
-error[E0499]: cannot borrow `char_array[_]` as mutable more than once at a time
+error[E0502]: cannot borrow `char_array[_]` as immutable because it is also borrowed as mutable
  --> src/main.rs:6:26
   |
 5 |     let first_element = &mut char_array[0];
-  |                         ------------------ first mutable borrow occurs here
-6 |     let second_element = &mut char_array[1];
-  |                          ^^^^^^^^^^^^^^^^^^ second mutable borrow occurs here
-7 |     *first_element = 'c';
-  |     -------------------- first borrow later used here
-  |
-  = help: consider using `.split_at_mut(position)` or similar method to obtain two mutable non-overlapping sub-slices
+  |                         ------------------ mutable borrow occurs here
+6 |     let second_element = &char_array[1];
+  |                          ^^^^^^^^^^^^^^ immutable borrow occurs here
+7 |     *first_element = *second_element;
+  |     -------------------------------- mutable borrow later used here
                             </script></code></pre>
                 </section>
                 <section>
-                    "Similar methods"
+                    There's more than one way to do it
                     <div class="container">
                         <div class="col">
-                            just indexes
+                            indexes
                             <pre class="rust"><code data-trim><script type="text/template">
     let mut char_array: [char; 2] = ['a', 'b'];
-    char_array[0] = 'c';
-    char_array[1] = 'd';
+    char_array[0] = char_array[1];
                             </script></code></pre>
                             .split_at_mut()
                             <pre class="rust"><code data-trim><script type="text/template">
     let mut char_array: [char; 2] = ['a', 'b'];
     let (first_slice, rest_slice) = char_array.split_at_mut(1);
     let first_element = &mut first_slice[0];
-    let second_element = &mut rest_slice[0];
-    *first_element = 'c';
-    *second_element = 'd';
+    let second_element = &rest_slice[0];
+    *first_element = *second_element;
                             </script></code></pre>
                             .iter_mut()
                             <pre class="rust"><code data-trim><script type="text/template">
@@ -574,8 +567,7 @@ error[E0499]: cannot borrow `char_array[_]` as mutable more than once at a time
     let mut array_iterator = char_array.iter_mut();
     let first_element = array_iterator.next().unwrap();
     let second_element = array_iterator.next().unwrap();
-    *first_element = 'c';
-    *second_element = 'd';
+    *first_element = *second_element;
                             </script></code></pre>
                         </div>
                         <div class="col">
@@ -585,23 +577,19 @@ error[E0499]: cannot borrow `char_array[_]` as mutable more than once at a time
         [RefCell::new('a'), RefCell::new('b')];
     let mut first_guard: RefMut<char> =
         char_array[0].borrow_mut();
-    let mut second_guard: RefMut<char> =
-        char_array[1].borrow_mut();
+    let second_guard: Ref<char> =
+        char_array[1].borrow();
     let first_element: &mut char = &mut *first_guard;
-    let second_element: &mut char = &mut *second_guard;
-    *first_element = 'c';
-    *second_element = 'd';
-    drop(first_element);
-    drop(second_element);
+    let second_element: &char = &*second_guard;
+    *first_element = *second_element;
                             </script></code></pre>
                             ☠ unsafe code ☠
                             <pre class="rust"><code data-trim><script type="text/template">
     let mut char_array: [char; 2] = ['a', 'b'];
     let first_element: *mut char = &mut char_array[0];
-    let second_element: *mut char = &mut char_array[1];
+    let second_element: *const char = &char_array[1];
     unsafe {
-        *first_element = 'c';
-        *second_element = 'd';
+        *first_element = *second_element;
     }
                             </script></code></pre>
                         </div>
