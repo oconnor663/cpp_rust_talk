@@ -82,7 +82,7 @@
         let my_int: i32 = 5;
         my_int_reference = &my_int;
     }
-    dbg!(my_int_reference);
+    dbg!(*my_int_reference);
                             </script></code></pre>
                         </div>
                     </div>
@@ -114,7 +114,7 @@ READ of size 4 at 0x7fff2648dfe0 thread T0
         let my_int: i32 = 5;
         my_int_reference = &my_int;
     }
-    dbg!(my_int_reference);
+    dbg!(*my_int_reference);
                             </script></code></pre>
                             <pre><code data-trim><script type="text/template">
 error[E0597]: `my_int` does not live long enough
@@ -124,7 +124,7 @@ error[E0597]: `my_int` does not live long enough
   |                            ^^^^^^^ borrowed value does not live long enough
 6 |     }
   |     - `my_int` dropped here while still borrowed
-7 |     dbg!(my_int_reference);
+7 |     dbg!(*my_int_reference);
   |          ---------------- borrow later used here
                             </script></code></pre>
                 </section>
