@@ -810,7 +810,7 @@ error[E0502]: cannot borrow `g_p` as mutable because it is also borrowed as immu
   std::vector<int> b = a;
   std::vector<int> c = std::move(a);
                             </script></code></pre>
-                            three destructors
+                            <u>three</u> std::vector destructors fire
                         </div>
                         <div class="col">
                             Rust
@@ -819,7 +819,112 @@ error[E0502]: cannot borrow `g_p` as mutable because it is also borrowed as immu
     let b = a.clone();
     let c = a;
                             </script></code></pre>
-                            two destructors
+                            <u>two</u> Vec destructors fire
+                        </div>
+                    </div>
+                </section>
+
+
+
+
+
+
+                <section>
+                    Moving a string into a vector
+                    <div class="container">
+                        <div class="col">
+                            C++
+                            <pre class="cpp"><code data-trim><script type="text/template">
+  std::string my_string = "hello world";
+  std::vector<std::string> my_vector;
+  my_vector.push_back(my_string);
+  my_vector.push_back(std::move(my_string));
+                            </script></code></pre>
+                            <u>three</u> std::string destructors fire
+                        </div>
+                        <div class="col">
+                            Rust
+                            <pre class="rust"><code data-trim><script type="text/template">
+    let my_string = "hello world".to_string();
+    let mut my_vector = Vec::new();
+    my_vector.push(my_string.clone());
+    my_vector.push(my_string);
+                            </script></code></pre>
+                            <u>two</u> String destructors fire
+                        </div>
+                    </div>
+                </section>
+
+
+
+
+
+
+                <section>
+                    Error: illegal moves
+                    <div class="container">
+                        <div class="col">
+                            Read after move
+                            <pre class="rust"><code data-trim><script type="text/template">
+    let a = vec![1, 2, 3];
+    let b = a;
+    dbg!(a);
+                            </script></code></pre>
+                            Move twice
+                            <pre class="rust"><code data-trim><script type="text/template">
+    let a = vec![1, 2, 3];
+    let b = a;
+    let c = a;
+                            </script></code></pre>
+                        </div>
+                        <div class="col">
+                            Move while borrowed
+                            <pre class="rust"><code data-trim><script type="text/template">
+    let a = vec![1, 2, 3];
+    let b = &a;
+    let c = a;
+    dbg!(b);
+                            </script></code></pre>
+                            Move through reference
+                            <pre class="rust"><code data-trim><script type="text/template">
+    let mut a = vec![1, 2, 3];
+    let b = &mut a;
+    let c = *b;
+                            </script></code></pre>
+                        </div>
+                    </div>
+                </section>
+                <section>
+                    Legal for Copy types
+                    <div class="container">
+                        <div class="col">
+                            Read after move
+                            <pre class="rust"><code data-trim><script type="text/template">
+    let a = 1;
+    let b = a;
+    dbg!(a);
+                            </script></code></pre>
+                            Move twice
+                            <pre class="rust"><code data-trim><script type="text/template">
+    let a = 1;
+    let b = a;
+    let c = a;
+                            </script></code></pre>
+                        </div>
+                        <div class="col">
+                            Move while borrowed
+                            <pre class="rust"><code data-trim><script type="text/template">
+    let a = 1;
+    let b = &a;
+    let c = a;
+    dbg!(b);
+                            </script></code></pre>
+                            Move through reference
+                            <pre class="rust"><code data-trim><script type="text/template">
+    let a = 1;
+    let b = &a;
+    let c = *b;
+                            </script></code></pre>
                         </div>
                     </div>
                 </section>

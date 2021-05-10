@@ -1,5 +1,11 @@
 #![allow(unused_variables)]
 
+fn read_int_afer_move() {
+    let a = 1;
+    let b = a;
+    dbg!(a);
+}
+
 fn move_int_twice() {
     let a = 1;
     let b = a;
@@ -17,6 +23,12 @@ fn move_int_through_reference() {
     let a = 1;
     let b = &a;
     let c = *b;
+}
+
+fn read_vec_afer_move() {
+    let a = vec![1, 2, 3];
+    let b = a;
+    dbg!(a);
 }
 
 fn move_vec_twice() {
