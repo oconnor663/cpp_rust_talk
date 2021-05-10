@@ -24,40 +24,32 @@
     <body>
         <div class="reveal">
             <div class="slides">
-                <section>Slide 1</section>
-
                 <section>
-                    Top-bottom example slide
-                    <div>
-                    C++
-                    <pre class="cpp"><code data-trim><script type="text/template">
-                        C++ top-bottom example
-                    </script></code></pre>
-                    </div>
-                    Rust
-                    <pre class="rust"><code data-trim><script type="text/template">
-                        Rust top-bottom example
-                    </script></code></pre>
+                    <h1>A <span style="color: red">Firehose</span> of Rust<br/>for C++ Programmers</h1>
                 </section>
 
-                <section>
-                    Side-by-side example slide
-                    <div class="container">
-                        <div class="col">
-                            C++
-                            <pre class="cpp"><code data-trim><script type="text/template">
-                                C++ side-by-side example
-                            </script></code></pre>
-                        </div>
-                        <div class="col">
-                            Rust
-                            <pre class="rust"><code data-trim><script type="text/template">
-                                Rust side-by-side example
-                            </script></code></pre>
-                        </div>
-                    </div>
-                </section>
+                <section data-markdown><textarea data-template>
+Rust is a big language. We won't have time to talk about:
 
+- syntax
+- slices (i.e. borrowing views)
+- iterators
+- enums (i.e. tagged unions)
+- error handling with ? and panics
+- traits, polymorphism, static and dynamic dispatch
+- managing dependencies with Cargo
+- unsafe code
+- futures (i.e. coroutines) and async IO
+                 </textarea></section>
+
+                <section data-markdown><textarea data-template>
+# References
+
+- <tt style="background-color: lightgray">&T</tt> in Rust is like <tt style="background-color: lightgray">const T*</tt> and <tt style="background-color: lightgray">const T&</tt> in C++.
+- <tt style="background-color: lightgray">&mut T</tt> in Rust is like <tt style="background-color: lightgray">T*</tt> and <tt style="background-color: lightgray">T&</tt> in C++.
+- References <em>never</em> dangle.
+- <tt style="background-color: lightgray">&mut T</tt> is <em>never</em> aliased.
+                 </textarea></section>
 
 
                 <section>
@@ -793,8 +785,15 @@ error[E0502]: cannot borrow `g_p` as mutable because it is also borrowed as immu
 
 
 
-                <section>  MOVE SEMANTICS DESCRIPTION </section>
 
+                <section data-markdown><textarea data-template>
+# Move Semantics
+
+- Assignment and parameter passing are moves.
+- Moves are bitwise shallow copies.
+- Moves are destructive.
+- (Except for <tt style="background-color: lightgray">Copy</tt> types like integers.)
+                 </textarea></section>
 
 
 
@@ -1497,7 +1496,7 @@ error[E0505]: cannot move out of `guard` because it is borrowed
 
 
 
-                <section> Fearless concurrency </section>
+                <section> Automatic multithreading, using the stack </section>
 
 
 
@@ -1663,6 +1662,13 @@ error[E0594]: cannot assign to `sum`, as it is a captured variable in a `Fn` clo
 
 
 
+                <section>
+                    <p>Fearless concurrency</p>
+                    <p class="fragment">Fearless move semantics</p>
+                    <p class="fragment">Fearless borrowing views</p>
+                    <p class="fragment">Fearless destructors</p>
+                    <p class="fragment">Fearless systems programming</p>
+                </section>
 
 
 
