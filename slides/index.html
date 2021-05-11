@@ -783,7 +783,7 @@ error[E0502]: cannot borrow `g_p` as mutable because it is also borrowed as immu
                 <section data-markdown><textarea data-template>
 # Move Semantics
 
-- Assignment and parameter passing are moves.
+- Assignment, parameter passing, and return are all moves.
 - Moves are bitwise shallow copies.
 - Moves are destructive.
 - (Except for <tt style="background-color: lightgray">Copy</tt> types like integers.)
