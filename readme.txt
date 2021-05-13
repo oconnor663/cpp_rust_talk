@@ -81,6 +81,7 @@ borrowing to express higher-level invariants and enforce them at compile time.
               T's move constructor is not noexcept and T is not CopyInsertable
               into *this"
     - Copy and Clone
+    - https://stackoverflow.com/questions/22502606/why-is-stdlock-guard-not-movable
 
 3. case study: File
     - no such thing as a closed file
