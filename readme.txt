@@ -14,8 +14,8 @@ borrowing to express higher-level invariants and enforce them at compile time.
     - syntax
     - slices (i.e. borrowing views)
     - iterators
-    - enums (i.e. tagged unions)
-    - error handling with ? and panics
+    - enums (i.e. tagged unions) and Option
+    - error handling with Result, ?, and panics
     - traits, polymorphism, static and dynamic dispatch
     - managing dependencies with Cargo
     - unsafe code
