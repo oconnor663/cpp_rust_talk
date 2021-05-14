@@ -49,7 +49,7 @@ borrowing to express higher-level invariants and enforce them at compile time.
             - note that Rust doesn't care at all about the *body* of the
               function. we can make the whole thing a no-op, and it doesn't
               change the compiler error.
-        - Herb Sutter shared_ptr bug
+        - Herb Sutter shared_ptr bug https://youtu.be/xnqTKD8uD64?t=1380
     - remember that there are basically just big ideas, and the rest follows
 
 2. move semantics
@@ -102,7 +102,7 @@ borrowing to express higher-level invariants and enforce them at compile time.
     - borrowing rules enforce locking
     - Arc<Mutex<T>> is surprisingly convenient
     - RwLock and taking the wrong kind
-    - Curiously Recurring C++ Bugs at Facebook https://youtu.be/lkgszkPnV8g
+    - Curiously Recurring C++ Bugs at Facebook, unique_lock bug https://youtu.be/lkgszkPnV8g?t=1750
 
 5. multithreading and closures
     - BIG IDEA: THE TYPE SYSTEM TRACKS THREAD SAFETY
