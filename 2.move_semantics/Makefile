@@ -1,4 +1,4 @@
-all: simple_vector push_string
+all: simple_vector push_string move_examples
 
 simple_vector: simple_vector.cpp
 	g++ $^ -o $@ -fsanitize=address
@@ -6,5 +6,8 @@ simple_vector: simple_vector.cpp
 push_string: push_string.cpp
 	g++ $^ -o $@ -fsanitize=address
 
+move_examples: move_examples.cpp
+	g++ $^ -o $@ -O3
+
 clean:
-	rm -f simple_vector push_string
+	rm -f simple_vector push_string move_examples
