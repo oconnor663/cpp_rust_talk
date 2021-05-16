@@ -1,0 +1,1715 @@
+<!doctype html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+        <title>Firehose of Rust</title>
+
+        <link rel="stylesheet" href="dist/reset.css">
+        <link rel="stylesheet" href="dist/reveal.css">
+        <link rel="stylesheet" href="dist/theme/solarized.css" id="theme">
+
+        <!-- Theme used for syntax highlighted code -->
+        <link rel="stylesheet" href="plugin/highlight/solarized-dark.css" id="highlight-theme">
+<style>
+.container{
+    display: flex;
+}
+.col{
+    flex: 1;
+}
+</style>
+    </head>
+    <body>
+        <div class="reveal">
+            <div class="slides">
+                <section>
+                    <h1>A <span style="color: red">Firehose</span> of Rust<br/>for C++ Programmers</h1>
+                </section>
+
+                <section data-markdown><textarea data-template>
+Rust is a big language. We won't have time to talk about:
+
+- syntax
+- slices (i.e. borrowing views)
+- iterators
+- enums (i.e. tagged unions)
+- error handling with ? and panics
+- traits, polymorphism, static and dynamic dispatch
+- managing dependencies with Cargo
+- unsafe code
+- futures (i.e. coroutines) and async IO
+                 </textarea></section>
+
+                <section data-markdown><textarea data-template>
+# References
+
+- <tt style="background-color: lightgray">&T</tt> in Rust is like <tt style="background-color: lightgray">const T*</tt> and <tt style="background-color: lightgray">const T&</tt> in C++.
+- <tt style="background-color: lightgray">&mut T</tt> in Rust is like <tt style="background-color: lightgray">T*</tt> and <tt style="background-color: lightgray">T&</tt> in C++.
+- References <em>never</em> dangle.
+- <tt style="background-color: lightgray">&mut T</tt> is <em>never</em> aliased.
+                 </textarea></section>
+
+
+                <section>
+                    A dangling pointer
+                    <div class="container">
+                        <div class="col">
+                            C++
+                            <pre class="cpp"><code data-trim><script type="text/template">
+  int *my_int_ptr;
+  {
+    int my_int = 5;
+    my_int_ptr = &my_int;
+  }
+  std::cout << *my_int_ptr;
+                            </script></code></pre>
+                        </div>
+                        <div class="col">
+                            Rust
+                            <pre class="rust"><code data-trim><script type="text/template">
+    let my_int_ptr: &i32;
+    {
+        let my_int: i32 = 5;
+        my_int_ptr = &my_int;
+    }
+    dbg!(*my_int_ptr);
+                            </script></code></pre>
+                        </div>
+                    </div>
+                </section>
+                <section>
+                    C++
+                            <pre class="cpp"><code data-trim><script type="text/template">
+  int *my_int_ptr;
+  {
+    int my_int = 5;
+    my_int_ptr = &my_int;
+  }
+  std::cout << *my_int_ptr;
+                            </script></code></pre>
+                            <pre><code data-trim><script type="text/template">
+==22092==ERROR: AddressSanitizer: stack-use-after-scope on address 0x7fff2648dfe0 at pc 0x557a54f3a306 bp 0x7fff2648dfa0 sp 0x7fff2648df90
+READ of size 4 at 0x7fff2648dfe0 thread T0
+    #0 0x557a54f3a305 in main (/home/jacko/cpp_rust_talk/1.a.lifetimes/simple_scope+0x1305)
+    #1 0x7f76b8ba6b24 in __libc_start_main (/usr/lib/libc.so.6+0x27b24)
+    #2 0x557a54f3a12d in _start (/home/jacko/cpp_rust_talk/1.a.lifetimes/simple_scope+0x112d)
+                            </script></code></pre>
+                </section>
+
+                <section>
+                    Rust
+                            <pre class="rust"><code data-trim><script type="text/template">
+    let my_int_ptr: &i32;
+    {
+        let my_int: i32 = 5;
+        my_int_ptr = &my_int;
+    }
+    dbg!(*my_int_ptr);
+                            </script></code></pre>
+                            <pre><code data-trim><script type="text/template">
+error[E0597]: `my_int` does not live long enough
+ --> src/main.rs:5:22
+  |
+5 |         my_int_ptr = &my_int;
+  |                      ^^^^^^^ borrowed value does not live long enough
+6 |     }
+  |     - `my_int` dropped here while still borrowed
+7 |     dbg!(*my_int_ptr);
+  |          ----------- borrow later used here
+                            </script></code></pre>
+                </section>
+
+
+
+                <section>
+                    A borrowing view
+                    <div class="container">
+                        <div class="col">
+                            C++
+                            <pre class="cpp"><code data-trim><script type="text/template">
+  std::string my_string = "abcdefghijklmnopqrstuvwxy";
+  std::string_view my_string_view = my_string + "z";
+  std::cout << my_string_view;
+                            </script></code></pre>
+                        </div>
+                        <div class="col">
+                            Rust
+                            <pre class="rust"><code data-trim><script type="text/template">
+    let my_string: String = "abcdefghijklmnopqrstuvwxy".to_string();
+    let my_string_view: &str = (my_string + "z").as_str();
+    dbg!(my_string_view);
+                            </script></code></pre>
+                        </div>
+                    </div>
+                </section>
+                <section>
+                            C++
+                            <pre class="cpp"><code data-trim><script type="text/template">
+  std::string my_string = "abcdefghijklmnopqrstuvwxy";
+  std::string_view my_string_view = my_string + "z";
+  std::cout << my_string_view;
+                            </script></code></pre>
+                            <pre><code data-trim><script type="text/template">
+==24774==ERROR: AddressSanitizer: heap-use-after-free on address 0x6060000000e0 at pc 0x7f63fa6020b6 bp 0x7fff1828aa30 sp 0x7fff1828a1d8
+READ of size 26 at 0x6060000000e0 thread T0
+    #0 0x7f63fa6020b5 in __interceptor_fwrite /build/gcc/src/gcc/libsanitizer/sanitizer_common/sanitizer_common_interceptors.inc:1139
+    #1 0x7f63fa512d13 in std::basic_streambuf<char, std::char_traits<char> >::sputn(char const*, long) /build/gcc/src/gcc-build/x86_64-pc-linux-gnu/libstdc++-v3/include/streambuf:458
+    #2 0x7f63fa512d13 in void std::__ostream_write<char, std::char_traits<char> >(std::basic_ostream<char, std::char_traits<char> >&, char const*, long) /build/gcc/src/gcc-build/x86_64-pc-lin
+ux-gnu/libstdc++-v3/include/bits/ostream_insert.h:50
+    #3 0x7f63fa512d13 in std::basic_ostream<char, std::char_traits<char> >& std::__ostream_insert<char, std::char_traits<char> >(std::basic_ostream<char, std::char_traits<char> >&, char const
+*, long) /build/gcc/src/gcc-build/x86_64-pc-linux-gnu/libstdc++-v3/include/bits/ostream_insert.h:101
+    #4 0x55a0098b0cba in std::basic_ostream<char, std::char_traits<char> >& std::operator<< <char, std::char_traits<char> >(std::basic_ostream<char, std::char_traits<char> >&, std::basic_stri
+ng_view<char, std::char_traits<char> >) (/home/jacko/cpp_rust_talk/1.a.lifetimes/string_view+0x2cba)
+    #5 0x55a0098b0627 in main (/home/jacko/cpp_rust_talk/1.a.lifetimes/string_view+0x2627)
+    #6 0x7f63fa0e0b24 in __libc_start_main (/usr/lib/libc.so.6+0x27b24)
+    #7 0x55a0098b030d in _start (/home/jacko/cpp_rust_talk/1.a.lifetimes/string_view+0x230d)
+                            </script></code></pre>
+                </section>
+
+                <section>
+                            Rust
+                            <pre class="rust"><code data-trim><script type="text/template">
+    let my_string: String = "abcdefghijklmnopqrstuvwxy".to_string();
+    let my_string_view: &str = (my_string + "z").as_str();
+    dbg!(my_string_view);
+                            </script></code></pre>
+                            <pre style="width: 90%"><code data-trim><script type="text/template">
+error[E0716]: temporary value dropped while borrowed
+ --> src/main.rs:3:32
+  |
+3 |     let my_string_view: &str = (my_string + "z").as_str();
+  |                                ^^^^^^^^^^^^^^^^^         - temporary value is freed at the end of this statement
+  |                                |
+  |                                creates a temporary which is freed while still in use
+4 |     dbg!(my_string_view);
+  |          -------------- borrow later used here
+  |
+  = note: consider using a `let` binding to create a longer lived value
+                            </script></code></pre>
+                </section>
+
+
+
+                <section>
+                    Views in a vector
+                    <div class="container">
+                        <div class="col">
+                            C++
+                            <pre class="cpp"><code data-trim><script type="text/template">
+  std::vector<std::string_view> my_vector;
+  {
+    std::string my_string = "hello world";
+    my_vector.push_back(my_string);
+  }
+  std::cout << my_vector[0];
+                            </script></code></pre>
+                        </div>
+                        <div class="col">
+                            Rust
+                            <pre class="rust"><code data-trim><script type="text/template">
+    let mut my_vector: Vec<&str> = Vec::new();
+    {
+        let my_string = "hello world".to_string();
+        my_vector.push(&my_string);
+    }
+    dbg!(my_vector);
+                            </script></code></pre>
+                        </div>
+                    </div>
+                </section>
+                <section>
+                            C++
+                            <pre class="cpp"><code data-trim><script type="text/template">
+  std::vector<std::string_view> my_vector;
+  {
+    std::string my_string = "hello world";
+    my_vector.push_back(my_string);
+  }
+  std::cout << my_vector[0];
+                            </script></code></pre>
+                            <pre><code data-trim><script type="text/template">
+==27916==ERROR: AddressSanitizer: stack-use-after-scope on address 0x7ffeabade130 at pc 0x7f260741b0b6 bp 0x7ffeabaddf30 sp 0x7ffeabadd6d8
+READ of size 11 at 0x7ffeabade130 thread T0
+    #0 0x7f260741b0b5 in __interceptor_fwrite /build/gcc/src/gcc/libsanitizer/sanitizer_common/sanitizer_common_interceptors.inc:1139
+    #1 0x7f260732bd13 in std::basic_streambuf<char, std::char_traits<char> >::sputn(char const*, long) /build/gcc/src/gcc-build/x86_64-pc-linux-gnu/libstdc++-v3/include/streambuf:458
+    #2 0x7f260732bd13 in void std::__ostream_write<char, std::char_traits<char> >(std::basic_ostream<char, std::char_traits<char> >&, char const*, long) /build/gcc/src/gcc-build/x86_64-pc-lin
+ux-gnu/libstdc++-v3/include/bits/ostream_insert.h:50
+    #3 0x7f260732bd13 in std::basic_ostream<char, std::char_traits<char> >& std::__ostream_insert<char, std::char_traits<char> >(std::basic_ostream<char, std::char_traits<char> >&, char const
+*, long) /build/gcc/src/gcc-build/x86_64-pc-linux-gnu/libstdc++-v3/include/bits/ostream_insert.h:101
+    #4 0x55b1c18ddec4 in std::basic_ostream<char, std::char_traits<char> >& std::operator<< <char, std::char_traits<char> >(std::basic_ostream<char, std::char_traits<char> >&, std::basic_stri
+ng_view<char, std::char_traits<char> >) (/home/jacko/cpp_rust_talk/1.a.lifetimes/vector_push+0x2ec4)
+    #5 0x55b1c18dd602 in main (/home/jacko/cpp_rust_talk/1.a.lifetimes/vector_push+0x2602)
+    #6 0x7f2606ef9b24 in __libc_start_main (/usr/lib/libc.so.6+0x27b24)
+    #7 0x55b1c18dd32d in _start (/home/jacko/cpp_rust_talk/1.a.lifetimes/vector_push+0x232d)
+                            </script></code></pre>
+                </section>
+
+                <section>
+                            Rust
+                            <pre class="rust"><code data-trim><script type="text/template">
+    let mut my_vector: Vec<&str> = Vec::new();
+    {
+        let my_string = "hello world".to_string();
+        my_vector.push(&my_string);
+    }
+    dbg!(my_vector);
+                            </script></code></pre>
+                            <pre style="width: 90%"><code data-trim><script type="text/template">
+error[E0597]: `my_string` does not live long enough
+ --> src/main.rs:5:24
+  |
+5 |         my_vector.push(&my_string);
+  |                        ^^^^^^^^^^ borrowed value does not live long enough
+6 |     }
+  |     - `my_string` dropped here while still borrowed
+7 |     dbg!(my_vector);
+  |          --------- borrow later used here
+                            </script></code></pre>
+                </section>
+
+
+
+                <section>
+                    Views in a vector, in another function (part 1)
+                    <div class="container">
+                        <div class="col">
+                            C++
+                            <pre class="cpp"><code data-trim><script type="text/template">
+void my_push_back(std::vector<std::string_view> &v,
+                  std::string_view s) {
+  v.push_back(s);
+}
+
+int main() {
+  std::vector<std::string_view> my_vector;
+  {
+    std::string my_string = "hello world";
+    my_push_back(my_vector, my_string);
+  }
+  std::cout << my_vector[0];
+}
+                            </script></code></pre>
+                        </div>
+                        <div class="col">
+                            Rust
+                            <pre class="rust"><code data-trim><script type="text/template">
+fn my_push_back(v: &mut Vec<&str>, s: &str) {
+    v.push(s);
+}
+
+fn main() {
+    let mut my_vector: Vec<&str> = Vec::new();
+    {
+        let my_string = "hello world".to_string();
+        my_push_back(&mut my_vector, &my_string);
+    }
+    dbg!(my_vector);
+}
+                            </script></code></pre>
+                        </div>
+                    </div>
+                </section>
+                <section>
+                            C++
+                            <pre class="cpp"><code data-trim><script type="text/template">
+void my_push_back(std::vector<std::string_view> &v,
+                  std::string_view s) {
+  v.push_back(s);
+}
+
+int main() {
+  std::vector<std::string_view> my_vector;
+  {
+    std::string my_string = "hello world";
+    my_push_back(my_vector, my_string);
+  }
+  std::cout << my_vector[0];
+}
+                            </script></code></pre>
+                            <pre><code data-trim><script type="text/template">
+==29475==ERROR: AddressSanitizer: stack-use-after-scope on address 0x7ffe1aa46e00 at pc 0x7fcb06d9d0b6 bp 0x7ffe1aa46c20 sp 0x7ffe1aa463c8
+READ of size 11 at 0x7ffe1aa46e00 thread T0
+    #0 0x7fcb06d9d0b5 in __interceptor_fwrite /build/gcc/src/gcc/libsanitizer/sanitizer_common/sanitizer_common_interceptors.inc:1139
+    #1 0x7fcb06cadd13 in std::basic_streambuf<char, std::char_traits<char> >::sputn(char const*, long) /build/gcc/src/gcc-build/x86_64-pc-linux-gnu/libstdc++-v3/include/streambuf:458
+    #2 0x7fcb06cadd13 in void std::__ostream_write<char, std::char_traits<char> >(std::basic_ostream<char, std::char_traits<char> >&, char const*, long) /build/gcc/src/gcc-build/x86_64-pc-lin
+ux-gnu/libstdc++-v3/include/bits/ostream_insert.h:50
+    #3 0x7fcb06cadd13 in std::basic_ostream<char, std::char_traits<char> >& std::__ostream_insert<char, std::char_traits<char> >(std::basic_ostream<char, std::char_traits<char> >&, char const
+*, long) /build/gcc/src/gcc-build/x86_64-pc-linux-gnu/libstdc++-v3/include/bits/ostream_insert.h:101
+    #4 0x5581bb9bc002 in std::basic_ostream<char, std::char_traits<char> >& std::operator<< <char, std::char_traits<char> >(std::basic_ostream<char, std::char_traits<char> >&, std::basic_stri
+ng_view<char, std::char_traits<char> >) (/home/jacko/cpp_rust_talk/1.a.lifetimes/vector_push_fn+0x3002)
+    #5 0x5581bb9bb6be in main (/home/jacko/cpp_rust_talk/1.a.lifetimes/vector_push_fn+0x26be)
+    #6 0x7fcb0687bb24 in __libc_start_main (/usr/lib/libc.so.6+0x27b24)
+    #7 0x5581bb9bb32d in _start (/home/jacko/cpp_rust_talk/1.a.lifetimes/vector_push_fn+0x232d) 
+                            </script></code></pre>
+                </section>
+
+                <section>
+                            Rust
+                            <pre class="rust"><code data-trim><script type="text/template">
+fn my_push_back(v: &mut Vec<&str>, s: &str) {
+    v.push(s);
+}
+
+fn main() {
+    let mut my_vector: Vec<&str> = Vec::new();
+    {
+        let my_string = "hello world".to_string();
+        my_push_back(&mut my_vector, &my_string);
+    }
+    dbg!(my_vector);
+}
+                            </script></code></pre>
+                            <pre style="width: 90%"><code data-trim><script type="text/template">
+error[E0623]: lifetime mismatch
+ --> src/main.rs:2:12
+  |
+1 | fn my_push_back(v: &mut Vec<&str>, s: &str) {
+  |                             ----      ---- these two types are declared with different lifetimes...
+2 |     v.push(s);
+  |            ^ ...but data from `s` flows into `v` here
+                            </script></code></pre>
+                </section>
+
+
+
+                <section>
+                    Views in a vector, in another function (part 2)
+                    <div class="container">
+                        <div class="col">
+                            Rust (previous)
+                            <pre class="cpp"><code data-trim><script type="text/template">
+fn my_push_back(v: &mut Vec<&str>, s: &str) {
+    v.push(s);
+}
+
+fn main() {
+    let mut my_vector: Vec<&str> = Vec::new();
+    {
+        let my_string = "hello world".to_string();
+        my_push_back(&mut my_vector, &my_string);
+    }
+    dbg!(my_vector);
+}
+                            </script></code></pre>
+                        </div>
+                        <div class="col">
+                            Rust (with explicit lifetimes)
+                            <pre class="rust"><code data-trim><script type="text/template">
+fn my_push_back<'a>(v: &mut Vec<&'a str>, s: &'a str) {
+    v.push(s);
+}
+
+fn main() {
+    let mut my_vector: Vec<&str> = Vec::new();
+    {
+        let my_string = "hello world".to_string();
+        my_push_back(&mut my_vector, &my_string);
+    }
+    dbg!(my_vector);
+}
+                            </script></code></pre>
+                        </div>
+                    </div>
+                </section>
+                <section>
+                            Rust (with explicit lifetimes)
+                            <pre class="rust"><code data-trim><script type="text/template">
+fn my_push_back<'a>(v: &mut Vec<&'a str>, s: &'a str) {
+    v.push(s);
+}
+
+fn main() {
+    let mut my_vector: Vec<&str> = Vec::new();
+    {
+        let my_string = "hello world".to_string();
+        my_push_back(&mut my_vector, &my_string);
+    }
+    dbg!(my_vector);
+}
+                            </script></code></pre>
+                            <pre style="width: 90%"><code data-trim><script type="text/template">
+error[E0597]: `my_string` does not live long enough
+  --> src/main.rs:9:38
+   |
+9  |         my_push_back(&mut my_vector, &my_string);
+   |                                      ^^^^^^^^^^ borrowed value does not live long enough
+10 |     }
+   |     - `my_string` dropped here while still borrowed
+11 |     dbg!(my_vector);
+   |          --------- borrow later used here
+                            </script></code></pre>
+                </section>
+
+
+
+                <section>
+                    Mutable aliasing
+                    <div class="container">
+                        <div class="col">
+                            C++
+                            <pre class="cpp"><code data-trim><script type="text/template">
+  int my_int = 5;
+  int &reference1 = my_int;
+  int &reference2 = my_int;
+  reference1++;
+  reference2++;
+                            </script></code></pre>
+                        </div>
+                        <div class="col">
+                            Rust
+                            <pre class="rust"><code data-trim><script type="text/template">
+    let mut my_int = 5;
+    let reference1 = &mut my_int;
+    let reference2 = &mut my_int;
+    *reference1 += 1;
+    *reference2 += 1;
+                            </script></code></pre>
+                        </div>
+                    </div>
+                </section>
+                <section>
+                    Rust
+                            <pre class="rust"><code data-trim><script type="text/template">
+    let mut my_int = 5;
+    let reference1 = &mut my_int;
+    let reference2 = &mut my_int;
+    *reference1 += 1;
+    *reference2 += 1;
+                            </script></code></pre>
+                            <pre><code data-trim><script type="text/template">
+error[E0499]: cannot borrow `my_int` as mutable more than once at a time
+ --> src/main.rs:4:22
+  |
+3 |     let reference1 = &mut my_int;
+  |                      ----------- first mutable borrow occurs here
+4 |     let reference2 = &mut my_int;
+  |                      ^^^^^^^^^^^ second mutable borrow occurs here
+5 |     *reference1 += 1;
+  |     ---------------- first borrow later used here
+                            </script></code></pre>
+                </section>
+
+
+
+                <section>
+                    Multiple references into an array
+                    <div class="container">
+                        <div class="col">
+                            C++
+                            <pre class="cpp"><code data-trim><script type="text/template">
+  std::array<char, 2> char_array = {'a', 'b'};
+  char &first_element = char_array[0];
+  const char &second_element = char_array[1];
+  first_element = second_element;
+                            </script></code></pre>
+                        </div>
+                        <div class="col">
+                            Rust
+                            <pre class="rust"><code data-trim><script type="text/template">
+    let mut char_array: [char; 2] = ['a', 'b'];
+    let first_element = &mut char_array[0];
+    let second_element = &char_array[1];
+    *first_element = *second_element;
+                            </script></code></pre>
+                        </div>
+                    </div>
+                </section>
+                <section>
+                    Rust
+                            <pre class="rust"><code data-trim><script type="text/template">
+    let mut char_array: [char; 2] = ['a', 'b'];
+    let first_element = &mut char_array[0];
+    let second_element = &char_array[1];
+    *first_element = *second_element;
+                            </script></code></pre>
+                            <pre><code data-trim><script type="text/template">
+error[E0502]: cannot borrow `char_array[_]` as immutable because it is also borrowed as mutable
+ --> src/main.rs:6:26
+  |
+5 |     let first_element = &mut char_array[0];
+  |                         ------------------ mutable borrow occurs here
+6 |     let second_element = &char_array[1];
+  |                          ^^^^^^^^^^^^^^ immutable borrow occurs here
+7 |     *first_element = *second_element;
+  |     -------------------------------- mutable borrow later used here
+                            </script></code></pre>
+                </section>
+                <section>
+                    There's more than one way to do it
+                    <div class="container">
+                        <div class="col">
+                            indexes
+                            <pre class="rust"><code data-trim><script type="text/template">
+    let mut char_array: [char; 2] = ['a', 'b'];
+    char_array[0] = char_array[1];
+                            </script></code></pre>
+                            .split_at_mut()
+                            <pre class="rust"><code data-trim><script type="text/template">
+    let mut char_array: [char; 2] = ['a', 'b'];
+    let (first_slice, rest_slice) = char_array.split_at_mut(1);
+    let first_element = &mut first_slice[0];
+    let second_element = &rest_slice[0];
+    *first_element = *second_element;
+                            </script></code></pre>
+                            pattern matching
+                            <pre class="rust"><code data-trim><script type="text/template">
+    let mut char_array: [char; 2] = ['a', 'b'];
+    let [first_element, second_element] = &mut char_array;
+    *first_element = *second_element;
+                            </script></code></pre>
+                        </div>
+                        <div class="col">
+                            .iter_mut()
+                            <pre class="rust"><code data-trim><script type="text/template">
+    let mut char_array: [char; 2] = ['a', 'b'];
+    let mut array_iterator = char_array.iter_mut();
+    let first_element = array_iterator.next().unwrap();
+    let second_element = array_iterator.next().unwrap();
+    *first_element = *second_element;
+                            </script></code></pre>
+                            ☠ unsafe code ☠
+                            <pre class="rust"><code data-trim><script type="text/template">
+    let mut char_array: [char; 2] = ['a', 'b'];
+    let first_element: *mut char = &mut char_array[0];
+    let second_element: *const char = &char_array[1];
+    unsafe {
+        *first_element = *second_element;
+    }
+                            </script></code></pre>
+                        </div>
+                    </div>
+                </section>
+
+
+
+
+
+                <section>
+                    Invalidating a reference by reallocating
+                    <div class="container">
+                        <div class="col">
+                            C++
+                            <pre class="cpp"><code data-trim><script type="text/template">
+void push_int_twice(std::vector<int> &v, const int &n) {
+  v.push_back(n);
+  v.push_back(n);
+}
+
+int main() {
+  std::vector<int> my_vector = {0};
+  const int &my_int_reference = my_vector[0];
+  push_int_twice(my_vector, my_int_reference);
+}
+                            </script></code></pre>
+                        </div>
+                        <div class="col">
+                            Rust
+                            <pre class="rust"><code data-trim><script type="text/template">
+fn push_int_twice(v: &mut Vec<i32>, n: &i32) {
+    v.push(*n);
+    v.push(*n);
+}
+
+fn main() {
+    let mut my_vector = vec![0];
+    let my_int_reference = &my_vector[0];
+    push_int_twice(&mut my_vector, my_int_reference);
+}
+                            </script></code></pre>
+                        </div>
+                    </div>
+                </section>
+                <section>
+                            C++
+                            <pre class="cpp"><code data-trim><script type="text/template">
+void push_int_twice(std::vector<int> &v, const int &n) {
+  v.push_back(n);
+  v.push_back(n);
+}
+
+int main() {
+  std::vector<int> my_vector = {0};
+  const int &my_int_reference = my_vector[0];
+  push_int_twice(my_vector, my_int_reference);
+}
+                            </script></code></pre>
+                            <pre><code data-trim><script type="text/template">
+==42920==ERROR: AddressSanitizer: heap-use-after-free on address 0x602000000010 at pc 0x5629133874f3 bp 0x7ffe3befabe0 sp 0x7ffe3befabd0                                                       READ of size 4 at 0x602000000010 thread T0
+    #0 0x5629133874f2 in void __gnu_cxx::new_allocator<int>::construct<int, int const&>(int*, int const&) (/home/jacko/cpp_rust_talk/1.b.mutability/vector_invalidate+0x24f2)                      #1 0x56291338697c in void std::allocator_traits<std::allocator<int> >::construct<int, int const&>(std::allocator<int>&, int*, int const&) (/home/jacko/cpp_rust_talk/1.b.mutability/vector_
+invalidate+0x197c)                                                                                                                                                                                 #2 0x562913386d9b in void std::vector<int, std::allocator<int> >::_M_realloc_insert<int const&>(__gnu_cxx::__normal_iterator<int*, std::vector<int, std::allocator<int> > >, int const&) (/
+home/jacko/cpp_rust_talk/1.b.mutability/vector_invalidate+0x1d9b)                                                                                                                                  #3 0x562913386672 in std::vector<int, std::allocator<int> >::push_back(int const&) (/home/jacko/cpp_rust_talk/1.b.mutability/vector_invalidate+0x1672)
+    #4 0x5629133862be in push_int_twice(std::vector<int, std::allocator<int> >&, int const&) (/home/jacko/cpp_rust_talk/1.b.mutability/vector_invalidate+0x12be)                                   #5 0x562913386452 in main (/home/jacko/cpp_rust_talk/1.b.mutability/vector_invalidate+0x1452)
+    #6 0x7f1db0fa8b24 in __libc_start_main (/usr/lib/libc.so.6+0x27b24)                                                                                                                            #7 0x5629133861bd in _start (/home/jacko/cpp_rust_talk/1.b.mutability/vector_invalidate+0x11bd)
+                            </script></code></pre>
+                </section>
+
+                <section>
+                            Rust
+                            <pre class="rust"><code data-trim><script type="text/template">
+fn push_int_twice(v: &mut Vec<i32>, n: &i32) {
+    v.push(*n);
+    v.push(*n);
+}
+
+fn main() {
+    let mut my_vector = vec![0];
+    let my_int_reference = &my_vector[0];
+    push_int_twice(&mut my_vector, my_int_reference);
+}
+                            </script></code></pre>
+                            <pre style="width: 90%"><code data-trim><script type="text/template">
+error[E0502]: cannot borrow `my_vector` as mutable because it is also borrowed as immutable
+  --> src/main.rs:12:20
+   |
+11 |     let my_int_reference = &my_vector[0];
+   |                             --------- immutable borrow occurs here
+12 |     push_int_twice(&mut my_vector, my_int_reference);
+   |                    ^^^^^^^^^^^^^^  ---------------- immutable borrow later used here
+   |                    |
+   |                    mutable borrow occurs here
+                            </script></code></pre>
+                </section>
+
+
+
+
+
+                <section>
+                    Herb Sutter's shared_ptr footgun
+                    <div class="container">
+                        <div class="col">
+                            C++
+                            <pre class="cpp"><code data-trim><script type="text/template">
+shared_ptr<widget> g_p = make_shared<widget>();
+
+void f(widget &w) {
+  g();
+  use(w);
+}
+
+void g() {
+  g_p = make_shared<widget>();
+}
+
+int main() {
+  f(*g_p);
+}
+                            </script></code></pre>
+                        </div>
+                        <div class="col">
+                            Rust
+                            <pre class="rust"><code data-trim><script type="text/template">
+fn f(w: &Widget, g_p: &mut Arc<Widget>) {
+    g(g_p);
+    use_(w);
+}
+
+fn g(g_p: &mut Arc<Widget>) {
+    *g_p = Arc::new(Widget::new());
+}
+
+fn main() {
+    let mut g_p = Arc::new(Widget::new());
+    f(&*g_p, &mut g_p);
+}
+                            </script></code></pre>
+                        </div>
+                    </div>
+                </section>
+                <section>
+                            C++
+                            <pre class="cpp"><code data-trim><script type="text/template">
+shared_ptr<widget> g_p = make_shared<widget>();
+
+void f(widget &w) {
+  g();
+  use(w);
+}
+
+void g() {
+  g_p = make_shared<widget>();
+}
+
+int main() {
+  f(*g_p);
+}
+                            </script></code></pre>
+                            <pre><code data-trim><script type="text/template">
+==44195==ERROR: AddressSanitizer: heap-use-after-free on address 0x603000000020 at pc 0x56354a3242ec bp 0x7ffd26bddce0 sp 0x7ffd26bddcd0
+READ of size 4 at 0x603000000020 thread T0
+    #0 0x56354a3242eb in use(widget const&) (/home/jacko/cpp_rust_talk/1.b.mutability/sutter+0x22eb)
+    #1 0x56354a32431f in f(widget&) (/home/jacko/cpp_rust_talk/1.b.mutability/sutter+0x231f)
+    #2 0x56354a32445f in main (/home/jacko/cpp_rust_talk/1.b.mutability/sutter+0x245f)
+    #3 0x7f839f7b6b24 in __libc_start_main (/usr/lib/libc.so.6+0x27b24)
+    #4 0x56354a3241dd in _start (/home/jacko/cpp_rust_talk/1.b.mutability/sutter+0x21dd)
+                            </script></code></pre>
+                </section>
+
+                <section>
+                            Rust
+                            <pre class="rust"><code data-trim><script type="text/template">
+fn f(w: &Widget, g_p: &mut Arc<Widget>) {
+    g(g_p);
+    use_(w);
+}
+
+fn g(g_p: &mut Arc<Widget>) {
+    *g_p = Arc::new(Widget::new());
+}
+
+fn main() {
+    let mut g_p = Arc::new(Widget::new());
+    f(&*g_p, &mut g_p);
+}
+                            </script></code></pre>
+                            <pre style="width: 90%"><code data-trim><script type="text/template">
+error[E0502]: cannot borrow `g_p` as mutable because it is also borrowed as immutable
+  --> src/main.rs:29:14
+   |
+29 |     f(&*g_p, &mut g_p);
+   |     -   ---  ^^^^^^^^ mutable borrow occurs here
+   |     |   |
+   |     |   immutable borrow occurs here
+   |     immutable borrow later used by call
+                            </script></code></pre>
+                </section>
+
+
+
+
+
+                <section data-markdown><textarea data-template>
+# Move Semantics
+
+- Assignment, parameter passing, and return are all moves.
+- Moves are bitwise shallow copies.
+- Moves are destructive.
+- (Except for <tt style="background-color: lightgray">Copy</tt> types like integers.)
+                 </textarea></section>
+
+
+
+
+
+                <section>
+                    Moving a vector
+                    <div class="container">
+                        <div class="col">
+                            C++
+                            <pre class="cpp"><code data-trim><script type="text/template">
+  std::vector<int> a = {1, 2, 3, 4, 5, 6};
+  std::vector<int> b = a;
+  std::vector<int> c = std::move(a);
+                            </script></code></pre>
+                            <u>three</u> std::vector destructors fire
+                        </div>
+                        <div class="col">
+                            Rust
+                            <pre class="rust"><code data-trim><script type="text/template">
+    let a = vec![1, 2, 3, 4, 5, 6];
+    let b = a.clone();
+    let c = a;
+                            </script></code></pre>
+                            <u>two</u> Vec destructors fire
+                        </div>
+                    </div>
+                </section>
+
+
+
+
+
+
+                <section>
+                    Moving a string into a vector
+                    <div class="container">
+                        <div class="col">
+                            C++
+                            <pre class="cpp"><code data-trim><script type="text/template">
+  std::string my_string = "abcdefghijklmnopqrstuvwxyz";
+  std::vector<std::string> my_vector;
+  my_vector.push_back(my_string);
+  my_vector.push_back(std::move(my_string));
+                            </script></code></pre>
+                            <u>three</u> std::string destructors fire
+                        </div>
+                        <div class="col">
+                            Rust
+                            <pre class="rust"><code data-trim><script type="text/template">
+    let my_string = "abcdefghijklmnopqrstuvwxyz".to_string();
+    let mut my_vector = Vec::new();
+    my_vector.push(my_string.clone());
+    my_vector.push(my_string);
+                            </script></code></pre>
+                            <u>two</u> String destructors fire
+                        </div>
+                    </div>
+                </section>
+
+
+
+
+
+
+                <section>
+                    Error: illegal moves
+                    <div class="container">
+                        <div class="col">
+                            Read after move
+                            <pre class="rust"><code data-trim><script type="text/template">
+    let a = vec![1, 2, 3];
+    let b = a;
+    dbg!(a);
+                            </script></code></pre>
+                            Move twice
+                            <pre class="rust"><code data-trim><script type="text/template">
+    let a = vec![1, 2, 3];
+    let b = a;
+    let c = a;
+                            </script></code></pre>
+                        </div>
+                        <div class="col">
+                            Move while borrowed
+                            <pre class="rust"><code data-trim><script type="text/template">
+    let a = vec![1, 2, 3];
+    let b = &a;
+    let c = a;
+    dbg!(b);
+                            </script></code></pre>
+                            Move through reference
+                            <pre class="rust"><code data-trim><script type="text/template">
+    let mut a = vec![1, 2, 3];
+    let b = &mut a;
+    let c = *b;
+                            </script></code></pre>
+                        </div>
+                    </div>
+                </section>
+                <section>
+                    Legal for Copy types
+                    <div class="container">
+                        <div class="col">
+                            Read after move
+                            <pre class="rust"><code data-trim><script type="text/template">
+    let a = 1;
+    let b = a;
+    dbg!(a);
+                            </script></code></pre>
+                            Move twice
+                            <pre class="rust"><code data-trim><script type="text/template">
+    let a = 1;
+    let b = a;
+    let c = a;
+                            </script></code></pre>
+                        </div>
+                        <div class="col">
+                            Move while borrowed
+                            <pre class="rust"><code data-trim><script type="text/template">
+    let a = 1;
+    let b = &a;
+    let c = a;
+    dbg!(b);
+                            </script></code></pre>
+                            Move through reference
+                            <pre class="rust"><code data-trim><script type="text/template">
+    let a = 1;
+    let b = &a;
+    let c = *b;
+                            </script></code></pre>
+                        </div>
+                    </div>
+                </section>
+
+
+
+
+
+                <section> File: A case study in move semantics </section>
+
+
+
+
+                <section>
+                    fstream vs File
+                    <div class="container">
+                        <div class="col">
+                            C++
+                            <pre class="cpp"><code data-trim><script type="text/template">
+  fstream my_file("/dev/null");
+                            </script></code></pre>
+                            size 528
+                            <pre class="cpp"><code data-trim><script type="text/template">
+  my_file.close();
+                            </script></code></pre>
+                        </div>
+                        <div class="col">
+                            Rust
+                            <pre class="rust"><code data-trim><script type="text/template">
+    let my_file = File::open("/dev/null")?;
+                            </script></code></pre>
+                            size 4
+                            <pre class="rust"><code data-trim><script type="text/template">
+    drop(my_file);
+                            </script></code></pre>
+                        </div>
+                    </div>
+                </section>
+
+
+
+
+                <section>
+                    closing a File in a Vec
+                    <div class="container">
+                        <div class="col">
+                            doesn't work
+                            <pre class="rust"><code data-trim><script type="text/template">
+    let my_files = vec![
+        File::open("/dev/null")?,
+        File::open("/dev/null")?,
+        File::open("/dev/null")?,
+    ];
+    drop(my_files[1]);
+                            </script></code></pre>
+                            </script></code></pre>
+                            <pre><code data-trim><script type="text/template">
+error[E0507]: cannot move out of index of `Vec<File>`
+  --> src/main.rs:38:10
+   |
+38 |     drop(my_files[1]);
+   |          ^^^^^^^^^^^ move occurs because value has type
+                          `File`, which does not implement
+                          the `Copy` trait
+                            </script></code></pre>
+                        </div>
+                        <div class="col">
+                            works
+                            <pre class="rust"><code data-trim><script type="text/template">
+    let mut my_files = vec![
+        File::open("/dev/null")?,
+        File::open("/dev/null")?,
+        File::open("/dev/null")?,
+    ];
+    my_files.remove(1);
+                            </script></code></pre>
+                        </div>
+                    </div>
+                </section>
+
+
+
+
+                <section>
+                    closing a File in a struct field
+                    <p>&nbsp</p>
+                    <div class="container">
+                        <div class="col">
+                            works (surprise!)
+                            <pre class="rust"><code data-trim><script type="text/template">
+    struct Foo {
+        file: File,
+    }
+                            </script></code></pre>
+                            <pre class="rust"><code data-trim><script type="text/template">
+    let my_foo = Foo {
+        file: File::open("/dev/null")?,
+    };
+    drop(my_foo.file);
+                            </script></code></pre>
+                        </div>
+                        <div class="col">
+                            but doesn't work because of Drop
+                            <pre class="rust"><code data-trim><script type="text/template">
+    struct Foo {
+        file: File,
+    }
+
+    impl Drop for Foo {
+        fn drop(&mut self) {
+            println!("dropping!");
+        }
+    }
+                            </script></code></pre>
+                            <pre class="rust"><code data-trim><script type="text/template">
+    let my_foo = Foo {
+        file: File::open("/dev/null")?,
+    };
+    drop(my_foo.file);
+                            </script></code></pre>
+                            </script></code></pre>
+                            <pre><code data-trim><script type="text/template">
+error[E0509]: cannot move out of type which
+              implements the `Drop` trait
+  --> src/main.rs:75:10
+   |
+75 |     drop(my_foo.file);
+   |          ^^^^^^^^^^^
+   |          |
+   |          cannot move out of here
+   |          move occurs because `my_foo.file`
+              has type `File`, which does not
+              implement the `Copy` trait
+                            </script></code></pre>
+                        </div>
+                        <div class="col">
+                            Option&lt;File&gt; works
+                            <pre class="rust"><code data-trim><script type="text/template">
+    struct Foo {
+        file: Option<File>,
+    }
+
+    impl Drop for Foo {
+        fn drop(&mut self) {
+            println!("dropping!");
+        }
+    }
+                            </script></code></pre>
+                            <pre class="rust"><code data-trim><script type="text/template">
+    let mut my_foo = Foo {
+        file: Some(File::open("/dev/null")?),
+    };
+    my_foo.file = None;
+                            </script></code></pre>
+                        </div>
+                    </div>
+                </section>
+
+
+
+
+
+                <section> Mutex: Making the borrow checker work for us </section>
+
+
+
+
+                <section>
+                    A Mutex on the stack
+                    <div class="container">
+                        <div class="col">
+                            C++
+                            <pre class="cpp"><code data-trim><script type="text/template">
+  string my_string;
+  mutex my_mutex;
+  vector<thread> thread_handles;
+  for (int i = 0; i < 10; i++) {
+    thread thread_handle([&] {
+      lock_guard<mutex> guard(my_mutex);
+      my_string += "some characters";
+    });
+    thread_handles.push_back(std::move(thread_handle));
+  }
+  for (auto &thread_handle : thread_handles) {
+    thread_handle.join();
+  }
+                            </script></code></pre>
+                        </div>
+                        <div class="col">
+                            Rust
+                            <pre class="rust"><code data-trim><script type="text/template">
+    let my_string: Mutex<String> = Mutex::new(String::new());
+    let mut thread_handles = Vec::new();
+    for _ in 0..10 {
+        let thread_handle = thread::spawn(|| {
+            let mut guard: MutexGuard<String> =
+                my_string.lock().unwrap();
+            guard.push_str("some characters");
+        });
+        thread_handles.push(thread_handle);
+    }
+    for thread_handle in thread_handles {
+        thread_handle.join().unwrap();
+    }
+                            </script></code></pre>
+                        </div>
+                    </div>
+                </section>
+                <section>
+                    Rust
+                            <pre class="rust"><code data-trim><script type="text/template">
+    let my_string: Mutex<String> = Mutex::new(String::new());
+    let mut thread_handles = Vec::new();
+    for _ in 0..10 {
+        let thread_handle = thread::spawn(|| {
+            let mut guard: MutexGuard<String> =
+                my_string.lock().unwrap();
+            guard.push_str("some characters");
+        });
+        thread_handles.push(thread_handle);
+    }
+    for thread_handle in thread_handles {
+        thread_handle.join().unwrap();
+    }
+                            </script></code></pre>
+                            <pre><code data-trim><script type="text/template">
+error[E0373]: closure may outlive the current function, but it borrows `my_string`, which is owned by the current function
+  --> src/main.rs:9:43
+   |
+9  |         let thread_handle = thread::spawn(|| {
+   |                                           ^^ may outlive borrowed value `my_string`
+10 |             let mut guard: MutexGuard<String> =
+11 |                 my_string.lock().unwrap();
+   |                 --------- `my_string` is borrowed here
+   |
+                            </script></code></pre>
+                </section>
+
+
+
+
+                <section>
+                    A Mutex on the heap
+                    <div class="container">
+                        <div class="col">
+                            C++
+                            <pre class="cpp"><code data-trim><script type="text/template">
+  shared_ptr<pair<mutex, string>> my_pair =
+      make_shared<pair<mutex, string>>();
+  vector<thread> thread_handles;
+  for (int i = 0; i < 10; i++) {
+    thread thread_handle([=] {
+      lock_guard<mutex> guard(my_pair->first);
+      my_pair->second += "some characters";
+    });
+    thread_handles.push_back(std::move(thread_handle));
+  }
+  for (auto &thread_handle : thread_handles) {
+    thread_handle.join();
+  }
+                            </script></code></pre>
+                        </div>
+                        <div class="col">
+                            Rust
+                            <pre class="rust"><code data-trim><script type="text/template">
+    let my_string: Arc<Mutex<String>> =
+        Arc::new(Mutex::new(String::new()));
+    let mut thread_handles = Vec::new();
+    for _ in 0..10 {
+        let arc_clone = my_string.clone();
+        let thread_handle = thread::spawn(move || {
+            let mut guard: MutexGuard<String> =
+                arc_clone.lock().unwrap();
+            guard.push_str("some characters");
+        });
+        thread_handles.push(thread_handle);
+    }
+    for thread_handle in thread_handles {
+        thread_handle.join().unwrap();
+    }
+                            </script></code></pre>
+                        </div>
+                    </div>
+                </section>
+
+
+
+
+                <section>
+                    Forgetting the Mutex
+                    <div class="container">
+                        <div class="col">
+                            C++
+                            <pre class="cpp"><code data-trim data-line-numbers="|6"><script type="text/template">
+  shared_ptr<pair<mutex, string>> my_pair =
+      make_shared<pair<mutex, string>>();
+  vector<thread> thread_handles;
+  for (int i = 0; i < 10; i++) {
+    thread thread_handle([=] {
+      my_pair->second += "some characters";
+    });
+    thread_handles.push_back(std::move(thread_handle));
+  }
+  for (auto &thread_handle : thread_handles) {
+    thread_handle.join();
+  }
+                            </script></code></pre>
+                        </div>
+                        <div class="col">
+                            Rust
+                            <pre class="rust"><code data-trim data-line-numbers="|6"><script type="text/template">
+    let my_string: Arc<String> = Arc::new(String::new());
+    let mut thread_handles = Vec::new();
+    for _ in 0..10 {
+        let mut arc_clone = my_string.clone();
+        let thread_handle = thread::spawn(move || {
+            arc_clone.push_str("some characters");
+        });
+        thread_handles.push(thread_handle);
+    }
+    for thread_handle in thread_handles {
+        thread_handle.join().unwrap();
+    }
+                            </script></code></pre>
+                        </div>
+                    </div>
+                </section>
+                <section>
+                            C++
+                            <pre class="cpp"><code data-trim data-line-numbers="6"><script type="text/template">
+  shared_ptr<pair<mutex, string>> my_pair =
+      make_shared<pair<mutex, string>>();
+  vector<thread> thread_handles;
+  for (int i = 0; i < 10; i++) {
+    thread thread_handle([=] {
+      my_pair->second += "some characters";
+    });
+    thread_handles.push_back(std::move(thread_handle));
+  }
+  for (auto &thread_handle : thread_handles) {
+    thread_handle.join();
+  }
+                            </script></code></pre>
+                            <pre><code data-trim><script type="text/template">
+WARNING: ThreadSanitizer: data race (pid=64280)
+  Read of size 8 at 0x7b0800001020 by thread T3:
+    #0 memcpy /build/gcc/src/gcc/libsanitizer/sanitizer_common/sanitizer_common_interceptors.inc:806 (libtsan.so.0+0x41fdd)
+    #1 memcpy /build/gcc/src/gcc/libsanitizer/sanitizer_common/sanitizer_common_interceptors.inc:798 (libtsan.so.0+0x41fdd)
+    #2 std::char_traits<char>::copy(char*, char const*, unsigned long) /build/gcc/src/gcc-build/x86_64-pc-linux-gnu/libstdc++-v3/include/bits/char_traits.h:395 (libstdc++.so.6+0x13e11f)
+    #3 std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::_S_copy(char*, char const*, unsigned long) /build/gcc/src/gcc-build/x86_64-pc-linux-gnu/libstdc++-v3/include/bits/basic_string.h:351 (libstdc++.so.6+0x13e11f)
+    #4 std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::_S_copy(char*, char const*, unsigned long) /build/gcc/src/gcc-build/x86_64-pc-linux-gnu/libstdc++-v3/include/bits/basic_string.h:346 (libstdc++.so.6+0x13e11f)
+    #5 std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::_M_mutate(unsigned long, unsigned long, char const*, unsigned long) /build/gcc/src/gcc-build/x86_64-pc-linux-gnu/libstdc++-v3/include/bits/basic_string.tcc:320 (libstdc++.so.6+0x13e11f)
+    #6 void std::__invoke_impl<void, forgot_mutex()::{lambda()#1}>(std::__invoke_other, forgot_mutex()::{lambda()#1}&&) <null> (mutex+0x5d42)
+    #7 std::__invoke_result<forgot_mutex()::{lambda()#1}>::type std::__invoke<forgot_mutex()::{lambda()#1}>(std::__invoke_result&&, (forgot_mutex()::{lambda()#1}&&)...) <null> (mutex+0x592d)
+    #8 void std::thread::_Invoker<std::tuple<forgot_mutex()::{lambda()#1}> >::_M_invoke<0ul>(std::_Index_tuple<0ul>) <null> (mutex+0x557a)
+    #9 std::thread::_Invoker<std::tuple<forgot_mutex()::{lambda()#1}> >::operator()() <null> (mutex+0x5340)
+    #10 std::thread::_State_impl<std::thread::_Invoker<std::tuple<forgot_mutex()::{lambda()#1}> > >::_M_run() <null> (mutex+0x514e)
+    #11 execute_native_thread_routine /build/gcc/src/gcc/libstdc++-v3/src/c++11/thread.cc:80 (libstdc++.so.6+0xcfbc3)
+                            </script></code></pre>
+                </section>
+                <section>
+                            Rust
+                            <pre class="rust"><code data-trim data-line-numbers="6"><script type="text/template">
+    let my_string: Arc<String> = Arc::new(String::new());
+    let mut thread_handles = Vec::new();
+    for _ in 0..10 {
+        let mut arc_clone = my_string.clone();
+        let thread_handle = thread::spawn(move || {
+            arc_clone.push_str("some characters");
+        });
+        thread_handles.push(thread_handle);
+    }
+    for thread_handle in thread_handles {
+        thread_handle.join().unwrap();
+    }
+                            </script></code></pre>
+                            <pre><code data-trim><script type="text/template">
+error[E0596]: cannot borrow data in an `Arc` as mutable     
+  --> src/main.rs:46:13
+   |
+46 |             arc_clone.push_str("some characters");
+   |             ^^^^^^^^^ cannot borrow as mutable 
+   |
+   = help: trait `DerefMut` is required to modify through a dereference, but it is not implemented for `Arc<String>`
+                            </script></code></pre>
+                </section>
+
+
+
+
+                <section>
+                    Writing under a read lock
+                    <div class="container">
+                        <div class="col">
+                            C++
+                            <pre class="cpp"><code data-trim data-line-numbers="|1-2,6"><script type="text/template">
+  shared_ptr<pair<shared_mutex, string>> my_pair =
+      make_shared<pair<shared_mutex, string>>();
+  vector<thread> thread_handles;
+  for (int i = 0; i < 10; i++) {
+    thread thread_handle([=] {
+      shared_lock<shared_mutex> guard(my_pair->first);
+      my_pair->second += "some characters";
+    });
+    thread_handles.push_back(std::move(thread_handle));
+  }
+  for (auto &thread_handle : thread_handles) {
+    thread_handle.join();
+  }
+                            </script></code></pre>
+                        </div>
+                        <div class="col">
+                            Rust
+                            <pre class="rust"><code data-trim data-line-numbers="|1-2,7-8"><script type="text/template">
+    let my_string: Arc<RwLock<String>> =
+        Arc::new(RwLock::new(String::new()));
+    let mut thread_handles = Vec::new();
+    for _ in 0..10 {
+        let arc_clone = my_string.clone();
+        let thread_handle = thread::spawn(move || {
+            let mut guard: RwLockReadGuard<String> =
+                arc_clone.read().unwrap();
+            guard.push_str("some characters");
+        });
+        thread_handles.push(thread_handle);
+    }
+    for thread_handle in thread_handles {
+        thread_handle.join().unwrap();
+    }
+                            </script></code></pre>
+                        </div>
+                    </div>
+                </section>
+                <section>
+                            Rust
+                            <pre class="rust"><code data-trim data-line-numbers="1-2,7-8"><script type="text/template">
+    let my_string: Arc<RwLock<String>> =
+        Arc::new(RwLock::new(String::new()));
+    let mut thread_handles = Vec::new();
+    for _ in 0..10 {
+        let arc_clone = my_string.clone();
+        let thread_handle = thread::spawn(move || {
+            let mut guard: RwLockReadGuard<String> =
+                arc_clone.read().unwrap();
+            guard.push_str("some characters");
+        });
+        thread_handles.push(thread_handle);
+    }
+    for thread_handle in thread_handles {
+        thread_handle.join().unwrap();
+    }
+                            </script></code></pre>
+                            <pre><code data-trim><script type="text/template">
+error[E0596]: cannot borrow data in a dereference of `RwLockReadGuard<'_, String>` as mutable
+  --> src/main.rs:65:13
+   |
+65 |             guard.push_str("some characters");
+   |             ^^^^^ cannot borrow as mutable
+   |
+   = help: trait `DerefMut` is required to modify through a dereference, but it is not implemented for `RwLockReadGuard<'_, String>`
+                            </script></code></pre>
+                </section>
+
+
+
+
+                <section>
+                    Smuggling out a pointer
+                    <div class="container">
+                        <div class="col">
+                            C++
+                            <pre class="cpp"><code data-trim data-line-numbers="|6,9"><script type="text/template">
+  shared_ptr<pair<mutex, string>> my_pair =
+      make_shared<pair<mutex, string>>();
+  vector<thread> thread_handles;
+  for (int i = 0; i < 10; i++) {
+    thread thread_handle([=] {
+      string *smuggled_ptr;
+      {
+        lock_guard<mutex> guard(my_pair->first);
+        smuggled_ptr = &my_pair->second;
+      }
+      *smuggled_ptr += "some characters";
+    });
+    thread_handles.push_back(std::move(thread_handle));
+  }
+  for (auto &thread_handle : thread_handles) {
+    thread_handle.join();
+  }
+                            </script></code></pre>
+                        </div>
+                        <div class="col">
+                            Rust
+                            <pre class="rust"><code data-trim data-line-numbers="|8-9"><script type="text/template">
+    let my_string: Arc<Mutex<String>> =
+        Arc::new(Mutex::new(String::new()));
+    let mut thread_handles = Vec::new();
+    for _ in 0..10 {
+        let arc_clone = my_string.clone();
+        let thread_handle = thread::spawn(move || {
+            let mut guard = arc_clone.lock().unwrap();
+            let smuggled_ptr: &mut String = &mut *guard;
+            drop(guard);
+            smuggled_ptr.push_str("some characters");
+        });
+        thread_handles.push(thread_handle);
+    }
+    for thread_handle in thread_handles {
+        thread_handle.join().unwrap();
+    }
+                            </script></code></pre>
+                        </div>
+                    </div>
+                </section>
+                <section>
+                            Rust
+                            <pre class="rust"><code data-trim data-line-numbers="8-9"><script type="text/template">
+    let my_string: Arc<Mutex<String>> =
+        Arc::new(Mutex::new(String::new()));
+    let mut thread_handles = Vec::new();
+    for _ in 0..10 {
+        let arc_clone = my_string.clone();
+        let thread_handle = thread::spawn(move || {
+            let mut guard = arc_clone.lock().unwrap();
+            let smuggled_ptr: &mut String = &mut *guard;
+            drop(guard);
+            smuggled_ptr.push_str("some characters");
+        });
+        thread_handles.push(thread_handle);
+    }
+    for thread_handle in thread_handles {
+        thread_handle.join().unwrap();
+    }
+                            </script></code></pre>
+                            <pre><code data-trim><script type="text/template">
+error[E0505]: cannot move out of `guard` because it is borrowed
+  --> src/main.rs:84:18
+   |
+83 |             let smuggled_ptr: &mut String = &mut *guard;
+   |                                                   ----- borrow of `guard` occurs here
+84 |             drop(guard);
+   |                  ^^^^^ move out of `guard` occurs here
+85 |             smuggled_ptr.push_str("some characters");
+   |             ------------ borrow later used here
+                            </script></code></pre>
+                </section>
+
+
+
+
+                <section>
+                    A vexing parse
+                    <div class="container">
+                        <div class="col">
+                            C++ (broken)
+                            <pre class="cpp"><code data-trim data-line-numbers="|6"><script type="text/template">
+  string my_string;
+  mutex my_mutex;
+  vector<thread> thread_handles;
+  for (int i = 0; i < 10; i++) {
+    thread thread_handle([&] {
+      unique_lock<mutex>(my_mutex);
+      my_string += "some characters";
+    });
+    thread_handles.push_back(std::move(thread_handle));
+  }
+  for (auto &thread_handle : thread_handles) {
+    thread_handle.join();
+  }
+                            </script></code></pre>
+                        </div>
+                        <div class="col">
+                            C++ (fixed)
+                            <pre class="cpp"><code data-trim data-line-numbers="|6"><script type="text/template">
+  string my_string;
+  mutex my_mutex;
+  vector<thread> thread_handles;
+  for (int i = 0; i < 10; i++) {
+    thread thread_handle([&] {
+      unique_lock<mutex> guard(my_mutex);
+      my_string += "some characters";
+    });
+    thread_handles.push_back(std::move(thread_handle));
+  }
+  for (auto &thread_handle : thread_handles) {
+    thread_handle.join();
+  }
+                            </script></code></pre>
+                        </div>
+                    </div>
+                </section>
+
+
+
+
+
+                <section> Automatic multithreading, using the stack </section>
+
+
+
+
+                <section>
+                    serial for_each
+                    <div class="container">
+                        <div class="col">
+                            C++
+                            <pre class="cpp"><code data-trim><script type="text/template">
+  vector<int> v = vector_of_random_numbers();
+  for_each(v.begin(), v.end(), [&](int &x) {
+    x += 1;
+  });
+                            </script></code></pre>
+                        </div>
+                        <div class="col">
+                            Rust
+                            <pre class="rust"><code data-trim><script type="text/template">
+    let mut v: Vec<i32> = vector_of_random_numbers();
+    v.iter_mut().for_each(|x| {
+        *x += 1;
+    });
+                            </script></code></pre>
+                        </div>
+                    </div>
+                    <p>&nbsp;</p>
+                    parallel for_each
+                    <div class="container">
+                        <div class="col">
+                            C++
+                            <pre class="cpp"><code data-trim><script type="text/template">
+  vector<int> v = vector_of_random_numbers();
+  for_each(execution::par, v.begin(), v.end(), [&](int &x) {
+    x += 1;
+  });
+                            </script></code></pre>
+                        </div>
+                        <div class="col">
+                            Rust
+                            <pre class="rust"><code data-trim><script type="text/template">
+    let mut v: Vec<i32> = vector_of_random_numbers();
+    v.par_iter_mut().for_each(|x| {
+        *x += 1;
+    });
+                            </script></code></pre>
+                        </div>
+                    </div>
+                </section>
+
+
+
+
+                <section>
+                    Add some shared data
+                    <div class="container">
+                        <div class="col">
+                            C++
+                            <pre class="cpp"><code data-trim><script type="text/template">
+  vector<int> v = vector_of_random_numbers();
+  int sum = 0;
+  for_each(execution::par, v.begin(), v.end(), [&](int &x) {
+    x += 1;
+    sum += x;
+  });
+                            </script></code></pre>
+                        </div>
+                        <div class="col">
+                            Rust
+                            <pre class="rust"><code data-trim><script type="text/template">
+    let mut v: Vec<i32> = vector_of_random_numbers();
+    let mut sum = 0;
+    v.par_iter_mut().for_each(|x| {
+        *x += 1;
+        sum += *x;
+    });
+                            </script></code></pre>
+                        </div>
+                    </div>
+                </section>
+                <section>
+                            Rust
+                            <pre class="rust"><code data-trim><script type="text/template">
+    let mut v: Vec<i32> = vector_of_random_numbers();
+    let mut sum = 0;
+    v.par_iter_mut().for_each(|x| {
+        *x += 1;
+        sum += *x;
+    });
+                            </script></code></pre>
+                            <pre><code data-trim><script type="text/template">
+error[E0594]: cannot assign to `sum`, as it is a captured variable in a `Fn` closure
+  --> src/main.rs:35:9
+   |
+35 |         sum += *x;
+   |         ^^^^^^^^^ cannot assign
+                            </script></code></pre>
+                </section>
+
+
+
+
+                <section>
+                    Mutex redux
+                    <div class="container">
+                        <div class="col">
+                            C++
+                            <pre class="cpp"><code data-trim><script type="text/template">
+  vector<int> v = vector_of_random_numbers();
+  int sum = 0;
+  mutex sum_lock;
+  for_each(execution::par, v.begin(), v.end(), [&](int &x) {
+    lock_guard<mutex> guard(sum_lock);
+    x += 1;
+    sum += x;
+  });
+                            </script></code></pre>
+                        </div>
+                        <div class="col">
+                            Rust
+                            <pre class="rust"><code data-trim><script type="text/template">
+    let mut v: Vec<i32> = vector_of_random_numbers();
+    let sum: Mutex<i32> = Mutex::new(0);
+    v.par_iter_mut().for_each(|x| {
+        *x += 1;
+        *sum.lock().unwrap() += *x;
+    });
+                            </script></code></pre>
+                        </div>
+                    </div>
+                </section>
+
+
+
+
+                <section>
+                    Atomics
+                    <div class="container">
+                        <div class="col">
+                            C++
+                            <pre class="cpp"><code data-trim><script type="text/template">
+  vector<int> v = vector_of_random_numbers();
+  atomic<int> sum = 0;
+  for_each(execution::par, v.begin(), v.end(), [&](int &x) {
+    x += 1;
+    sum.fetch_add(x, memory_order_relaxed);
+  });
+                            </script></code></pre>
+                        </div>
+                        <div class="col">
+                            Rust
+                            <pre class="rust"><code data-trim><script type="text/template">
+    let mut v: Vec<i32> = vector_of_random_numbers();
+    let sum: AtomicI32 = AtomicI32::new(0);
+    v.par_iter_mut().for_each(|x| {
+        *x += 1;
+        sum.fetch_add(*x, Ordering::Relaxed);
+    });
+                            </script></code></pre>
+                        </div>
+                    </div>
+                </section>
+
+
+
+                <section>
+                    <p>Fearless concurrency</p>
+                    <p class="fragment">Fearless borrowing</p>
+                    <p class="fragment">Fearless moves</p>
+                    <p class="fragment">Fearless destructors</p>
+                    <p class="fragment">Fearless systems programming</p>
+                </section>
+
+
+            </div>
+        </div>
+
+        <script src="dist/reveal.js"></script>
+        <script src="plugin/notes/notes.js"></script>
+        <script src="plugin/markdown/markdown.js"></script>
+        <script src="plugin/highlight/highlight.js"></script>
+        <script>
+            // More info about initialization & config:
+            // - https://revealjs.com/initialization/
+            // - https://revealjs.com/config/
+            Reveal.initialize({
+                hash: true,
+
+                width: "100%",
+                height: "100%",
+                margin: 0,
+
+                // Learn about plugins: https://revealjs.com/plugins/
+                plugins: [ RevealMarkdown, RevealHighlight, RevealNotes ]
+            });
+        </script>
+    </body>
+</html>
