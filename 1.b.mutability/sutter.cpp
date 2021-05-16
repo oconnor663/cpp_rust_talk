@@ -9,9 +9,7 @@ public:
   widget() : x(0) {}
 };
 
-void use(const widget &w) {
-  std::cout << w.x;
-}
+void use(const widget &w) { cout << w.x; }
 
 void g();
 
@@ -22,10 +20,6 @@ void f(widget &w) {
   use(w);
 }
 
-void g() {
-  g_p = make_shared<widget>();
-}
+void g() { g_p = make_shared<widget>(); }
 
-int main() {
-  f(*g_p);
-}
+int main() { f(*g_p); }

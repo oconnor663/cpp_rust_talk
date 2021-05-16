@@ -1,7 +1,9 @@
 #include <iostream>
 
+using namespace std;
+
 int main() {
-  std::string my_string = "abcdefghijklmnopqrstuvwxy";
-  std::string_view my_string_view = my_string + "z";
-  std::cout << my_string_view;
+  string my_string = "abcdefghijklmnopqrstuvwxy";
+  string_view my_string_view = my_string + "z";
+  cout << my_string_view;
 }

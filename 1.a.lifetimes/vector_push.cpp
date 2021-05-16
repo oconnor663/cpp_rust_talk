@@ -1,11 +1,13 @@
 #include <iostream>
 #include <vector>
 
+using namespace std;
+
 int main() {
-  std::vector<std::string_view> my_vector;
+  vector<string_view> my_vector;
   {
-    std::string my_string = "hello world";
+    string my_string = "hello world";
     my_vector.push_back(my_string);
   }
-  std::cout << my_vector[0];
+  cout << my_vector[0];
 }

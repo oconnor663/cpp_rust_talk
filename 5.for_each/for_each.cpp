@@ -13,7 +13,7 @@ vector<int> vector_of_random_numbers() {
   size_t len = 100'000;
   vector<int> v;
   for (size_t i = 0; i < len; i++) {
-    v.push_back(std::rand() % 100);
+    v.push_back(rand() % 100);
   }
   return v;
 }
@@ -26,16 +26,12 @@ void assert_sum(const char *name, const vector<int> &v, int sum) {
 
 void serial() {
   vector<int> v = vector_of_random_numbers();
-  for_each(v.begin(), v.end(), [&](int &x) {
-    x += 1;
-  });
+  for_each(v.begin(), v.end(), [&](int &x) { x += 1; });
 }
 
 void parallel() {
   vector<int> v = vector_of_random_numbers();
-  for_each(execution::par, v.begin(), v.end(), [&](int &x) {
-    x += 1;
-  });
+  for_each(execution::par, v.begin(), v.end(), [&](int &x) { x += 1; });
 }
 
 void with_counter() {
