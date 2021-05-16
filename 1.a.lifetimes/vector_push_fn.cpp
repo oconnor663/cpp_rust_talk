@@ -3,7 +3,9 @@
 
 using namespace std;
 
-void my_push_back(vector<string_view> &v, string_view s) { v.push_back(s); }
+void my_push_back(vector<string_view> &v, string_view s) {
+  v.push_back(s);
+}
 
 int main() {
   vector<string_view> my_vector;

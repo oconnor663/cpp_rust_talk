@@ -12,9 +12,7 @@ void file_close() {
 }
 
 void file_close_scope() {
-  {
-    fstream my_file("/dev/null");
-  }
+  { fstream my_file("/dev/null"); }
 }
 
 void file_close_method() {
