@@ -1,4 +1,6 @@
-use std::sync::{Arc, Mutex, MutexGuard, RwLock, RwLockReadGuard};
+use std::sync::{
+    Arc, Mutex, MutexGuard, RwLock, RwLockReadGuard,
+};
 use std::thread;
 
 #[cfg_attr(rustfmt, rustfmt_skip)]

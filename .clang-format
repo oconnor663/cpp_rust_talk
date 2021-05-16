@@ -1,1 +1,2 @@
 AllowShortFunctionsOnASingleLine: Empty
+ColumnLimit: 60

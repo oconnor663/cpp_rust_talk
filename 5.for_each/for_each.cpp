@@ -18,9 +18,11 @@ vector<int> vector_of_random_numbers() {
   return v;
 }
 
-void assert_sum(const char *name, const vector<int> &v, int sum) {
+void assert_sum(const char *name, const vector<int> &v,
+                int sum) {
   int actual_sum = accumulate(v.begin(), v.end(), 0);
-  cout << name << " expected: " << actual_sum << " reported: " << sum << endl;
+  cout << name << " expected: " << actual_sum
+       << " reported: " << sum << endl;
   assert(actual_sum == sum);
 }
 
@@ -31,7 +33,8 @@ void serial() {
 
 void parallel() {
   vector<int> v = vector_of_random_numbers();
-  for_each(execution::par, v.begin(), v.end(), [&](int &x) { x += 1; });
+  for_each(execution::par, v.begin(), v.end(),
+           [&](int &x) { x += 1; });
 }
 
 void with_counter() {
