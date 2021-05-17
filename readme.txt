@@ -82,6 +82,10 @@ borrowing to express higher-level invariants and enforce them at compile time.
               into *this"
     - Copy and Clone
     - https://stackoverflow.com/questions/22502606/why-is-stdlock-guard-not-movable
+    - https://old.reddit.com/r/rust/comments/k7pssg/do_the_compilers_really_create_more_optimal_code/getph0l/
+    - https://www.foonathan.net/2017/09/destructive-move/
+      - unique_ptr can be null (but references cannot)
+      - std::variant::valueless_by_exception
 
 3. case study: File
     - no such thing as a closed file
