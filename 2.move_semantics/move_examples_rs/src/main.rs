@@ -21,6 +21,18 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         dbg!(v);
     }
     {
+        let v1 = vec!["hello world".to_string()];
+        let s = &v1[0];
+        let v2 = v1;
+        dbg!(s);
+    }
+    {
+        let s1 = "abc".to_string();
+        let view = s1.as_str();
+        let s2 = s1;
+        dbg!(view);
+    }
+    {
         let file1 = File::open("/dev/null")?;
         let file2 = file1;
     }

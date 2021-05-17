@@ -3,6 +3,7 @@
 #include <iostream>
 #include <mutex>
 #include <string>
+#include <string_view>
 #include <vector>
 
 using namespace std;
@@ -17,7 +18,7 @@ int main() {
     cout << v[0];
   }
 
-  cout << endl;
+  cout << endl << "---------------------------" << endl;
 
   {
     string s1 = "abcdefghijklmnopqrstuvwxyz";
@@ -27,6 +28,28 @@ int main() {
     cout << s2;
     cout << v[0];
   }
+
+  cout << endl << "---------------------------" << endl;
+
+  {
+    vector<string> v1 = {"hello world"};
+    string &s = v1[0];
+    vector<string> v2 = move(v1);
+    cout << s;
+  }
+
+  cout << endl << "---------------------------" << endl;
+
+  {
+    string s1("abc");
+    string_view view(s1);
+    string s2 = move(s1);
+    cout << view;
+    s1 = "abcdefghijklmnopqrstuvwxyz";
+    cout << view;
+  }
+
+  cout << endl << "---------------------------" << endl;
 
   {
     fstream file1("/dev/null");
@@ -44,8 +67,8 @@ int main() {
   }
 
   {
-    mutex mutex;
-    lock_guard<mutex> guard1(mutex);
+    mutex mutex1;
+    lock_guard<mutex> guard1(mutex1);
     // lock_guard<mutex> guard2 = move(guard1);
   }
 }
