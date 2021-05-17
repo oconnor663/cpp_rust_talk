@@ -107,6 +107,10 @@ borrowing to express higher-level invariants and enforce them at compile time.
     - Arc<Mutex<T>> is surprisingly convenient
     - RwLock and taking the wrong kind
     - Curiously Recurring C++ Bugs at Facebook, unique_lock bug https://youtu.be/lkgszkPnV8g?t=1750
+    - different method signatures:
+      - https://doc.rust-lang.org/std/thread/fn.spawn.html
+      - https://docs.rs/rayon/1.5.0/rayon/iter/trait.ParallelIterator.html#method.for_each
+      - Rust doesn't actually know what these do on the inside
 
 5. multithreading and closures
     - BIG IDEA: THE TYPE SYSTEM TRACKS THREAD SAFETY
