@@ -84,8 +84,16 @@ borrowing to express higher-level invariants and enforce them at compile time.
     - https://stackoverflow.com/questions/22502606/why-is-stdlock-guard-not-movable
     - https://old.reddit.com/r/rust/comments/k7pssg/do_the_compilers_really_create_more_optimal_code/getph0l/
     - https://www.foonathan.net/2017/09/destructive-move/
-      - unique_ptr can be null (but references cannot)
-      - std::variant::valueless_by_exception
+    - high level tradeoffs:
+        - unique_ptr (and std::variant)
+            - C++ unique_ptr must hold null, which is annoying and also a branch in the dtor.
+            - std::variant::valueless_by_exception
+        - Mutex
+            - Rust must heap allocate std::sync::Mutex (though parking lot also exists)
+            - C++ can't make lock_guard movable without adding a branch
+        - strings
+            - Rust can't use GCC's version of the small string optimization: https://youtu.be/kPR8h4-qZdk?t=1637
+            - GCC can't use memcpy to resize std::vector<std::string>
 
 3. case study: File
     - no such thing as a closed file
