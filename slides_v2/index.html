@@ -86,7 +86,7 @@ Mutable references are unique. No mutable aliasing.
     int my_int = 5;
     my_int_ptr = &my_int;
   }
-  std::cout << *my_int_ptr;
+  cout << *my_int_ptr;
                             </script></code></pre>
                         </div>
                         <div class="col">
@@ -110,7 +110,7 @@ Mutable references are unique. No mutable aliasing.
     int my_int = 5;
     my_int_ptr = &my_int;
   }
-  std::cout << *my_int_ptr;
+  cout << *my_int_ptr;
                             </script></code></pre>
                             <pre><code data-trim><script type="text/template">
 ==22092==ERROR: AddressSanitizer: stack-use-after-scope on address 0x7fff2648dfe0 at pc 0x557a54f3a306 bp 0x7fff2648dfa0 sp 0x7fff2648df90
@@ -152,9 +152,9 @@ error[E0597]: `my_int` does not live long enough
                         <div class="col">
                             C++
                             <pre class="cpp"><code data-trim><script type="text/template">
-  std::string my_string = "abcdefghijklmnopqrstuvwxy";
-  std::string_view my_string_view = my_string + "z";
-  std::cout << my_string_view;
+  string my_string = "abcdefghijklmnopqrstuvwxy";
+  string_view my_string_view = my_string + "z";
+  cout << my_string_view;
                             </script></code></pre>
                         </div>
                         <div class="col">
@@ -170,9 +170,9 @@ error[E0597]: `my_int` does not live long enough
                 <section>
                             C++
                             <pre class="cpp"><code data-trim><script type="text/template">
-  std::string my_string = "abcdefghijklmnopqrstuvwxy";
-  std::string_view my_string_view = my_string + "z";
-  std::cout << my_string_view;
+  string my_string = "abcdefghijklmnopqrstuvwxy";
+  string_view my_string_view = my_string + "z";
+  cout << my_string_view;
                             </script></code></pre>
                             <pre><code data-trim><script type="text/template">
 ==24774==ERROR: AddressSanitizer: heap-use-after-free on address 0x6060000000e0 at pc 0x7f63fa6020b6 bp 0x7fff1828aa30 sp 0x7fff1828a1d8
@@ -221,12 +221,12 @@ error[E0716]: temporary value dropped while borrowed
                         <div class="col">
                             C++
                             <pre class="cpp"><code data-trim><script type="text/template">
-  std::vector<std::string_view> my_vector;
+  vector<string_view> my_vector;
   {
-    std::string my_string = "hello world";
+    string my_string = "hello world";
     my_vector.push_back(my_string);
   }
-  std::cout << my_vector[0];
+  cout << my_vector[0];
                             </script></code></pre>
                         </div>
                         <div class="col">
@@ -245,12 +245,12 @@ error[E0716]: temporary value dropped while borrowed
                 <section>
                             C++
                             <pre class="cpp"><code data-trim><script type="text/template">
-  std::vector<std::string_view> my_vector;
+  vector<string_view> my_vector;
   {
-    std::string my_string = "hello world";
+    string my_string = "hello world";
     my_vector.push_back(my_string);
   }
-  std::cout << my_vector[0];
+  cout << my_vector[0];
                             </script></code></pre>
                             <pre><code data-trim><script type="text/template">
 ==27916==ERROR: AddressSanitizer: stack-use-after-scope on address 0x7ffeabade130 at pc 0x7f260741b0b6 bp 0x7ffeabaddf30 sp 0x7ffeabadd6d8
@@ -300,18 +300,17 @@ error[E0597]: `my_string` does not live long enough
                         <div class="col">
                             C++
                             <pre class="cpp"><code data-trim><script type="text/template">
-void my_push_back(std::vector<std::string_view> &v,
-                  std::string_view s) {
+void my_push_back(vector<string_view> &v, string_view s) {
   v.push_back(s);
 }
 
 int main() {
-  std::vector<std::string_view> my_vector;
+  vector<string_view> my_vector;
   {
-    std::string my_string = "hello world";
+    string my_string = "hello world";
     my_push_back(my_vector, my_string);
   }
-  std::cout << my_vector[0];
+  cout << my_vector[0];
 }
                             </script></code></pre>
                         </div>
@@ -337,18 +336,17 @@ fn main() {
                 <section>
                             C++
                             <pre class="cpp"><code data-trim><script type="text/template">
-void my_push_back(std::vector<std::string_view> &v,
-                  std::string_view s) {
+void my_push_back(vector<string_view> &v, string_view s) {
   v.push_back(s);
 }
 
 int main() {
-  std::vector<std::string_view> my_vector;
+  vector<string_view> my_vector;
   {
-    std::string my_string = "hello world";
+    string my_string = "hello world";
     my_push_back(my_vector, my_string);
   }
-  std::cout << my_vector[0];
+  cout << my_vector[0];
 }
                             </script></code></pre>
                             <pre><code data-trim><script type="text/template">
@@ -522,7 +520,7 @@ error[E0499]: cannot borrow `my_int` as mutable more than once at a time
                         <div class="col">
                             C++
                             <pre class="cpp"><code data-trim><script type="text/template">
-  std::array<char, 2> char_array = {'a', 'b'};
+  array<char, 2> char_array = {'a', 'b'};
   char &first_element = char_array[0];
   const char &second_element = char_array[1];
   first_element = second_element;
@@ -615,13 +613,13 @@ error[E0502]: cannot borrow `char_array[_]` as immutable because it is also borr
                         <div class="col">
                             C++
                             <pre class="cpp"><code data-trim><script type="text/template">
-void push_int_twice(std::vector<int> &v, const int &n) {
+void push_int_twice(vector<int> &v, const int &n) {
   v.push_back(n);
   v.push_back(n);
 }
 
 int main() {
-  std::vector<int> my_vector = {0};
+  vector<int> my_vector = {0};
   const int &my_int_reference = my_vector[0];
   push_int_twice(my_vector, my_int_reference);
 }
@@ -647,13 +645,13 @@ fn main() {
                 <section>
                             C++
                             <pre class="cpp"><code data-trim><script type="text/template">
-void push_int_twice(std::vector<int> &v, const int &n) {
+void push_int_twice(vector<int> &v, const int &n) {
   v.push_back(n);
   v.push_back(n);
 }
 
 int main() {
-  std::vector<int> my_vector = {0};
+  vector<int> my_vector = {0};
   const int &my_int_reference = my_vector[0];
   push_int_twice(my_vector, my_int_reference);
 }
@@ -849,11 +847,11 @@ Moves are destructive bitwise copies.
                         <div class="col">
                             C++
                             <pre class="cpp"><code data-trim><script type="text/template">
-  std::vector<int> a = {1, 2, 3, 4, 5, 6};
-  std::vector<int> b = a;
-  std::vector<int> c = std::move(a);
+  vector<int> a = {1, 2, 3, 4, 5, 6};
+  vector<int> b = a;
+  vector<int> c = move(a);
                             </script></code></pre>
-                            <u>three</u> std::vector destructors fire
+                            <u>three</u> vector destructors fire
                         </div>
                         <div class="col">
                             Rust
@@ -878,12 +876,12 @@ Moves are destructive bitwise copies.
                         <div class="col">
                             C++
                             <pre class="cpp"><code data-trim><script type="text/template">
-  std::string my_string = "abcdefghijklmnopqrstuvwxyz";
-  std::vector<std::string> my_vector;
+  string my_string = "abcdefghijklmnopqrstuvwxyz";
+  vector<string> my_vector;
   my_vector.push_back(my_string);
-  my_vector.push_back(std::move(my_string));
+  my_vector.push_back(move(my_string));
                             </script></code></pre>
-                            <u>three</u> std::string destructors fire
+                            <u>three</u> string destructors fire
                         </div>
                         <div class="col">
                             Rust
@@ -1149,7 +1147,7 @@ error[E0509]: cannot move out of type which
       lock_guard<mutex> guard(my_mutex);
       my_string += "some characters";
     });
-    thread_handles.push_back(std::move(thread_handle));
+    thread_handles.push_back(move(thread_handle));
   }
   for (auto &thread_handle : thread_handles) {
     thread_handle.join();
@@ -1223,7 +1221,7 @@ error[E0373]: closure may outlive the current function, but it borrows `my_strin
       lock_guard<mutex> guard(my_pair->first);
       my_pair->second += "some characters";
     });
-    thread_handles.push_back(std::move(thread_handle));
+    thread_handles.push_back(move(thread_handle));
   }
   for (auto &thread_handle : thread_handles) {
     thread_handle.join();
@@ -1269,7 +1267,7 @@ error[E0373]: closure may outlive the current function, but it borrows `my_strin
     thread thread_handle([=] {
       my_pair->second += "some characters";
     });
-    thread_handles.push_back(std::move(thread_handle));
+    thread_handles.push_back(move(thread_handle));
   }
   for (auto &thread_handle : thread_handles) {
     thread_handle.join();
@@ -1305,7 +1303,7 @@ error[E0373]: closure may outlive the current function, but it borrows `my_strin
     thread thread_handle([=] {
       my_pair->second += "some characters";
     });
-    thread_handles.push_back(std::move(thread_handle));
+    thread_handles.push_back(move(thread_handle));
   }
   for (auto &thread_handle : thread_handles) {
     thread_handle.join();
@@ -1372,7 +1370,7 @@ error[E0596]: cannot borrow data in an `Arc` as mutable
       shared_lock<shared_mutex> guard(my_pair->first);
       my_pair->second += "some characters";
     });
-    thread_handles.push_back(std::move(thread_handle));
+    thread_handles.push_back(move(thread_handle));
   }
   for (auto &thread_handle : thread_handles) {
     thread_handle.join();
@@ -1452,7 +1450,7 @@ error[E0596]: cannot borrow data in a dereference of `RwLockReadGuard<'_, String
       }
       *smuggled_ptr += "some characters";
     });
-    thread_handles.push_back(std::move(thread_handle));
+    thread_handles.push_back(move(thread_handle));
   }
   for (auto &thread_handle : thread_handles) {
     thread_handle.join();
@@ -1532,7 +1530,7 @@ error[E0505]: cannot move out of `guard` because it is borrowed
       unique_lock<mutex>(my_mutex);
       my_string += "some characters";
     });
-    thread_handles.push_back(std::move(thread_handle));
+    thread_handles.push_back(move(thread_handle));
   }
   for (auto &thread_handle : thread_handles) {
     thread_handle.join();
@@ -1550,7 +1548,7 @@ error[E0505]: cannot move out of `guard` because it is borrowed
       unique_lock<mutex> guard(my_mutex);
       my_string += "some characters";
     });
-    thread_handles.push_back(std::move(thread_handle));
+    thread_handles.push_back(move(thread_handle));
   }
   for (auto &thread_handle : thread_handles) {
     thread_handle.join();
