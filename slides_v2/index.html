@@ -75,7 +75,7 @@ Mutable references are unique. No mutable aliasing.
                  </textarea></section>
 
 
-                <section>
+                <section style="font-size: 2em">
                     A dangling pointer
                     <div class="container">
                         <div class="col">
@@ -102,7 +102,7 @@ Mutable references are unique. No mutable aliasing.
                         </div>
                     </div>
                 </section>
-                <section>
+                <section style="font-size: 1.5em">
                     C++
                             <pre class="cpp"><code data-trim><script type="text/template">
   int *my_int_ptr;
@@ -121,7 +121,7 @@ READ of size 4 at 0x7fff2648dfe0 thread T0
                             </script></code></pre>
                 </section>
 
-                <section>
+                <section style="font-size: 1.5em">
                     Rust
                             <pre class="rust"><code data-trim><script type="text/template">
     let my_int_ptr: &i32;
@@ -146,7 +146,7 @@ error[E0597]: `my_int` does not live long enough
 
 
 
-                <section>
+                <section style="font-size: 1.2em">
                     A borrowing view
                     <div class="container">
                         <div class="col">
@@ -215,7 +215,7 @@ error[E0716]: temporary value dropped while borrowed
 
 
 
-                <section>
+                <section style="font-size: 1.5em">
                     Views in a vector
                     <div class="container">
                         <div class="col">
@@ -242,7 +242,7 @@ error[E0716]: temporary value dropped while borrowed
                         </div>
                     </div>
                 </section>
-                <section>
+                <section style="font-size: 1.5em">
                             C++
                             <pre class="cpp"><code data-trim><script type="text/template">
   vector<string_view> my_vector;
@@ -268,8 +268,7 @@ ng_view<char, std::char_traits<char> >) (/home/jacko/cpp_rust_talk/1.a.lifetimes
     #7 0x55b1c18dd32d in _start (/home/jacko/cpp_rust_talk/1.a.lifetimes/vector_push+0x232d)
                             </script></code></pre>
                 </section>
-
-                <section>
+                <section style="font-size: 1.5em">
                             Rust
                             <pre class="rust"><code data-trim><script type="text/template">
     let mut my_vector: Vec<&str> = Vec::new();
@@ -294,7 +293,7 @@ error[E0597]: `my_string` does not live long enough
 
 
 
-                <section>
+                <section style="font-size: 1.2em">
                     Views in a vector, in another function (part 1)
                     <div class="container">
                         <div class="col">
@@ -333,7 +332,7 @@ fn main() {
                         </div>
                     </div>
                 </section>
-                <section>
+                <section style="font-size: 1.2em">
                             C++
                             <pre class="cpp"><code data-trim><script type="text/template">
 void my_push_back(vector<string_view> &v, string_view s) {
@@ -365,8 +364,7 @@ ng_view<char, std::char_traits<char> >) (/home/jacko/cpp_rust_talk/1.a.lifetimes
     #7 0x5581bb9bb32d in _start (/home/jacko/cpp_rust_talk/1.a.lifetimes/vector_push_fn+0x232d) 
                             </script></code></pre>
                 </section>
-
-                <section>
+                <section style="font-size: 1.2em">
                             Rust
                             <pre class="rust"><code data-trim><script type="text/template">
 fn my_push_back(v: &mut Vec<&str>, s: &str) {
@@ -395,7 +393,7 @@ error[E0623]: lifetime mismatch
 
 
 
-                <section>
+                <section style="font-size: 1.2em">
                     Views in a vector, in another function (part 2)
                     <div class="container">
                         <div class="col">
@@ -434,7 +432,7 @@ fn main() {
                         </div>
                     </div>
                 </section>
-                <section>
+                <section style="font-size: 1.2em">
                             Rust (with explicit lifetimes)
                             <pre class="rust"><code data-trim><script type="text/template">
 fn my_push_back<'a>(v: &mut Vec<&'a str>, s: &'a str) {
