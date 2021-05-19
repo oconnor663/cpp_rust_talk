@@ -12,6 +12,9 @@
 
         <!-- Theme used for syntax highlighted code -->
         <link rel="stylesheet" href="plugin/highlight/solarized-dark.css" id="highlight-theme">
+
+        <link rel="preconnect" href="https://fonts.gstatic.com">
+        <link href="https://fonts.googleapis.com/css2?family=Ubuntu+Mono&display=swap" rel="stylesheet">
 <style>
 .container{
     display: flex;
@@ -23,6 +26,10 @@ tt{
     background-color: #eee8d5;
     padding: 0 .1em;
     border-radius: .2em;
+    font-family: 'Ubuntu Mono', monospace;
+}
+.reveal code{
+    font-family: 'Ubuntu Mono', monospace;
 }
 </style>
     </head>
@@ -30,29 +37,29 @@ tt{
         <div class="reveal">
             <div class="slides">
                 <section>
-                    <h1>A <span style="color: red">Firehose</span> of Rust<br/>for C++ Programmers</h1>
+                    <h1>Four Big Ideas</h1>
+                    <h2>A <span style="color: red">Firehose</span> of Rust for C++ Programmers</h2>
                 </section>
 
                 <section data-markdown><textarea data-template>
-Rust is a big language. We don't have time to talk about:
+Rust is a big language. We won't get to:
 
 - syntax
-- slices (i.e. borrowing views)
-- iterators
-- enums (i.e. tagged unions) and Option
-- error handling with Result, ?, and panics
-- traits, polymorphism, static and dynamic dispatch
-- unsafe code
-- futures (i.e. coroutines) and async IO
-- managing dependencies with Cargo
+- enums (tagged unions) and <tt>Option</tt>
+- error handling with <tt>Result</tt> and <tt>?</tt>
+- generics (templates) and traits
+- <tt>extern</tt> and interoperating with C
+- Cargo
                  </textarea></section>
 
                 <section data-markdown><textarea data-template>
 # References
 
-**shared references**, <tt>&T</tt>, are like <tt>const</tt> pointers in C/C++.
+**shared references**, <tt>&T</tt>, like <tt>const</tt> pointers in C/C++
 
-**mutable references**, <tt>&mut T</tt>, are like non-<tt>const</tt> pointers in C/C++.
+**mutable references**, <tt>&mut T</tt>, like non-<tt>const</tt> pointers in C/C++
+
+References don't keep things alive. There is no garbage collector.
 
 ## BIG IDEA #1
 
@@ -60,7 +67,7 @@ References are always valid. No dangling pointers.
 
 ## BIG IDEA #2
 
-Mutable references are unique. No aliasing.
+Mutable references are unique. No mutable aliasing.
                  </textarea></section>
 
 
