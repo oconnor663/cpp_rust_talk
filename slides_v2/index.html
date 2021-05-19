@@ -19,6 +19,11 @@
 .col{
     flex: 1;
 }
+tt{
+    background-color: #eee8d5;
+    padding: 0 .1em;
+    border-radius: .2em;
+}
 </style>
     </head>
     <body>
@@ -45,10 +50,17 @@ Rust is a big language. We don't have time to talk about:
                 <section data-markdown><textarea data-template>
 # References
 
-- <tt style="background-color: lightgray">&T</tt> in Rust is like <tt style="background-color: lightgray">const T*</tt> and <tt style="background-color: lightgray">const T&</tt> in C++.
-- <tt style="background-color: lightgray">&mut T</tt> in Rust is like <tt style="background-color: lightgray">T*</tt> and <tt style="background-color: lightgray">T&</tt> in C++.
-- References <em>never</em> dangle.
-- <tt style="background-color: lightgray">&mut T</tt> is <em>never</em> aliased.
+**shared references**, <tt>&T</tt>, are like <tt>const</tt> pointers in C/C++.
+
+**mutable references**, <tt>&mut T</tt>, are like non-<tt>const</tt> pointers in C/C++.
+
+## BIG IDEA #1
+
+References are always valid. No dangling pointers.
+
+## BIG IDEA #2
+
+Mutable references are unique. No aliasing.
                  </textarea></section>
 
 
@@ -781,7 +793,7 @@ error[E0502]: cannot borrow `g_p` as mutable because it is also borrowed as immu
 
 
                 <section>
-                    <p>Herb Sutter's aliased <tt style="background-color: lightgray">shared_ptr</tt> pitfall</p>
+                    <p>Herb Sutter's aliased <tt>shared_ptr</tt> pitfall</p>
 
                     <iframe width="1120" height="630" src="https://www.youtube.com/embed/xnqTKD8uD64?start=1380" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
                 </section>
@@ -794,7 +806,7 @@ error[E0502]: cannot borrow `g_p` as mutable because it is also borrowed as immu
 - Assignment, parameter passing, and return are all moves.
 - Moves are bitwise shallow copies.
 - Moves are destructive.
-- (Except for <tt style="background-color: lightgray">Copy</tt> types like integers.)
+- (Except for <tt>Copy</tt> types like integers.)
                  </textarea></section>
 
 
