@@ -463,7 +463,7 @@ error[E0597]: `my_string` does not live long enough
 
 
 
-                <section>
+                <section style="font-size: 2em">
                     Mutable aliasing
                     <div class="container">
                         <div class="col">
@@ -488,7 +488,7 @@ error[E0597]: `my_string` does not live long enough
                         </div>
                     </div>
                 </section>
-                <section>
+                <section style="font-size: 1.5em">
                     Rust
                             <pre class="rust"><code data-trim><script type="text/template">
     let mut my_int = 5;
@@ -512,7 +512,7 @@ error[E0499]: cannot borrow `my_int` as mutable more than once at a time
 
 
 
-                <section>
+                <section style="font-size: 1.5em">
                     Multiple references into an array
                     <div class="container">
                         <div class="col">
@@ -535,7 +535,7 @@ error[E0499]: cannot borrow `my_int` as mutable more than once at a time
                         </div>
                     </div>
                 </section>
-                <section>
+                <section style="font-size: 1.5em">
                     Rust
                             <pre class="rust"><code data-trim><script type="text/template">
     let mut char_array: [char; 2] = ['a', 'b'];
@@ -555,7 +555,7 @@ error[E0502]: cannot borrow `char_array[_]` as immutable because it is also borr
   |     -------------------------------- mutable borrow later used here
                             </script></code></pre>
                 </section>
-                <section>
+                <section style="font-size: 1.3em">
                     There's more than one way to do it
                     <div class="container">
                         <div class="col">
@@ -605,7 +605,7 @@ error[E0502]: cannot borrow `char_array[_]` as immutable because it is also borr
 
 
 
-                <section>
+                <section style="font-size: 1.4em">
                     Invalidating a reference by reallocating
                     <div class="container">
                         <div class="col">
@@ -640,7 +640,7 @@ fn main() {
                         </div>
                     </div>
                 </section>
-                <section>
+                <section style="font-size: 1.4em">
                             C++
                             <pre class="cpp"><code data-trim><script type="text/template">
 void push_int_twice(vector<int> &v, const int &n) {
@@ -663,8 +663,7 @@ home/jacko/cpp_rust_talk/1.b.mutability/vector_invalidate+0x1d9b)               
     #6 0x7f1db0fa8b24 in __libc_start_main (/usr/lib/libc.so.6+0x27b24)                                                                                                                            #7 0x5629133861bd in _start (/home/jacko/cpp_rust_talk/1.b.mutability/vector_invalidate+0x11bd)
                             </script></code></pre>
                 </section>
-
-                <section>
+                <section style="font-size: 1.4em">
                             Rust
                             <pre class="rust"><code data-trim><script type="text/template">
 fn push_int_twice(v: &mut Vec<i32>, n: &i32) {
