@@ -32,9 +32,7 @@ tt{
     font-family: 'Ubuntu Mono', monospace;
 }
 .wrap {
-    width: 55%;
-    margin-left: auto;
-    margin-right: auto;
+    display: inline-block;
     text-align: left;
 }
 </style>
@@ -821,7 +819,8 @@ error[E0502]: cannot borrow `g_p` as mutable because it is also borrowed as immu
 <p>
 
 <div class="wrap">
-By-value operations (like assignment, parameter passing, and returning) on <tt>Copy</tt> types are bitwise copies, like in C.
+    By-value operations (like assignment, parameter passing,<br>
+    and returning) on <tt>Copy</tt> types are bitwise copies, like in C.
 </div>
 
 <p>
@@ -829,7 +828,8 @@ By-value operations (like assignment, parameter passing, and returning) on <tt>C
 ## BIG IDEA #3
 
 <div class="wrap">
-For non-<tt>Copy</tt> types like <tt>Vec<i32></tt> and <tt>&mut T</tt>, by-value operations are moves. Everything is movable.
+    For non-<tt>Copy</tt> types like <tt>Vec&amp;lt;i32&amp;gt;</tt> and <tt>&mut T</tt>, by-value<br>
+    operations are moves. Everything is movable.
 </div>
 
 <p>
