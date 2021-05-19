@@ -803,10 +803,18 @@ error[E0502]: cannot borrow `g_p` as mutable because it is also borrowed as immu
                 <section data-markdown><textarea data-template>
 # Move Semantics
 
-- Assignment, parameter passing, and return are all moves.
-- Moves are bitwise shallow copies.
-- Moves are destructive.
-- (Except for <tt>Copy</tt> types like integers.)
+"Plain old data" types like <tt>i32</tt>, <tt>[i32; N]</tt>, and <tt>&T</tt> are <tt>Copy</tt>.
+
+By-value operations (like assignment, parameter passing,<br>and returning) on <tt>Copy</tt> types are bitwise copies.
+
+## BIG IDEA #3
+
+For non-<tt>Copy</tt> types like <tt>Vec\<i32\></tt> and <tt>&mut T</tt>,<br>
+by-value operations are moves. Everything is movable.
+
+## BIG IDEA #4
+
+Moves are destructive bitwise copies.
                  </textarea></section>
 
 
