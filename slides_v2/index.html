@@ -146,32 +146,38 @@ error[E0597]: `my_int` does not live long enough
 
 
 
-                <section style="font-size: 1.2em">
+                <section style="font-size: 1.5em">
                     A borrowing view
                     <div class="container">
                         <div class="col">
                             C++
                             <pre class="cpp"><code data-trim><script type="text/template">
-  string my_string = "abcdefghijklmnopqrstuvwxy";
-  string_view my_string_view = my_string + "z";
+  string my_string =
+      "abcdefghijklmnopqrstuvwxy";
+  string_view my_string_view =
+      my_string + "z";
   cout << my_string_view;
                             </script></code></pre>
                         </div>
                         <div class="col">
                             Rust
                             <pre class="rust"><code data-trim><script type="text/template">
-    let my_string: String = "abcdefghijklmnopqrstuvwxy".to_string();
-    let my_string_view: &str = (my_string + "z").as_str();
+    let my_string: String =
+        "abcdefghijklmnopqrstuvwxy".to_string();
+    let my_string_view: &str =
+        (my_string + "z").as_str();
     dbg!(my_string_view);
                             </script></code></pre>
                         </div>
                     </div>
                 </section>
-                <section>
+                <section style="font-size: 1.5em">
                             C++
                             <pre class="cpp"><code data-trim><script type="text/template">
-  string my_string = "abcdefghijklmnopqrstuvwxy";
-  string_view my_string_view = my_string + "z";
+  string my_string =
+      "abcdefghijklmnopqrstuvwxy";
+  string_view my_string_view =
+      my_string + "z";
   cout << my_string_view;
                             </script></code></pre>
                             <pre><code data-trim><script type="text/template">
@@ -191,22 +197,24 @@ ng_view<char, std::char_traits<char> >) (/home/jacko/cpp_rust_talk/1.a.lifetimes
                             </script></code></pre>
                 </section>
 
-                <section>
+                <section style="font-size: 1.4em">
                             Rust
                             <pre class="rust"><code data-trim><script type="text/template">
-    let my_string: String = "abcdefghijklmnopqrstuvwxy".to_string();
-    let my_string_view: &str = (my_string + "z").as_str();
+    let my_string: String =
+        "abcdefghijklmnopqrstuvwxy".to_string();
+    let my_string_view: &str =
+        (my_string + "z").as_str();
     dbg!(my_string_view);
                             </script></code></pre>
                             <pre style="width: 90%"><code data-trim><script type="text/template">
 error[E0716]: temporary value dropped while borrowed
- --> src/main.rs:3:32
+ --> src/main.rs:5:9
   |
-3 |     let my_string_view: &str = (my_string + "z").as_str();
-  |                                ^^^^^^^^^^^^^^^^^         - temporary value is freed at the end of this statement
-  |                                |
-  |                                creates a temporary which is freed while still in use
-4 |     dbg!(my_string_view);
+5 |         (my_string + "z").as_str();
+  |         ^^^^^^^^^^^^^^^^^         - temporary value is freed at the end of this statement
+  |         |
+  |         creates a temporary which is freed while still in use
+6 |     dbg!(my_string_view);
   |          -------------- borrow later used here
   |
   = note: consider using a `let` binding to create a longer lived value
