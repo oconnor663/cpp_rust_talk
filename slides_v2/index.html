@@ -848,6 +848,23 @@ error[E0502]: cannot borrow `my_vector` as mutable because it is also borrowed a
 
 
 
+
+                <section style="font-size: 2em">
+                    How does Rust know?
+                    <div style="width: 50%; margin: 1em auto">
+                            <pre class="rust"><code data-trim><script type="text/template">
+    fn for_each<OP>(self, op: OP)
+    where
+        OP: Fn(Self::Item) + Sync + Send,
+    {
+        for_each::for_each(self, &op)
+    }
+                            </script></code></pre>
+                    </div>
+                </section>
+
+
+
                 <section data-markdown><textarea data-template>
 # Move Semantics
 
