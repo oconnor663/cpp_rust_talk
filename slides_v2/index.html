@@ -1571,7 +1571,7 @@ error[E0596]: cannot borrow data in a dereference of `RwLockReadGuard<'_, String
                     <div class="container">
                         <div class="col">
                             C++
-                            <pre class="cpp"><code data-trim data-line-numbers="|6,9"><script type="text/template">
+                            <pre class="cpp"><code data-trim data-line-numbers="|6-11"><script type="text/template">
   shared_ptr<pair<mutex, string>> my_pair =
       make_shared<pair<mutex, string>>();
   vector<thread> thread_handles;
@@ -1593,7 +1593,7 @@ error[E0596]: cannot borrow data in a dereference of `RwLockReadGuard<'_, String
                         </div>
                         <div class="col">
                             Rust
-                            <pre class="rust"><code data-trim data-line-numbers="|8-9"><script type="text/template">
+                            <pre class="rust"><code data-trim data-line-numbers="|7-10"><script type="text/template">
     let my_string: Arc<Mutex<String>> =
         Arc::new(Mutex::new(String::new()));
     let mut thread_handles = Vec::new();
@@ -1616,7 +1616,7 @@ error[E0596]: cannot borrow data in a dereference of `RwLockReadGuard<'_, String
                 </section>
                 <section>
                             Rust
-                            <pre class="rust"><code data-trim data-line-numbers="8-9"><script type="text/template">
+                            <pre class="rust"><code data-trim data-line-numbers="7-10"><script type="text/template">
     let my_string: Arc<Mutex<String>> =
         Arc::new(Mutex::new(String::new()));
     let mut thread_handles = Vec::new();
