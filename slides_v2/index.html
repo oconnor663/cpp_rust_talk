@@ -752,6 +752,94 @@ error[E0502]: cannot borrow `my_vector` as mutable because it is also borrowed a
 
 
 
+                <section>
+                    Tragical multithreading
+                    <div class="container">
+                        <div class="col">
+                            <p>C++</p>
+                            <p><tt>for</tt> loop</p>
+                            <pre class="cpp"><code data-trim><script type="text/template">
+  vector<int> v = vector_of_ints();
+  int sum = 0;
+  for (auto &x : v) {
+    x++;
+    sum += x;
+  }
+                            </script></code></pre>
+                            <p>serial <tt>for_each</tt></p>
+                            <pre class="cpp"><code data-trim><script type="text/template">
+  vector<int> v = vector_of_ints();
+  int sum = 0;
+  for_each(v.begin(), v.end(), [&](int &x) {
+    x++;
+    sum += x;
+  });
+                            </script></code></pre>
+                            <p>C++17 parallel <tt>for_each</tt></p>
+                            <pre class="cpp"><code data-trim><script type="text/template">
+  vector<int> v = vector_of_ints();
+  int sum = 0;
+  for_each(execution::par, v.begin(), v.end(), [&](int &x) {
+    x++;
+    sum += x;
+  });
+                            </script></code></pre>
+                        </div>
+                        <div class="col">
+                            <p>Rust</p>
+                            <p><tt>for</tt> loop</p>
+                            <pre class="rust"><code data-trim><script type="text/template">
+    let mut v: Vec<i32> = vector_of_ints();
+    let mut sum = 0;
+    for x in &mut v {
+        *x += 1;
+        sum += *x;
+    }
+                            </script></code></pre>
+                            <p>serial <tt>for_each</tt></p>
+                            <pre class="rust"><code data-trim><script type="text/template">
+    let mut v: Vec<i32> = vector_of_ints();
+    let mut sum = 0;
+    v.iter_mut().for_each(|x| {
+        *x += 1;
+        sum += *x;
+    });
+                            </script></code></pre>
+                            <p>Rayon parallel <tt>for_each</tt></p>
+                            <pre class="rust"><code data-trim><script type="text/template">
+    let mut v: Vec<i32> = vector_of_ints();
+    let mut sum = 0;
+    v.par_iter_mut().for_each(|x| {
+        *x += 1;
+        sum += *x;
+    });
+                            </script></code></pre>
+                        </div>
+                    </div>
+                </section>
+                <section style="font-size: 1.5em">
+                    Rayon parallel <tt>for_each</tt>
+                            <pre class="rust"><code data-trim><script type="text/template">
+    let mut v: Vec<i32> = vector_of_ints();
+    let mut sum = 0;
+    v.par_iter_mut().for_each(|x| {
+        *x += 1;
+        sum += *x;
+    });
+                            </script></code></pre>
+                            <pre style="width: 90%"><code data-trim><script type="text/template">
+   error[E0594]: cannot assign to `sum`, as it is a captured variable in a `Fn` closure
+  --> src/main.rs:62:9
+   |
+62 |         sum += *x;
+   |         ^^^^^^^^^ cannot assign
+                            </script></code></pre>
+                </section>
+
+
+
+
+
                 <section style="font-size: 1.5em">
                     <p>Herb Sutter's aliased <tt>shared_ptr</tt> pitfall</p>
 
