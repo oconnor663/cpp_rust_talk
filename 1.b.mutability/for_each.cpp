@@ -35,14 +35,14 @@ void loop() {
 
 void serial() {
   vector<int> v = vector_of_ints();
-  for_each(v.begin(), v.end(), [&](int &x) {
+  for_each(v.begin(), v.end(), [](int &x) {
     x++;
   });
 }
 
 void parallel() {
   vector<int> v = vector_of_ints();
-  for_each(execution::par, v.begin(), v.end(), [&](int &x) {
+  for_each(execution::par, v.begin(), v.end(), [](int &x) {
     x++;
   });
 }
