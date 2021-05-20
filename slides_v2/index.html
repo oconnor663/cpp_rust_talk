@@ -694,6 +694,64 @@ error[E0502]: cannot borrow `my_vector` as mutable because it is also borrowed a
 
 
 
+                <section style="font-size: 1em">
+                    Magical multithreading
+                    <div class="container">
+                        <div class="col">
+                            <p>C++</p>
+                            <p><tt>for</tt> loop</p>
+                            <pre class="cpp"><code data-trim><script type="text/template">
+  vector<int> v = vector_of_ints();
+  for (auto &x : v) {
+    x++;
+  }
+                            </script></code></pre>
+                            <p>serial <tt>for_each</tt></p>
+                            <pre class="cpp"><code data-trim><script type="text/template">
+  vector<int> v = vector_of_ints();
+  for_each(v.begin(), v.end(), [&](int &x) {
+    x++;
+  });
+                            </script></code></pre>
+                            <p>C++17 parallel <tt>for_each</tt></p>
+                            <pre class="cpp"><code data-trim><script type="text/template">
+  vector<int> v = vector_of_ints();
+  for_each(execution::par, v.begin(), v.end(), [&](int &x) {
+    x++;
+  });
+                            </script></code></pre>
+                        </div>
+                        <div class="col">
+                            <p>Rust</p>
+                            <p><tt>for</tt> loop</p>
+                            <pre class="rust"><code data-trim><script type="text/template">
+    let mut v: Vec<i32> = vector_of_ints();
+    for x in &mut v {
+        *x += 1;
+    }
+                            </script></code></pre>
+                            <p>serial <tt>for_each</tt></p>
+                            <pre class="rust"><code data-trim><script type="text/template">
+    let mut v: Vec<i32> = vector_of_ints();
+    v.iter_mut().for_each(|x| {
+        *x += 1;
+    });
+                            </script></code></pre>
+                            <p>Rayon parallel <tt>for_each</tt></p>
+                            <pre class="rust"><code data-trim><script type="text/template">
+    let mut v: Vec<i32> = vector_of_ints();
+    v.par_iter_mut().for_each(|x| {
+        *x += 1;
+    });
+                            </script></code></pre>
+                        </div>
+                    </div>
+                </section>
+
+
+
+
+
                 <section style="font-size: 1.5em">
                     <p>Herb Sutter's aliased <tt>shared_ptr</tt> pitfall</p>
 
