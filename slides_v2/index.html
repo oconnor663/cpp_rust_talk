@@ -873,6 +873,65 @@ error[E0502]: cannot borrow `my_vector` as mutable because it is also borrowed a
 
 
 
+
+
+                <section style="font-size: 1.3em">
+                    Multithreading with synchronization
+                    <div class="container">
+                        <div class="col">
+                            <p>C++</p>
+                            <p><tt>atomic&lt;int&gt;</tt></p>
+                            <pre class="cpp"><code data-trim><script type="text/template">
+  vector<int> v = vector_of_ints();
+  atomic<int> sum = 0;
+  for_each(execution::par, v.begin(), v.end(), [&](int &x) {
+    x += 1;
+    sum.fetch_add(x, memory_order_relaxed);
+  });
+                            </script></code></pre>
+                            <p><tt>mutex</tt></p>
+                            <pre class="cpp"><code data-trim><script type="text/template">
+  vector<int> v = vector_of_ints();
+  int sum = 0;
+  mutex sum_lock;
+  for_each(execution::par, v.begin(), v.end(), [&](int &x) {
+    x += 1;
+    lock_guard<mutex> guard(sum_lock);
+    sum += x;
+  });
+                            </script></code></pre>
+                        </div>
+                        <div class="col">
+                            <p>Rust</p>
+                            <p><tt>AtomicI32</tt></p>
+                            <pre class="rust"><code data-trim><script type="text/template">
+    let mut v: Vec<i32> = vector_of_ints();
+    let sum: AtomicI32 = AtomicI32::new(0);
+    v.par_iter_mut().for_each(|x| {
+        *x += 1;
+        sum.fetch_add(*x, Ordering::Relaxed);
+    });
+                            </script></code></pre>
+                            <p><tt>Mutex&lt;i32&gt;</tt></p>
+                            <pre class="rust"><code data-trim><script type="text/template">
+    let mut v: Vec<i32> = vector_of_ints();
+    let sum: Mutex<i32> = Mutex::new(0);
+    v.par_iter_mut().for_each(|x| {
+        *x += 1;
+        let mut guard: MutexGuard<i32> =
+            sum.lock().unwrap();
+        *guard += *x;
+    });
+                            </script></code></pre>
+                        </div>
+                    </div>
+                </section>
+
+
+
+
+
+
                 <section data-markdown><textarea data-template>
 # Move Semantics
 
