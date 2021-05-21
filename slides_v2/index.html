@@ -864,8 +864,8 @@ error[E0502]: cannot borrow `my_vector` as mutable because it is also borrowed a
 
                 <section style="font-size: 2em">
                     How does Rust know?
-                    <div style="width: 50%; margin: 1em auto">
-                            <pre class="rust"><code data-trim><script type="text/template">
+                    <div style="width: 60%; margin: 1em auto">
+                            <pre class="rust"><code data-trim data-line-numbers="|2-3"><script type="text/template">
     fn for_each<OP>(self, op: OP)
     where
         OP: Fn(Self::Item) + Sync + Send,
@@ -1261,7 +1261,7 @@ error[E0509]: cannot move out of type which
 
 
 
-                <section>
+                <section style="font-size: 1.3em">
                     A Mutex on the stack
                     <div class="container">
                         <div class="col">
@@ -1302,7 +1302,7 @@ error[E0509]: cannot move out of type which
                         </div>
                     </div>
                 </section>
-                <section>
+                <section style="font-size: 1.3em">
                     Rust
                             <pre class="rust"><code data-trim><script type="text/template">
     let my_string: Mutex<String> = Mutex::new(String::new());
@@ -1417,7 +1417,7 @@ where
 
 
 
-                <section>
+                <section style="font-size: 1.3em">
                     Forgetting the Mutex
                     <div class="container">
                         <div class="col">
@@ -1456,7 +1456,7 @@ where
                         </div>
                     </div>
                 </section>
-                <section>
+                <section style="font-size: 1.3em">
                             C++
                             <pre class="cpp"><code data-trim data-line-numbers="6"><script type="text/template">
   shared_ptr<pair<mutex, string>> my_pair =
@@ -1489,7 +1489,7 @@ WARNING: ThreadSanitizer: data race (pid=64280)
     #11 execute_native_thread_routine /build/gcc/src/gcc/libstdc++-v3/src/c++11/thread.cc:80 (libstdc++.so.6+0xcfbc3)
                             </script></code></pre>
                 </section>
-                <section>
+                <section style="font-size: 1.3em">
                             Rust
                             <pre class="rust"><code data-trim data-line-numbers="6"><script type="text/template">
     let my_string: Arc<String> = Arc::new(String::new());
@@ -1519,7 +1519,7 @@ error[E0596]: cannot borrow data in an `Arc` as mutable
 
 
 
-                <section>
+                <section style="font-size: 1.3em">
                     Writing under a read lock
                     <div class="container">
                         <div class="col">
@@ -1562,7 +1562,7 @@ error[E0596]: cannot borrow data in an `Arc` as mutable
                         </div>
                     </div>
                 </section>
-                <section>
+                <section style="font-size: 1.3em">
                             Rust
                             <pre class="rust"><code data-trim data-line-numbers="1-2,7-8"><script type="text/template">
     let my_string: Arc<RwLock<String>> =
@@ -1596,7 +1596,7 @@ error[E0596]: cannot borrow data in a dereference of `RwLockReadGuard<'_, String
 
 
 
-                <section>
+                <section style="font-size: 2em">
                     <p>Louis Brandy's vexing parse</p>
 
                     <iframe width="1120" height="630" src="https://www.youtube.com/embed/lkgszkPnV8g?start=1750" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
@@ -1605,7 +1605,7 @@ error[E0596]: cannot borrow data in a dereference of `RwLockReadGuard<'_, String
 
 
 
-                <section>
+                <section style="font-size: 1.3em">
                     Smuggling out a pointer
                     <div class="container">
                         <div class="col">
@@ -1653,7 +1653,7 @@ error[E0596]: cannot borrow data in a dereference of `RwLockReadGuard<'_, String
                         </div>
                     </div>
                 </section>
-                <section>
+                <section style="font-size: 1.3em">
                             Rust
                             <pre class="rust"><code data-trim data-line-numbers="7-10"><script type="text/template">
     let my_string: Arc<Mutex<String>> =
