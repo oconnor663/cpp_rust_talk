@@ -94,6 +94,16 @@ borrowing to express higher-level invariants and enforce them at compile time.
         - strings
             - Rust can't use GCC's version of the small string optimization: https://youtu.be/kPR8h4-qZdk?t=1637
             - GCC can't use memcpy to resize std::vector<std::string>
+fn remove<T>(v: &mut Vec<T>, i: usize) -> T {
+    assert!(i < v.len(), "index {} is out of bounds", i);
+    unsafe {
+        let elem_ptr = v.as_mut_ptr().add(i);
+        let ret = ptr::read(elem_ptr);
+        ptr::copy(elem_ptr.add(1), elem_ptr, v.len() - i - 1);
+        v.set_len(v.len() - 1);
+        ret
+    }
+}
 
 3. case study: File
     - no such thing as a closed file
