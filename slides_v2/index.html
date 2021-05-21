@@ -1439,7 +1439,7 @@ where
                         </div>
                         <div class="col">
                             Rust
-                            <pre class="rust"><code data-trim data-line-numbers="|6"><script type="text/template">
+                            <pre class="rust"><code data-trim data-line-numbers="|1,6"><script type="text/template">
     let my_string: Arc<String> = Arc::new(String::new());
     let mut thread_handles = Vec::new();
     for _ in 0..10 {
@@ -1484,9 +1484,6 @@ WARNING: ThreadSanitizer: data race (pid=64280)
     #6 void std::__invoke_impl<void, forgot_mutex()::{lambda()#1}>(std::__invoke_other, forgot_mutex()::{lambda()#1}&&) <null> (mutex+0x5d42)
     #7 std::__invoke_result<forgot_mutex()::{lambda()#1}>::type std::__invoke<forgot_mutex()::{lambda()#1}>(std::__invoke_result&&, (forgot_mutex()::{lambda()#1}&&)...) <null> (mutex+0x592d)
     #8 void std::thread::_Invoker<std::tuple<forgot_mutex()::{lambda()#1}> >::_M_invoke<0ul>(std::_Index_tuple<0ul>) <null> (mutex+0x557a)
-    #9 std::thread::_Invoker<std::tuple<forgot_mutex()::{lambda()#1}> >::operator()() <null> (mutex+0x5340)
-    #10 std::thread::_State_impl<std::thread::_Invoker<std::tuple<forgot_mutex()::{lambda()#1}> > >::_M_run() <null> (mutex+0x514e)
-    #11 execute_native_thread_routine /build/gcc/src/gcc/libstdc++-v3/src/c++11/thread.cc:80 (libstdc++.so.6+0xcfbc3)
                             </script></code></pre>
                 </section>
                 <section style="font-size: 1.3em">
