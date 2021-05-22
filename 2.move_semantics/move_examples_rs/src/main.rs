@@ -21,10 +21,10 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         dbg!(v);
     }
     {
-        let v1 = vec!["hello world".to_string()];
-        let s = &v1[0];
-        let v2 = v1;
-        dbg!(s);
+        let s1 = "abcdefghijklmnopqrstuvwxyz".to_string();
+        let s2 = s1;
+        let v = vec![s2];
+        let s3 = v[0];
     }
     {
         let s1 = "abc".to_string();

@@ -1029,6 +1029,53 @@ Moves are destructive bitwise copies.
 
 
 
+                <section style="font-size: 1.5em">
+                    Moving a string again
+                    <div class="container">
+                        <div class="col">
+                            C++
+                            <pre class="cpp"><code data-trim><script type="text/template">
+    string s1 = "abcdefghijklmnopqrstuvwxyz";
+    string s2 = move(s1);
+    vector<string> v = {move(s2)};
+    string s3 = move(v[0]);
+                            </script></code></pre>
+                        </div>
+                        <div class="col">
+                            Rust
+                            <pre class="rust"><code data-trim><script type="text/template">
+        let s1 = "abcdefghijklmnopqrstuvwxyz".to_string();
+        let s2 = s1;
+        let v = vec![s2];
+        let s3 = v[0];
+                            </script></code></pre>
+                        </div>
+                    </div>
+                </section>
+                <section style="font-size: 1.5em">
+                    Rust
+                            <pre class="rust"><code data-trim><script type="text/template">
+        let s1 = "abcdefghijklmnopqrstuvwxyz".to_string();
+        let s2 = s1;
+        let v = vec![s2];
+        let s3 = v[0];
+                            </script></code></pre>
+                            <pre style="width: 90%"><code data-trim><script type="text/template">
+error[E0507]: cannot move out of index of `Vec<String>`
+  --> src/main.rs:27:18
+   |
+27 |         let s3 = v[0];
+   |                  ^^^^
+   |                  |
+   |                  move occurs because value has type `String`, which does not implement the `Copy` trait
+   |                  help: consider borrowing here: `&v[0]`
+                            </script></code></pre>
+                </section>
+
+
+
+
+
                 <section>
                     Moving a vector
                     <div class="container">

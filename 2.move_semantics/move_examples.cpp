@@ -32,10 +32,11 @@ int main() {
   cout << endl << "---------------------------" << endl;
 
   {
-    vector<string> v1 = {"hello world"};
-    string &s = v1[0];
-    vector<string> v2 = move(v1);
-    cout << s;
+    string s1 = "abcdefghijklmnopqrstuvwxyz";
+    string s2 = move(s1);
+    vector<string> v = {move(s2)};
+    string s3 = move(v[0]);
+    cout << s3;
   }
 
   cout << endl << "---------------------------" << endl;
