@@ -95,8 +95,8 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         dbg!(view);
     }
     {
-        let file1 = File::open("/dev/null")?;
-        let file2 = file1;
+        let file = File::open("/dev/null")?;
+        drop(file);
     }
     {
         let mutex1 = Mutex::new(0);

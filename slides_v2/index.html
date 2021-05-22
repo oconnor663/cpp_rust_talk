@@ -525,6 +525,13 @@ error[E0499]: cannot borrow `my_int` as mutable more than once at a time
 
 
 
+                <section style="font-size: 2em">
+                    Sidebar: mutable aliasing in assembly
+                    <img src="godbolt_aliasing.png">
+                </section>
+
+
+
                 <section style="font-size: 1.5em">
                     Multiple references into an array
                     <div class="container">
@@ -1281,6 +1288,43 @@ error[E0507]: cannot move out of `*s1` which is behind a mutable reference
                             </script></code></pre>
                         </div>
                     </div>
+                </section>
+
+
+
+
+
+                <section style="font-size: 2em">
+                    The <tt>drop</tt> function
+                    <div class="container">
+                        <div class="col">
+                            C++
+                            <pre class="cpp"><code data-trim><script type="text/template">
+    fstream file("/dev/null");
+    file.close();
+                            </script></code></pre>
+                        </div>
+                        <div class="col">
+                            Rust
+                            <pre class="rust"><code data-trim><script type="text/template">
+        let file = File::open("/dev/null")?;
+        drop(file);
+                            </script></code></pre>
+                        </div>
+                    </div>
+                </section>
+
+
+
+
+
+                <section style="font-size: 2em">
+                    Surprise: <tt>drop</tt> is the empty function
+                    <br>
+                    <br>
+                            <pre class="rust" style="width: 50%; font-size: 0.9em"><code data-trim><script type="text/template">
+        pub fn drop<T>(_x: T) {}
+                            </script></code></pre>
                 </section>
 
 

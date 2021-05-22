@@ -78,8 +78,8 @@ int main() {
   cout << endl << "---------------------------" << endl;
 
   {
-    fstream file1("/dev/null");
-    // fstream file2 = file1;
+    fstream file("/dev/null");
+    file.close();
   }
 
   {
