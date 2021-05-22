@@ -1330,6 +1330,53 @@ error[E0507]: cannot move out of `*s1` which is behind a mutable reference
 
 
 
+                <section style="font-size: 1.0em">
+                    <h3>Tradeoffs</h3>
+                    <div class="container">
+<style>
+li {
+    margin: 1em;
+}
+</style>
+                        <div class="col">
+C++ benefits
+<p>
+
+<ul>
+    <li>All <em>locations</em> are movable.</li>
+    <li><tt>mutex</tt> doesn't require heap allocation.</li>
+    <li>GCC <tt>string</tt> can use a self-referential small-string optimization.</li>
+</ul>
+                            </textarea>
+                        </div>
+                        <div class="col">
+Rust benefits
+<p>
+
+<ul>
+    <li>All <em>types</em> are movable.</li>
+    <li>Types don't need to represent their moved-from state. <tt>unique_ptr&lt;T&gt;</tt> in C++ has to be nullable to be movable, but <tt>Box&lt;T&gt;</tt> in Rust doesn't.</li>
+    <li><tt>Vec</tt> operations can always <tt>memmove</tt>.</li>
+    <li>Constructors are regular functions; <tt>new</tt> isn't a keyword.</li>
+</ul>
+                        </div>
+                    </div>
+                </section>
+
+
+
+
+
+
+                <section style="font-size: 2em">
+                    Sidebar: <tt>memmove</tt> in <tt>Vec::remove</tt>
+                    <img src="godbolt_erase.png">
+                </section>
+
+
+
+
+
                 <section> Mutex: Making the borrow checker work for us </section>
 
 
