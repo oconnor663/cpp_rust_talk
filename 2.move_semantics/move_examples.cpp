@@ -8,6 +8,16 @@
 
 using namespace std;
 
+void f(string &s1) {
+  string s2 = move(s1);
+}
+
+void g() {
+  string s1 = "abcdefghijklmnopqrstuvwxyz";
+  f(s1);
+  cout << s1;
+}
+
 int main() {
   {
     string s1 = "abcdefghijklmnopqrstuvwxyz";
@@ -31,8 +41,7 @@ int main() {
     cout << s1;
   }
 
-  cout << endl
-       << "----------- moved from ----------------" << endl;
+  cout << endl << "----- moved from -----" << endl;
 
   {
     string s1 = "abcde";
@@ -40,6 +49,10 @@ int main() {
     string s2 = move(s1);
     cout << my_view;
   }
+
+  cout << endl << "----- g() -----" << endl;
+
+  g();
 
   cout << endl << "---------------------------" << endl;
 
