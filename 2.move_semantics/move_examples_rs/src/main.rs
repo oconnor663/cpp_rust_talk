@@ -26,6 +26,12 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         dbg!(s1);
     }
     {
+        let s1 = "abcde".to_string();
+        let my_view = s1.as_str();
+        let s2 = s1;
+        dbg!(my_view);
+    }
+    {
         let s1 = "abcdefghijklmnopqrstuvwxyz".to_string();
         let s2 = s1;
         let v = vec![s2];

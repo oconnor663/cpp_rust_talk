@@ -1039,6 +1039,7 @@ Moves are destructive bitwise copies.
     string s2 = move(s1);
     cout << s1;
                             </script></code></pre>
+                            on my box: <tt>s1 == ""</tt>
                         </div>
                         <div class="col">
                             Rust
@@ -1067,6 +1068,55 @@ error[E0382]: use of moved value: `s1`
    |                  -- value moved here
 26 |         dbg!(s1);
    |              ^^ value used here after move
+                            </script></code></pre>
+                </section>
+
+
+
+
+
+                <section style="font-size: 1.5em">
+                    Moving a borrowed object
+                    <div class="container">
+                        <div class="col">
+                            C++
+                            <pre class="cpp"><code data-trim><script type="text/template">
+    string s1 = "abcde";
+    string_view my_view = s1;
+    string s2 = move(s1);
+    cout << my_view;
+                            </script></code></pre>
+                            on my box: <tt>my_view == "\0bcde"</tt>
+                        </div>
+                        <div class="col">
+                            Rust
+                            <pre class="rust"><code data-trim><script type="text/template">
+        let s1 = "abcde".to_string();
+        let my_view = s1.as_str();
+        let s2 = s1;
+        dbg!(my_view);
+                            </script></code></pre>
+                        </div>
+                    </div>
+                </section>
+                <section style="font-size: 1.5em">
+                    Rust
+                            <pre class="rust"><code data-trim><script type="text/template">
+        let s1 = "abcde".to_string();
+        let my_view = s1.as_str();
+        let s2 = s1;
+        dbg!(my_view);
+                            </script></code></pre>
+                            <pre style="width: 90%"><code data-trim><script type="text/template">
+error[E0505]: cannot move out of `s1` because it is borrowed
+  --> src/main.rs:31:18
+   |
+30 |         let my_view = s1.as_str();
+   |                       -- borrow of `s1` occurs here
+31 |         let s2 = s1;
+   |                  ^^ move out of `s1` occurs here
+32 |         dbg!(my_view);
+   |              ------- borrow later used here
                             </script></code></pre>
                 </section>
 

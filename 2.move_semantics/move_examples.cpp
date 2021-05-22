@@ -31,6 +31,16 @@ int main() {
     cout << s1;
   }
 
+  cout << endl
+       << "----------- moved from ----------------" << endl;
+
+  {
+    string s1 = "abcde";
+    string_view my_view = s1;
+    string s2 = move(s1);
+    cout << my_view;
+  }
+
   cout << endl << "---------------------------" << endl;
 
   {
