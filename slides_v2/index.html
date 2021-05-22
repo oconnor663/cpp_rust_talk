@@ -1030,6 +1030,51 @@ Moves are destructive bitwise copies.
 
 
                 <section style="font-size: 1.5em">
+                    Accessing a moved-from object
+                    <div class="container">
+                        <div class="col">
+                            C++
+                            <pre class="cpp"><code data-trim><script type="text/template">
+    string s1 = "abcdefghijklmnopqrstuvwxyz";
+    string s2 = move(s1);
+    cout << s1;
+                            </script></code></pre>
+                        </div>
+                        <div class="col">
+                            Rust
+                            <pre class="rust"><code data-trim><script type="text/template">
+        let s1 = "abcdefghijklmnopqrstuvwxyz".to_string();
+        let s2 = s1;
+        dbg!(s1);
+                            </script></code></pre>
+                        </div>
+                    </div>
+                </section>
+                <section style="font-size: 1.5em">
+                    Rust
+                            <pre class="rust"><code data-trim><script type="text/template">
+        let s1 = "abcdefghijklmnopqrstuvwxyz".to_string();
+        let s2 = s1;
+        dbg!(s1);
+                            </script></code></pre>
+                            <pre style="width: 90%"><code data-trim><script type="text/template">
+error[E0382]: use of moved value: `s1`
+  --> src/main.rs:26:14
+   |
+24 |         let s1 = "abcdefghijklmnopqrstuvwxyz".to_string();
+   |             -- move occurs because `s1` has type `String`, which does not implement the `Copy` trait
+25 |         let s2 = s1;
+   |                  -- value moved here
+26 |         dbg!(s1);
+   |              ^^ value used here after move
+                            </script></code></pre>
+                </section>
+
+
+
+
+
+                <section style="font-size: 1.5em">
                     Moving a string again
                     <div class="container">
                         <div class="col">

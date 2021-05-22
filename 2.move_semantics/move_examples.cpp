@@ -11,11 +11,16 @@ using namespace std;
 int main() {
   {
     string s1 = "abcdefghijklmnopqrstuvwxyz";
+    string s2 = move(s1);
+    vector<string> v = {move(s2)};
+  }
+
+  cout << endl << "---------------------------" << endl;
+
+  {
+    string s1 = "abcdefghijklmnopqrstuvwxyz";
     string s2 = s1;
     vector<string> v = {s2};
-    cout << s1;
-    cout << s2;
-    cout << v[0];
   }
 
   cout << endl << "---------------------------" << endl;
@@ -23,10 +28,7 @@ int main() {
   {
     string s1 = "abcdefghijklmnopqrstuvwxyz";
     string s2 = move(s1);
-    vector<string> v = {move(s2)};
     cout << s1;
-    cout << s2;
-    cout << v[0];
   }
 
   cout << endl << "---------------------------" << endl;

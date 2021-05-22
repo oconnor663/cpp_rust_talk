@@ -23,6 +23,11 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     {
         let s1 = "abcdefghijklmnopqrstuvwxyz".to_string();
         let s2 = s1;
+        dbg!(s1);
+    }
+    {
+        let s1 = "abcdefghijklmnopqrstuvwxyz".to_string();
+        let s2 = s1;
         let v = vec![s2];
         let s3 = v[0];
     }
