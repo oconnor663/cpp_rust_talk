@@ -881,7 +881,7 @@ error[E0502]: cannot borrow `my_vector` as mutable because it is also borrowed a
 
 
                 <section style="font-size: 1.3em">
-                    Multithreading with synchronization
+                    Synchronizing shared state
                     <div class="container">
                         <div class="col">
                             <p>C++</p>
@@ -964,6 +964,66 @@ error[E0502]: cannot borrow `my_vector` as mutable because it is also borrowed a
 
 Moves are destructive bitwise copies.
                  </textarea></section>
+
+
+
+
+
+                <section style="font-size: 1.5em">
+                    Moving a string
+                    <div class="container">
+                        <div class="col">
+                            C++
+                            <pre class="cpp"><code data-trim><script type="text/template">
+    string s1 = "abcdefghijklmnopqrstuvwxyz";
+    string s2 = move(s1);
+    vector<string> v = {move(s2)};
+                            </script></code></pre>
+                            one allocation<br/>
+                            <u>three</u> string destructors
+                        </div>
+                        <div class="col">
+                            Rust
+                            <pre class="rust"><code data-trim><script type="text/template">
+        let s1 = "abcdefghijklmnopqrstuvwxyz".to_string();
+        let s2 = s1;
+        let v = vec![s2];
+                            </script></code></pre>
+                            one allocation<br/>
+                            <u>one</u> string destructor
+                        </div>
+                    </div>
+                </section>
+
+
+
+
+
+                <section style="font-size: 1.5em">
+                    Copying a string
+                    <div class="container">
+                        <div class="col">
+                            C++
+                            <pre class="cpp"><code data-trim><script type="text/template">
+    string s1 = "abcdefghijklmnopqrstuvwxyz";
+    string s2 = s1;
+    vector<string> v = {s2};
+                            </script></code></pre>
+                            three allocations<br/>
+                            three string destructors
+                        </div>
+                        <div class="col">
+                            Rust
+                            <pre class="rust"><code data-trim><script type="text/template">
+        let s1 = "abcdefghijklmnopqrstuvwxyz".to_string();
+        let s2 = s1.clone();
+        let v = vec![s2.clone()];
+                            </script></code></pre>
+                            three allocations<br/>
+                            three string destructors
+                        </div>
+                    </div>
+                </section>
 
 
 
