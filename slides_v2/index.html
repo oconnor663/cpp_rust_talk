@@ -46,7 +46,7 @@ tt{
         <div class="reveal">
             <div class="slides">
                 <section>
-                    <h1>Four Big Ideas</h1>
+                    <h1>Three Big Ideas</h1>
                     <h2>A <span style="color: #dc322f">Firehose</span> of Rust for C++ Programmers</h2>
                 </section>
 
@@ -949,20 +949,18 @@ error[E0502]: cannot borrow `my_vector` as mutable because it is also borrowed a
     and returning) on <tt>Copy</tt> types are bitwise copies, like in C.
 </div>
 
+Other types like <tt>Vec&amp;lt;i32&amp;gt;</tt> and <tt>&mut T</tt> are non-<tt>Copy</tt>.
+
 <p>
 
 ## BIG IDEA #3
 
-<div class="wrap">
-    For non-<tt>Copy</tt> types like <tt>Vec&amp;lt;i32&amp;gt;</tt> and <tt>&mut T</tt>, by-value<br>
-    operations are moves. Everything is movable.
-</div>
-
 <p>
 
-## BIG IDEA #4
-
-Moves are destructive bitwise copies.
+<div class="wrap">
+    By-value operations on non-<tt>Copy</tt> types are moves. Moves<br>
+    are <u>destructive bitwise copies</u>, and everything is movable.
+</div>
                  </textarea></section>
 
 
