@@ -1378,27 +1378,23 @@ error[E0507]: cannot move out of `*s1` which is behind a mutable reference
     margin: 1em;
 }
 </style>
-                    <h3>Tradeoffs</h3>
+                    <h2>Move Semantics Tradeoffs</h2>
                     <div class="container">
                         <div class="col">
-C++ benefits
-<p>
-
+                            <h3>C++ strengths</h3>
 <ul>
-    <li>All <em>locations</em> are movable.</li>
-    <li><tt>mutex</tt> doesn't require heap allocation.</li>
-    <li>GCC <tt>string</tt> can use a self-referential small-string optimization.</li>
+    <li>Immovable types are supported.</li>
+    <li><tt>mutex</tt> in C++ doesn't require heap allocation. <tt>Mutex</tt> in Rust does, to make itself movable on Unix.</li>
+    <li>GCC <tt>string</tt> has a branch-free small string optimization. This isn't possible in Rust, because it's not bitwise movable.</li>
 </ul>
                             </textarea>
                         </div>
                         <div class="col">
-Rust benefits
-<p>
-
+                            <h3>Rust strengths</h3>
 <ul>
-    <li>All <em>types</em> are movable.</li>
-    <li>Types don't need to represent their moved-from state. <tt>unique_ptr&lt;T&gt;</tt> in C++ has to be nullable to be movable, but <tt>Box&lt;T&gt;</tt> in Rust doesn't.</li>
-    <li><tt>Vec</tt> operations can always <tt>memmove</tt>.</li>
+    <li>All types are movable.</li>
+    <li><tt>Vec</tt> growing and shifting can always <tt>memmove</tt>.</li>
+    <li>Types don't need a moved-from state. <tt>unique_ptr&lt;T&gt;</tt> in C++ has to be nullable to be movable, but <tt>Box&lt;T&gt;</tt> in Rust doesn't.</li>
     <li>Constructors are regular functions; <tt>new</tt> isn't a keyword.</li>
 </ul>
                         </div>
