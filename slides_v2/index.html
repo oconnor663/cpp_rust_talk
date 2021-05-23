@@ -1390,6 +1390,7 @@ error[E0507]: cannot move out of `*s1` which is behind a mutable reference
 <ul>
     <li>Immovable types are supported.</li>
     <li><tt>mutex</tt> in C++ doesn't require heap allocation. <tt>Mutex</tt> in Rust does, to make itself movable on Unix.</li>
+    <li>Complex moves are supported.</li>
     <li>GCC <tt>string</tt> has a branch-free small string optimization. This isn't possible in Rust, because it's not bitwise movable.</li>
 </ul>
                             </textarea>
