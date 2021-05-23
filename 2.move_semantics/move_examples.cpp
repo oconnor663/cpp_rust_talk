@@ -10,10 +10,11 @@ using namespace std;
 
 void f(string &s1) {
   string s2 = move(s1);
+  cout << s2;
 }
 
 void g() {
-  string s1 = "abcdefghijklmnopqrstuvwxyz";
+  string s1 = "foo";
   f(s1);
   cout << s1;
 }

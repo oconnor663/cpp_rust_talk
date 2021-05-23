@@ -3,14 +3,17 @@
 use std::fs::File;
 use std::sync::Mutex;
 
-fn f(s1: &mut String) {
-    let s2 = *s1;
-}
+mod regular {
+    fn f(s1: &mut String) {
+        let s2 = *s1;
+        dbg!(s2);
+    }
 
-fn g() {
-    let mut s1 = "abcdefghijklmnopqrstuvwxyz".to_string();
-    f(&mut s1);
-    dbg!(s1);
+    fn g() {
+        let mut s1 = "foo".to_string();
+        f(&mut s1);
+        dbg!(s1);
+    }
 }
 
 mod swap {
@@ -19,29 +22,34 @@ mod swap {
     fn f(s1: &mut String) {
         let mut s2 = "".to_string();
         mem::swap(s1, &mut s2);
+        dbg!(s2);
     }
 
     fn g() {
         let mut s1 = "foo".to_string();
         f(&mut s1);
+        dbg!(s1);
     }
 }
 
 mod option {
     fn f(s1: &mut Option<String>) {
-        let s2 = s1.take();
+        let s2 = s1.take().unwrap();
+        dbg!(s2);
     }
 
     fn g() {
         let mut s1: Option<String> =
             Some("foo".to_string());
         f(&mut s1);
+        dbg!(s1);
     }
 }
 
 mod vector {
     fn f(v: &mut Vec<String>) {
         let s2 = v.remove(0);
+        dbg!(s2);
     }
 
     fn g() {
@@ -51,6 +59,7 @@ mod vector {
             "baz".to_string(),
         ];
         f(&mut v);
+        dbg!(v);
     }
 }
 
@@ -98,5 +107,9 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         let guard1 = mutex.lock().unwrap();
         let guard2 = guard1;
     }
+    // regular::g();
+    // swap::g();
+    // option::g();
+    // vector::g();
     Ok(())
 }

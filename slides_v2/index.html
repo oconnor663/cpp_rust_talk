@@ -1211,10 +1211,11 @@ error[E0507]: cannot move out of index of `Vec<String>`
                             <pre class="cpp"><code data-trim><script type="text/template">
 void f(string &s1) {
   string s2 = move(s1);
+  cout << s2;
 }
 
 void g() {
-  string s1 = "abcdefghijklmnopqrstuvwxyz";
+  string s1 = "foo";
   f(s1);
   cout << s1;
 }
@@ -1224,15 +1225,16 @@ void g() {
                         <div class="col">
                             Rust
                             <pre class="rust"><code data-trim><script type="text/template">
-fn f(s1: &mut String) {
-    let s2 = *s1;
-}
+    fn f(s1: &mut String) {
+        let s2 = *s1;
+        dbg!(s2);
+    }
 
-fn g() {
-    let mut s1 = "abcdefghijklmnopqrstuvwxyz".to_string();
-    f(&mut s1);
-    dbg!(s1);
-}
+    fn g() {
+        let mut s1 = "foo".to_string();
+        f(&mut s1);
+        dbg!(s1);
+    }
                             </script></code></pre>
                         </div>
                     </div>
@@ -1240,15 +1242,16 @@ fn g() {
                 <section style="font-size: 1.3em">
                     Rust
                             <pre class="rust"><code data-trim><script type="text/template">
-fn f(s1: &mut String) {
-    let s2 = *s1;
-}
+    fn f(s1: &mut String) {
+        let s2 = *s1;
+        dbg!(s2);
+    }
 
-fn g() {
-    let mut s1 = "abcdefghijklmnopqrstuvwxyz".to_string();
-    f(&mut s1);
-    dbg!(s1);
-}
+    fn g() {
+        let mut s1 = "foo".to_string();
+        f(&mut s1);
+        dbg!(s1);
+    }
                             </script></code></pre>
                             <pre style="width: 90%"><code data-trim><script type="text/template">
 error[E0507]: cannot move out of `*s1` which is behind a mutable reference
@@ -1275,33 +1278,42 @@ error[E0507]: cannot move out of `*s1` which is behind a mutable reference
     fn f(s1: &mut String) {
         let mut s2 = "".to_string();
         mem::swap(s1, &mut s2);
+        dbg!(s2);
     }
 
     fn g() {
         let mut s1 = "foo".to_string();
         f(&mut s1);
+        dbg!(s1);
     }
                             </script></code></pre>
+                            <tt>s1 == ""</tt><br>
+                            <tt>s2 == "foo"</tt><br>
                         </div>
                         <div class="col">
                             <tt>Option::take</tt>
                             <pre class="rust"><code data-trim><script type="text/template">
     fn f(s1: &mut Option<String>) {
-        let s2 = s1.take();
+        let s2 = s1.take().unwrap();
+        dbg!(s2);
     }
 
     fn g() {
         let mut s1: Option<String> =
             Some("foo".to_string());
         f(&mut s1);
+        dbg!(s1);
     }
                             </script></code></pre>
+                            <tt>s1 == None</tt><br>
+                            <tt>s2 == "foo"</tt><br>
                         </div>
                         <div class="col">
                             <tt>Vec::remove</tt>
                             <pre class="rust"><code data-trim><script type="text/template">
     fn f(v: &mut Vec<String>) {
         let s2 = v.remove(0);
+        dbg!(s2);
     }
 
     fn g() {
@@ -1311,8 +1323,11 @@ error[E0507]: cannot move out of `*s1` which is behind a mutable reference
             "baz".to_string(),
         ];
         f(&mut v);
+        dbg!(v);
     }
                             </script></code></pre>
+                            <tt>v == ["bar", "baz"]</tt><br>
+                            <tt>s2 == "foo"</tt><br>
                         </div>
                     </div>
                 </section>
