@@ -22,7 +22,8 @@ int main() {
   {
     string s1 = "abcdefghijklmnopqrstuvwxyz";
     string s2 = move(s1);
-    vector<string> v = {move(s2)};
+    vector<string> v;
+    v.push_back(move(s2));
   }
 
   cout << endl << "---------------------------" << endl;
@@ -30,7 +31,8 @@ int main() {
   {
     string s1 = "abcdefghijklmnopqrstuvwxyz";
     string s2 = s1;
-    vector<string> v = {s2};
+    vector<string> v;
+    v.push_back(s2);
   }
 
   cout << endl << "---------------------------" << endl;
@@ -59,20 +61,10 @@ int main() {
   {
     string s1 = "abcdefghijklmnopqrstuvwxyz";
     string s2 = move(s1);
-    vector<string> v = {move(s2)};
+    vector<string> v;
+    v.push_back(move(s2));
     string s3 = move(v[0]);
     cout << s3;
-  }
-
-  cout << endl << "---------------------------" << endl;
-
-  {
-    string s1("abc");
-    string_view view(s1);
-    string s2 = move(s1);
-    cout << view;
-    s1 = "abcdefghijklmnopqrstuvwxyz";
-    cout << view;
   }
 
   cout << endl << "---------------------------" << endl;

@@ -1002,9 +1002,10 @@ Other types like <tt>Vec&amp;lt;i32&amp;gt;</tt> and <tt>&mut T</tt> are non-<tt
                             <pre class="cpp"><code data-trim><script type="text/template">
     string s1 = "abcdefghijklmnopqrstuvwxyz";
     string s2 = move(s1);
-    vector<string> v = {move(s2)};
+    vector<string> v;
+    v.push_back(move(s2));
                             </script></code></pre>
-                            one allocation<br/>
+                            one string allocation<br/>
                             <u>three</u> string destructors
                         </div>
                         <div class="col">
@@ -1012,9 +1013,10 @@ Other types like <tt>Vec&amp;lt;i32&amp;gt;</tt> and <tt>&mut T</tt> are non-<tt
                             <pre class="rust"><code data-trim><script type="text/template">
         let s1 = "abcdefghijklmnopqrstuvwxyz".to_string();
         let s2 = s1;
-        let v = vec![s2];
+        let mut v = Vec::new();
+        v.push(s2);
                             </script></code></pre>
-                            one allocation<br/>
+                            one string allocation<br/>
                             <u>one</u> string destructor
                         </div>
                     </div>
@@ -1032,9 +1034,10 @@ Other types like <tt>Vec&amp;lt;i32&amp;gt;</tt> and <tt>&mut T</tt> are non-<tt
                             <pre class="cpp"><code data-trim><script type="text/template">
     string s1 = "abcdefghijklmnopqrstuvwxyz";
     string s2 = s1;
-    vector<string> v = {s2};
+    vector<string> v;
+    v.push_back(s2);
                             </script></code></pre>
-                            three allocations<br/>
+                            three string allocations<br/>
                             three string destructors
                         </div>
                         <div class="col">
@@ -1042,9 +1045,10 @@ Other types like <tt>Vec&amp;lt;i32&amp;gt;</tt> and <tt>&mut T</tt> are non-<tt
                             <pre class="rust"><code data-trim><script type="text/template">
         let s1 = "abcdefghijklmnopqrstuvwxyz".to_string();
         let s2 = s1.clone();
-        let v = vec![s2.clone()];
+        let mut v = Vec::new();
+        v.push(s2.clone());
                             </script></code></pre>
-                            three allocations<br/>
+                            three string allocations<br/>
                             three string destructors
                         </div>
                     </div>
@@ -1157,7 +1161,8 @@ error[E0505]: cannot move out of `s1` because it is borrowed
                             <pre class="cpp"><code data-trim><script type="text/template">
     string s1 = "abcdefghijklmnopqrstuvwxyz";
     string s2 = move(s1);
-    vector<string> v = {move(s2)};
+    vector<string> v;
+    v.push_back(move(s2));
     string s3 = move(v[0]);
                             </script></code></pre>
                         </div>
@@ -1166,7 +1171,8 @@ error[E0505]: cannot move out of `s1` because it is borrowed
                             <pre class="rust"><code data-trim><script type="text/template">
         let s1 = "abcdefghijklmnopqrstuvwxyz".to_string();
         let s2 = s1;
-        let v = vec![s2];
+        let mut v = Vec::new();
+        v.push(s2);
         let s3 = v[0];
                             </script></code></pre>
                         </div>
@@ -1177,14 +1183,15 @@ error[E0505]: cannot move out of `s1` because it is borrowed
                             <pre class="rust"><code data-trim><script type="text/template">
         let s1 = "abcdefghijklmnopqrstuvwxyz".to_string();
         let s2 = s1;
-        let v = vec![s2];
+        let mut v = Vec::new();
+        v.push(s2);
         let s3 = v[0];
                             </script></code></pre>
                             <pre style="width: 90%"><code data-trim><script type="text/template">
 error[E0507]: cannot move out of index of `Vec<String>`
-  --> src/main.rs:27:18
+  --> src/main.rs:86:18
    |
-27 |         let s3 = v[0];
+86 |         let s3 = v[0];
    |                  ^^^^
    |                  |
    |                  move occurs because value has type `String`, which does not implement the `Copy` trait

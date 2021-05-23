@@ -58,18 +58,14 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     {
         let s1 = "abcdefghijklmnopqrstuvwxyz".to_string();
         let s2 = s1;
-        let v = vec![s2];
-        // dbg!(s1);
-        // dbg!(s2);
-        dbg!(v);
+        let mut v = Vec::new();
+        v.push(s2);
     }
     {
         let s1 = "abcdefghijklmnopqrstuvwxyz".to_string();
         let s2 = s1.clone();
-        let v = vec![s2.clone()];
-        dbg!(s1);
-        dbg!(s2);
-        dbg!(v);
+        let mut v = Vec::new();
+        v.push(s2.clone());
     }
     {
         let s1 = "abcdefghijklmnopqrstuvwxyz".to_string();
@@ -85,14 +81,9 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     {
         let s1 = "abcdefghijklmnopqrstuvwxyz".to_string();
         let s2 = s1;
-        let v = vec![s2];
+        let mut v = Vec::new();
+        v.push(s2);
         let s3 = v[0];
-    }
-    {
-        let s1 = "abc".to_string();
-        let view = s1.as_str();
-        let s2 = s1;
-        dbg!(view);
     }
     {
         let file = File::open("/dev/null")?;
