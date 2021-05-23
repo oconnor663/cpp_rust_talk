@@ -1069,7 +1069,8 @@ Other types like <tt>Vec&amp;lt;i32&amp;gt;</tt> and <tt>&mut T</tt> are non-<tt
     string s2 = move(s1);
     cout << s1;
                             </script></code></pre>
-                            on my box: <tt>s1 == ""</tt>
+                            on my box:<br>
+                            <tt>s1 == ""</tt>
                         </div>
                         <div class="col">
                             Rust
@@ -1116,7 +1117,8 @@ error[E0382]: use of moved value: `s1`
     string s2 = move(s1);
     cout << my_view;
                             </script></code></pre>
-                            on my box: <tt>my_view == "\0bcde"</tt>
+                            on my box:<br>
+                            <tt>my_view == "\0bcde"</tt>
                         </div>
                         <div class="col">
                             Rust
@@ -1221,7 +1223,9 @@ void g() {
   cout << s1;
 }
                             </script></code></pre>
-                            on my box: <tt>s1 == ""</tt>
+                            on my box:<br>
+                            <tt>s1 == ""</tt><br>
+                            <tt>s2 == "foo"</tt>
                         </div>
                         <div class="col">
                             Rust
@@ -1393,7 +1397,7 @@ error[E0507]: cannot move out of `*s1` which is behind a mutable reference
                         <div class="col">
                             <h3>Rust strengths</h3>
 <ul>
-    <li>All types are movable.</li>
+    <li>All types are movable, and all moves are infallible.</li>
     <li><tt>Vec</tt> growing and shifting can always <tt>memmove</tt>.</li>
     <li>Types don't need a moved-from state. <tt>unique_ptr&lt;T&gt;</tt> in C++ has to be nullable to be movable, but <tt>Box&lt;T&gt;</tt> in Rust doesn't.</li>
     <li>Constructors are regular functions; <tt>new</tt> isn't a keyword.</li>
