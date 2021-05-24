@@ -890,10 +890,30 @@ error[E0502]: cannot borrow `my_vector` as mutable because it is also borrowed a
 
 
 
-                <section style="font-size: 2em">
+                <section style="font-size: 1.9em">
                     How does Rust know?
-                    <div style="width: 60%; margin: 1em auto">
-                            <pre class="rust"><code data-trim data-line-numbers="|2-3"><script type="text/template">
+                    <div class="container">
+                        <div class="col">
+                            <tt>Iterator</tt>
+                            <pre class="rust"><code data-trim data-line-numbers="|4"><script type="text/template">
+    fn for_each<F>(self, f: F)
+    where
+        Self: Sized,
+        F: FnMut(Self::Item),
+    {
+        #[inline]
+        fn call<T>(
+            mut f: impl FnMut(T),
+        ) -> impl FnMut((), T) {
+            move |(), item| f(item)
+        }
+        self.fold((), call(f));
+    }
+                            </script></code></pre>
+                        </div>
+                        <div class="col">
+                            <tt>ParallelIterator</tt>
+                            <pre class="rust"><code data-trim data-line-numbers="|3"><script type="text/template">
     fn for_each<OP>(self, op: OP)
     where
         OP: Fn(Self::Item) + Sync + Send,
@@ -901,6 +921,7 @@ error[E0502]: cannot borrow `my_vector` as mutable because it is also borrowed a
         for_each::for_each(self, &op)
     }
                             </script></code></pre>
+                        </div>
                     </div>
                 </section>
 
@@ -1508,7 +1529,7 @@ error[E0373]: closure may outlive the current function, but it borrows `my_strin
                     <div class="container">
                         <div class="col">
                             <tt>for_each</tt>
-                            <pre class="rust"><code data-trim data-line-numbers="|2-3"><script type="text/template">
+                            <pre class="rust"><code data-trim data-line-numbers="|3"><script type="text/template">
     fn for_each<OP>(self, op: OP)
     where
         OP: Fn(Self::Item) + Sync + Send,
@@ -1519,7 +1540,7 @@ error[E0373]: closure may outlive the current function, but it borrows `my_strin
                         </div>
                         <div class="col">
                             <tt>spawn</tt>
-                            <pre class="rust"><code data-trim data-line-numbers="|2-5"><script type="text/template">
+                            <pre class="rust"><code data-trim data-line-numbers="|3-5"><script type="text/template">
 pub fn spawn<F, T>(f: F) -> JoinHandle<T>
 where
     F: FnOnce() -> T,
