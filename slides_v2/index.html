@@ -596,40 +596,35 @@ error[E0502]: cannot borrow `char_array[_]` as immutable because it is also borr
   |     -------------------------------- mutable borrow later used here
                             </script></code></pre>
                 </section>
-                <section style="font-size: 1.3em">
+                <section style="font-size: 1.5em">
                     There's more than one way to do it
+                    <br>
+                    <br>
                     <div class="container">
                         <div class="col">
-                            indexes
+                            <div style="display: flex; flex-direction: column; height: 100%; justify-content: center; align-items: center">
+                                <ul>
+                                    <li>just use indexes</li>
+                                    <li>pattern matching</li>
+                                    <li><tt>split_at_mut</tt></li>
+                                    <li><tt>iter_mut</tt></li>
+                                    <li><tt>Cell&lt;char&gt;</tt></li>
+                                    <li><tt>RefCell&lt;char&gt;</tt></li>
+                                    <li><tt>unsafe</tt> code</li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="col">
+                            <tt>split_at_mut</tt>
                             <pre class="rust"><code data-trim><script type="text/template">
     let mut char_array: [char; 2] = ['a', 'b'];
-    char_array[0] = char_array[1];
-                            </script></code></pre>
-                            .split_at_mut()
-                            <pre class="rust"><code data-trim><script type="text/template">
-    let mut char_array: [char; 2] = ['a', 'b'];
-    let (first_slice, rest_slice) = char_array.split_at_mut(1);
+    let (first_slice, rest_slice) =
+        char_array.split_at_mut(1);
     let first_element = &mut first_slice[0];
     let second_element = &rest_slice[0];
     *first_element = *second_element;
                             </script></code></pre>
-                            pattern matching
-                            <pre class="rust"><code data-trim><script type="text/template">
-    let mut char_array: [char; 2] = ['a', 'b'];
-    let [first_element, second_element] = &mut char_array;
-    *first_element = *second_element;
-                            </script></code></pre>
-                        </div>
-                        <div class="col">
-                            .iter_mut()
-                            <pre class="rust"><code data-trim><script type="text/template">
-    let mut char_array: [char; 2] = ['a', 'b'];
-    let mut array_iterator = char_array.iter_mut();
-    let first_element = array_iterator.next().unwrap();
-    let second_element = array_iterator.next().unwrap();
-    *first_element = *second_element;
-                            </script></code></pre>
-                            ☠ unsafe code ☠
+                            ☠ <tt>unsafe</tt> code ☠
                             <pre class="rust"><code data-trim><script type="text/template">
     let mut char_array: [char; 2] = ['a', 'b'];
     let first_element: *mut char = &mut char_array[0];
