@@ -1404,20 +1404,29 @@ error[E0507]: cannot move out of `*s1` which is behind a mutable reference
                         <div class="col">
                             <h3>C++ strengths</h3>
 <ul>
-    <li>Immovable types are supported.</li>
-    <li><tt>mutex</tt> in C++ doesn't require heap allocation. <tt>Mutex</tt> in Rust does, to make itself movable on Unix.</li>
-    <li>Complex moves are supported.</li>
-    <li>GCC <tt>string</tt> has a branch-free small string optimization. This isn't possible in Rust, because it's not bitwise movable.</li>
+    <li><strong>Immovable types are supported.</strong></li>
+    <ul>
+        <li><tt>mutex</tt> in C++ doesn't require heap allocation. <tt>Mutex</tt> in Rust does, to make itself movable on Unix.</li>
+    </ul>
+    <li><strong>Complex moves are supported.</strong></li>
+    <ul>
+        <li>GCC <tt>string</tt> has a branch-free small string optimization. This isn't possible in Rust, because it's not bitwise movable.</li>
+    </ul>
 </ul>
                             </textarea>
                         </div>
                         <div class="col">
                             <h3>Rust strengths</h3>
 <ul>
-    <li>All types are movable, and all moves are infallible.</li>
-    <li><tt>Vec</tt> growing and shifting can always <tt>memmove</tt>.</li>
-    <li>Types don't need a moved-from state. <tt>unique_ptr&lt;T&gt;</tt> in C++ has to be nullable to be movable, but <tt>Box&lt;T&gt;</tt> in Rust doesn't.</li>
-    <li>Constructors are regular functions; <tt>new</tt> isn't a keyword.</li>
+    <li><strong>All types are movable, and moves are infallible.</strong></li>
+    <ul>
+        <li>Constructors are regular functions; <tt>new</tt> isn't a keyword.</li>
+        <li><tt>Vec</tt> growing and shifting can always <tt>memmove</tt>.</li>
+    </ul>
+    <li><strong>Types don't need a moved-from state.</strong></li>
+    <ul>
+        <li><tt>unique_ptr&lt;T&gt;</tt> in C++ has to be nullable to be movable, but <tt>Box&lt;T&gt;</tt> in Rust doesn't.</li>
+    </ul>
 </ul>
                         </div>
                     </div>
