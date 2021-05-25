@@ -1,4 +1,5 @@
 #include <array>
+#include <cassert>
 #include <iostream>
 
 using namespace std;
@@ -8,4 +9,5 @@ int main() {
   char &first_element = char_array[0];
   const char &second_element = char_array[1];
   first_element = second_element;
+  assert(char_array[0] == 'b');
 }

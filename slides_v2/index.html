@@ -522,7 +522,7 @@ Mutable references are unique. No mutable aliasing.
                         </div>
                     </div>
                 </section>
-                <section style="font-size: 1.5em">
+                <section style="font-size: 2em">
                     Rust
                             <pre class="rust"><code data-trim><script type="text/template">
     let mut my_int = 5;
@@ -553,7 +553,7 @@ error[E0499]: cannot borrow `my_int` as mutable more than once at a time
 
 
 
-                <section style="font-size: 1.5em">
+                <section style="font-size: 1.75em">
                     Multiple references into an array
                     <div class="container">
                         <div class="col">
@@ -563,6 +563,7 @@ error[E0499]: cannot borrow `my_int` as mutable more than once at a time
   char &first_element = char_array[0];
   const char &second_element = char_array[1];
   first_element = second_element;
+  assert(char_array[0] == 'b');
                             </script></code></pre>
                         </div>
                         <div class="col">
@@ -572,6 +573,7 @@ error[E0499]: cannot borrow `my_int` as mutable more than once at a time
     let first_element = &mut char_array[0];
     let second_element = &char_array[1];
     *first_element = *second_element;
+    assert_eq!(char_array[0], 'b');
                             </script></code></pre>
                         </div>
                     </div>
@@ -583,6 +585,7 @@ error[E0499]: cannot borrow `my_int` as mutable more than once at a time
     let first_element = &mut char_array[0];
     let second_element = &char_array[1];
     *first_element = *second_element;
+    assert_eq!(char_array[0], 'b');
                             </script></code></pre>
                             <pre><code data-trim><script type="text/template">
 error[E0502]: cannot borrow `char_array[_]` as immutable because it is also borrowed as mutable
@@ -623,6 +626,7 @@ error[E0502]: cannot borrow `char_array[_]` as immutable because it is also borr
     let first_element = &mut first_slice[0];
     let second_element = &rest_slice[0];
     *first_element = *second_element;
+    assert_eq!(char_array[0], 'b');
                             </script></code></pre>
                             ☠ <tt>unsafe</tt> code ☠
                             <pre class="rust"><code data-trim><script type="text/template">
@@ -632,6 +636,7 @@ error[E0502]: cannot borrow `char_array[_]` as immutable because it is also borr
     unsafe {
         *first_element = *second_element;
     }
+    assert_eq!(char_array[0], 'b');
                             </script></code></pre>
                         </div>
                     </div>

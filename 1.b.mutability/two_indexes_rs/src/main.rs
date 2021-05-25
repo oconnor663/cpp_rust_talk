@@ -5,12 +5,13 @@ fn f_fail() {
     let first_element = &mut char_array[0];
     let second_element = &char_array[1];
     *first_element = *second_element;
+    assert_eq!(char_array[0], 'b');
 }
 
 fn f_indexes() {
     let mut char_array: [char; 2] = ['a', 'b'];
     char_array[0] = char_array[1];
-    assert_eq!(char_array, ['b', 'b']);
+    assert_eq!(char_array[0], 'b');
 }
 
 fn f_split() {
@@ -20,14 +21,14 @@ fn f_split() {
     let first_element = &mut first_slice[0];
     let second_element = &rest_slice[0];
     *first_element = *second_element;
-    assert_eq!(char_array, ['b', 'b']);
+    assert_eq!(char_array[0], 'b');
 }
 
 fn f_pattern() {
     let mut char_array: [char; 2] = ['a', 'b'];
     let [first_element, second_element] = &mut char_array;
     *first_element = *second_element;
-    assert_eq!(char_array, ['b', 'b']);
+    assert_eq!(char_array[0], 'b');
 }
 
 fn f_iterator() {
@@ -36,7 +37,7 @@ fn f_iterator() {
     let first_element = array_iterator.next().unwrap();
     let second_element = array_iterator.next().unwrap();
     *first_element = *second_element;
-    assert_eq!(char_array, ['b', 'b']);
+    assert_eq!(char_array[0], 'b');
 }
 
 #[cfg_attr(rustfmt, rustfmt_skip)]
