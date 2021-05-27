@@ -972,8 +972,7 @@ error[E0502]: cannot borrow `my_vector` as mutable because it is also borrowed a
     let sum: Mutex<i32> = Mutex::new(0);
     v.par_iter_mut().for_each(|x| {
         *x += 1;
-        let mut guard: MutexGuard<i32> =
-            sum.lock().unwrap();
+        let mut guard: MutexGuard<i32> = sum.lock().unwrap();
         *guard += *x;
     });
                             </script></code></pre>
