@@ -51,7 +51,8 @@ tt{
                 </section>
 
                 <section data-markdown><textarea data-template>
-Rust is a big language. We won't get to:
+<div class="wrap">
+<p>Rust is a big language. We don't have time for:</p>
 
 - syntax
 - enums (tagged unions) and <tt>Option</tt>
@@ -60,10 +61,17 @@ Rust is a big language. We won't get to:
 - <tt>unsafe</tt> code
 - <tt>extern</tt> and interoperating with C
 - Cargo
+
+<p>Instead, we're going to focus on three big ideas:</p>
+
+- references
+- mutable aliasing
+- move semantics
+</div>
                  </textarea></section>
 
                 <section data-markdown><textarea data-template>
-# References
+# References and Mutable Aliasing
 
 **shared references**, <tt>&T</tt>, like <tt>const</tt> pointers in C/C++
 
