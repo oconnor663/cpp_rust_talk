@@ -516,6 +516,7 @@ Mutable references are unique. No mutable aliasing.
   int &reference2 = my_int;
   reference1++;
   reference2++;
+  assert(my_int == 7);
                             </script></code></pre>
                         </div>
                         <div class="col">
@@ -526,6 +527,7 @@ Mutable references are unique. No mutable aliasing.
     let reference2 = &mut my_int;
     *reference1 += 1;
     *reference2 += 1;
+    assert_eq!(my_int, 7);
                             </script></code></pre>
                         </div>
                     </div>
@@ -538,6 +540,7 @@ Mutable references are unique. No mutable aliasing.
     let reference2 = &mut my_int;
     *reference1 += 1;
     *reference2 += 1;
+    assert_eq!(my_int, 7);
                             </script></code></pre>
                             <pre><code data-trim><script type="text/template">
 error[E0499]: cannot borrow `my_int` as mutable more than once at a time

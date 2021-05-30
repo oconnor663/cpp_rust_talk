@@ -1,3 +1,4 @@
+#include <cassert>
 #include <iostream>
 
 int main() {
@@ -6,4 +7,5 @@ int main() {
   int &reference2 = my_int;
   reference1++;
   reference2++;
+  assert(my_int == 7);
 }

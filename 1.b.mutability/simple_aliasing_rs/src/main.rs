@@ -4,4 +4,5 @@ fn main() {
     let reference2 = &mut my_int;
     *reference1 += 1;
     *reference2 += 1;
+    assert_eq!(my_int, 7);
 }
